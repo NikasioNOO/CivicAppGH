@@ -1,10 +1,10 @@
 <?php
 
-namespace AppCivicas\Http\Controllers\Auth;
+namespace CivicApp\Http\Controllers\Auth;
 
-use AppCivicas\User;
+use CivicApp\User;
 use Validator;
-use AppCivicas\Http\Controllers\Controller;
+use CivicApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

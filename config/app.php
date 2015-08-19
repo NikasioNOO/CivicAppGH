@@ -140,9 +140,9 @@ return [
         /*
          * Application Service Providers...
          */
-        AppCivicas\Providers\AppServiceProvider::class,
-        AppCivicas\Providers\EventServiceProvider::class,
-        AppCivicas\Providers\RouteServiceProvider::class,
+        CivicApp\Providers\AppServiceProvider::class,
+        CivicApp\Providers\EventServiceProvider::class,
+        CivicApp\Providers\RouteServiceProvider::class,
 
         /*
          * Laravel Plugin Service Providers

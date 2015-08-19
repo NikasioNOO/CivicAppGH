@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Exceptions;
+namespace CivicApp\Exceptions;
 
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;

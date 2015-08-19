@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Http\Middleware;
+namespace CivicApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;

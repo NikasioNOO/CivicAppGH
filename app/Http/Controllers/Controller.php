@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Http\Controllers;
+namespace CivicApp\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

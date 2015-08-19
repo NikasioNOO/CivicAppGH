@@ -1,11 +1,11 @@
 <?php
 
-namespace AppCivicas\Http\Controllers;
+namespace CivicApp\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use AppCivicas\Http\Requests;
-use AppCivicas\Http\Controllers\Controller;
+use CivicApp\Http\Requests;
+use CivicApp\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {

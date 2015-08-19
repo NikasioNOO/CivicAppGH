@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => AppCivicas\User::class,
+    'model' => CivicApp\User::class,
 
     /*
     |--------------------------------------------------------------------------

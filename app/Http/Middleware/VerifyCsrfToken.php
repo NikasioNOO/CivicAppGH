@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Http\Middleware;
+namespace CivicApp\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 

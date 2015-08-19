@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Http\Requests;
+namespace CivicApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

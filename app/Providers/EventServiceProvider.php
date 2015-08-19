@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Providers;
+namespace CivicApp\Providers;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -13,8 +13,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'AppCivicas\Events\SomeEvent' => [
-            'AppCivicas\Listeners\EventListener',
+        'CivicApp\Events\SomeEvent' => [
+            'CivicApp\Listeners\EventListener',
         ],
     ];
 

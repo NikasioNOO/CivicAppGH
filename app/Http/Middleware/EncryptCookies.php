@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Http\Middleware;
+namespace CivicApp\Http\Middleware;
 
 use Illuminate\Cookie\Middleware\EncryptCookies as BaseEncrypter;
 

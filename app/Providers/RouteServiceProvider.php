@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Providers;
+namespace CivicApp\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'AppCivicas\Http\Controllers';
+    protected $namespace = 'CivicApp\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.

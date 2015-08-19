@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas\Console;
+namespace CivicApp\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \AppCivicas\Console\Commands\Inspire::class,
+        \CivicApp\Console\Commands\Inspire::class,
     ];
 
     /**

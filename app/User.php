@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCivicas;
+namespace CivicApp;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;

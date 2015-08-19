@@ -1,8 +1,8 @@
 <?php
 
-namespace AppCivicas\Http\Controllers\Auth;
+namespace CivicApp\Http\Controllers\Auth;
 
-use AppCivicas\Http\Controllers\Controller;
+use CivicApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class PasswordController extends Controller

@@ -1,0 +1,16 @@
+
+
+body{
+    background-color: #DDDDDD;
+
+}
+
+.img-logo-wrapper {
+  /*  position:relative;*/
+    width:15%;
+    padding:1% ;
+  /*  padding-bottom:5%;
+    height:0;
+    overflow:hidden;*/
+}
+

@@ -1090,7 +1090,7 @@ namespace {
          */
         public static function handle($input, $output = null){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            return \AppCivicas\Console\Kernel::handle($input, $output);
+            return \CivicApp\Console\Kernel::handle($input, $output);
         }
         
         /**
@@ -1103,7 +1103,7 @@ namespace {
          */
         public static function terminate($input, $status){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            \AppCivicas\Console\Kernel::terminate($input, $status);
+            \CivicApp\Console\Kernel::terminate($input, $status);
         }
         
         /**
@@ -1116,7 +1116,7 @@ namespace {
          */
         public static function call($command, $parameters = array()){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            return \AppCivicas\Console\Kernel::call($command, $parameters);
+            return \CivicApp\Console\Kernel::call($command, $parameters);
         }
         
         /**
@@ -1129,7 +1129,7 @@ namespace {
          */
         public static function queue($command, $parameters = array()){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            \AppCivicas\Console\Kernel::queue($command, $parameters);
+            \CivicApp\Console\Kernel::queue($command, $parameters);
         }
         
         /**
@@ -1140,7 +1140,7 @@ namespace {
          */
         public static function all(){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            return \AppCivicas\Console\Kernel::all();
+            return \CivicApp\Console\Kernel::all();
         }
         
         /**
@@ -1151,7 +1151,7 @@ namespace {
          */
         public static function output(){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            return \AppCivicas\Console\Kernel::output();
+            return \CivicApp\Console\Kernel::output();
         }
         
         /**
@@ -1162,7 +1162,7 @@ namespace {
          */
         public static function bootstrap(){
             //Method inherited from \Illuminate\Foundation\Console\Kernel            
-            \AppCivicas\Console\Kernel::bootstrap();
+            \CivicApp\Console\Kernel::bootstrap();
         }
         
     }
@@ -1270,7 +1270,7 @@ namespace {
         /**
          * Get the currently authenticated user.
          *
-         * @return \AppCivicas\User|null
+         * @return \CivicApp\User|null
          * @static 
          */
         public static function user(){
@@ -1372,7 +1372,7 @@ namespace {
          *
          * @param mixed $id
          * @param bool $remember
-         * @return \AppCivicas\User
+         * @return \CivicApp\User
          * @static 
          */
         public static function loginUsingId($id, $remember = false){
@@ -1477,7 +1477,7 @@ namespace {
         /**
          * Return the currently cached user.
          *
-         * @return \AppCivicas\User|null
+         * @return \CivicApp\User|null
          * @static 
          */
         public static function getUser(){
@@ -1519,7 +1519,7 @@ namespace {
         /**
          * Get the last user we attempted to authenticate.
          *
-         * @return \AppCivicas\User
+         * @return \CivicApp\User
          * @static 
          */
         public static function getLastAttempted(){

@@ -4,6 +4,7 @@
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings />
+      <phpunit_by_interpreter interpreter_id="cab60b5b-df40-424e-82d0-ec460e252ef8" interpreter_name="Remote PHP 5.6" load_method="CUSTOM_LOADER" custom_loader_path="/home/vagrant/Code/CivicApp/vendor/autoload.php" phpunit_phar_path="" />
     </phpunit_settings>
   </component>
 </project>

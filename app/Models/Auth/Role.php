@@ -14,7 +14,7 @@ class Role extends Model
      */
     protected $fillable = ['role_name'];
 
-    public  function  roles()
+    public  function  users()
     {
         return $this->belongsToMany('CivicApp\Models\Auth\App_User','app_user_role',
                  'role_id','app_user_id');

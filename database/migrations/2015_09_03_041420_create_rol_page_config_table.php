@@ -25,17 +25,7 @@ class CreateRolPageConfigTable extends Migration
 
 
         });
-      /*  Schema::table('rol_pages_config',function(Blueprint $table){
 
-            $table->foreign('page_config_id')
-                ->references('page_configs')
-                ->on('id');
-            $table->foreign('rol_id')
-                ->references('rols')
-                ->on('id');
-
-
-        });*/
     }
 
     /**

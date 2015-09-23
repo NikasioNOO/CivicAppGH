@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Model Factories
+| Entities Factories
 |--------------------------------------------------------------------------
 |
 | Here you may define all of your model factories. Model factories give
@@ -11,8 +11,21 @@
 |
 */
 
-$factory->define(CivicApp\Models\Auth\App_User::class, function ($faker) {
+use Illuminate\Support\Collection;
+
+App::bind('CivicApp\Entities\Auth\AppUser',function()
+{
+    return new CivicApp\Entities\Auth\AppUser(new Collection());
+});
+
+ App::bind('CivicApp\Entities\Auth\Role',function()
+{
+    return new CivicApp\Entities\Auth\Role(new Collection());
+});
+
+$factory->define(CivicApp\Entities\Auth\AppUser::class, function ($faker) {
     return [
+        'id' => $faker->unique()->randomDigit,
         'first_name' => $faker->name,
         'last_name' => $faker->name,
         'email' => $faker->email,
@@ -22,8 +35,9 @@ $factory->define(CivicApp\Models\Auth\App_User::class, function ($faker) {
 });
 
 
-$factory->define(CivicApp\Models\Auth\Role::class, function ($faker) {
+$factory->define(CivicApp\Entities\Auth\Role::class, function ($faker) {
     return [
+        'id' => $faker->unique()->randomDigit,
         'role_name' => str_random(20)
     ];
 });

@@ -144,12 +144,18 @@ return [
         CivicApp\Providers\EventServiceProvider::class,
         CivicApp\Providers\RouteServiceProvider::class,
 
+        CivicApp\Providers\ComposerServiceProvider::class,
+        CivicApp\Providers\MapperProvider::class,
+
         /*
          * Laravel Plugin Service Providers
          */
 
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider', // Laravel IDE helper
         Collective\Html\HtmlServiceProvider::class,
+        Illuminate\Html\HtmlServiceProvider::class,
+
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
 
     ],
@@ -204,6 +210,18 @@ return [
          */
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
+
+        /*
+         * Alias Illuminate Html
+         */
+        'FormH' => Illuminate\Html\FormFacade::class,
+        'HtmlH' => Illuminate\Html\HtmlFacade::class,
+
+        /*
+         * Socialite
+         */
+
+        'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

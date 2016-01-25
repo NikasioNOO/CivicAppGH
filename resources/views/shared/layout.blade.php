@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Nuestra Córdoba">
+    <meta name="author" content="Ortiz Olmos, Nicolás D.">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/vnd.microsoft.icon">
     <title>Nuestra C&oacute;rdoba</title>
 
@@ -18,8 +20,22 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- Scripts -->
+
+    {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
+    {!! Html::script('assets/js/jquery-ui.min.js') !!}
+    {!! Html::script('assets/js/bootstrap.min.js') !!}
+    {!! Html::script('assets/js/Custom/menu.js') !!}
+    {!! Html::script('assets/js/Custom/utilities.js') !!}
+    @yield('scripts')
+
+
+    @yield('head')
+
 </head>
 <body>
+
 <div class="container">
     {!! csrf_field() !!}
 <header>
@@ -46,11 +62,10 @@
                 <li><a href="#">Presupuesto Participativo</a></li>
                 <li><a href="#">Concejo Deliberante</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administraci&oacute;n <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
+                        <li><a href="/CrearAppUser">Crear usuario</a></li>
                         <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Nav header</li>
                         <li><a href="#">Separated link</a></li>
@@ -64,11 +79,8 @@
 
 
 
-<!-- Scripts -->
-<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script-->
-{!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
-{!! Html::script('assets/js/bootstrap.min.js') !!}
-{!! Html::script('assets/js/Custom/menu.js') !!}
+
+
 
 @yield('content')
 

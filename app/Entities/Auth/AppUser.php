@@ -15,7 +15,7 @@ class AppUser extends User {
 
 
     protected  $_password;
-    protected  $_remember_token;
+
 
     protected  $_roles;
 

@@ -8,7 +8,9 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "barryvdh/laravel-ide-helper": "v2.1.0",
-        "laravelcollective/html": "v5.1.4"
+        "laravelcollective/html": "v5.1.4",
+        "laravel/socialite": "v2.0.13",
+        "illuminate/html": "v5.0.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

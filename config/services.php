@@ -35,4 +35,11 @@ return [
         'secret' => '',
     ],
 
+    //Socialite
+    'facebook' => [
+        'client_id'     => '881604891929928',
+        'client_secret' => '76f656698cc2c9f4a0bc244144531347',
+        'redirect'      => 'http://appcivica.dev:8000/login/Facebook',
+    ],
+
 ];

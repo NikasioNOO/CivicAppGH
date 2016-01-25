@@ -2,30 +2,33 @@
 
 namespace CivicApp\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use CivicApp\DAL\Auth\IUserRepository;
 
-class AppServiceProvider extends ServiceProvider
+
+use Illuminate\Contracts\View;
+use Illuminate\Support\ServiceProvider;
+
+class ComposerServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
+     * Bootstrap the application services.
      *
      * @return void
      */
     public function boot()
     {
         //
+        view()->composer('auth.CreateAppUser','CivicApp\Http\ViewComposers\UserComposer');
+
+
     }
 
     /**
-     * Register any application services.
+     * Register the application services.
      *
      * @return void
      */
     public function register()
     {
         //
-        $this->app->bind('\DAL\Auth\IUserRepository','\DAL\Auth\IUserRepository');
-
     }
 }

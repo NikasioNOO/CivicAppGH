@@ -8,13 +8,16 @@
 
 namespace CivicApp\Utilities;
 use CivicApp\Entities\Base\BaseEntity;
-use Illuminate\Container\Container as App;
+use Illuminate\Contracts\Foundation\Application as App;
 use Illuminate\Database\Eloquent\Model ;
+use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
 use CivicApp\Utilities\Enums;
+use PhpParser\Node\Expr\Cast\Object_;
 
 
-class Mapper {
+class Mapper implements IMapper
+{
 
     protected $app;
 
@@ -141,20 +144,45 @@ class Mapper {
     protected function basicMapToModel($fromEntity, $ModelToMap , BaseEntity $paramentity)
     {
 
+        $returnModel = null;
+
         if(!isset($this->mapperConfig[$fromEntity][$ModelToMap]))
             throw new MapperException('Model Mapper for '.$ModelToMap.'not exist');
 
-        $this->validate($paramentity, $fromEntity);
-        $model = $this->makeModel($ModelToMap);
-        foreach( $paramentity->getters as $attribute)
+        if(is_array($paramentity))
         {
-            if(!is_object($paramentity->$attribute))
+            $modelArray = [];
+            foreach($paramentity as $entity)
             {
-                $model->$attribute = $paramentity->$attribute;
+                $this->validate($entity, $fromEntity);
+                $modelNew = $this->makeModel($ModelToMap);
+                foreach( $entity->getters as $attribute)
+                {
+                    if(!is_object($entity->$attribute))
+                    {
+                        $modelNew->$attribute = $entity->$attribute;
 
+                    }
+                }
+                array_push($modelArray,$modelNew);
             }
+
+            $returnModel = $modelArray;
+
         }
-        return $model;
+        else {
+
+            $this->validate($paramentity, $fromEntity);
+            $model = $this->makeModel($ModelToMap);
+            foreach ($paramentity->getters as $attribute) {
+                if (!is_object($paramentity->$attribute)) {
+                    $model->$attribute = $paramentity->$attribute;
+
+                }
+            }
+            $returnModel = $model;
+        }
+        return $returnModel;
     }
 
     /**
@@ -168,19 +196,49 @@ class Mapper {
      */
     protected function basicMapToEntity($fromModel, $EntityToMap,Model $paramModel)
     {
-        if(!isset($this->mapperConfig[$fromModel][$EntityToMap]))
-            throw new MapperException('Model Mapper for '.$EntityToMap.'not exist');
-        $this->validate($paramModel,$fromModel);
-        $entity = $this->makeEntity($EntityToMap);
-        foreach( $paramModel->getAttributes() as $attribute)
-        {
-            if(!is_object($paramModel->$attribute))
-            {
-                $entity->$attribute = $paramModel->$attribute;
 
+        $returnEntity= null;
+        if(is_array($paramModel))
+        {
+            $entityArray = [];
+
+            foreach($paramModel as $model)
+            {
+                if(!isset($this->mapperConfig[$fromModel][$EntityToMap]))
+                    throw new MapperException('Model Mapper for '.$EntityToMap.'not exist');
+                $this->validate($model,$fromModel);
+                $entityNew = $this->makeEntity($EntityToMap);
+                foreach( $model->getAttributes() as $attribute)
+                {
+                    if(!is_object($model->$attribute))
+                    {
+                        $entityNew->$attribute = $model->$attribute;
+
+                    }
+                }
+                array_push($entityArray,$entityNew);
             }
+
+            $returnEntity = $entityArray;
+
+
         }
-        return $entity;
+        else {
+
+            if (!isset($this->mapperConfig[$fromModel][$EntityToMap]))
+                throw new MapperException('Model Mapper for ' . $EntityToMap . 'not exist');
+            $this->validate($paramModel, $fromModel);
+            $entity = $this->makeEntity($EntityToMap);
+            foreach ($paramModel->getAttributes() as $attribute) {
+                if (!is_object($paramModel->$attribute)) {
+                    $entity->$attribute = $paramModel->$attribute;
+
+                }
+            }
+
+            $returnEntity = $entity;
+        }
+        return $returnEntity;
     }
 
 /*
@@ -201,12 +259,24 @@ class Mapper {
 */
     private function executeCustomMap($fromClass,$toClass,  $objFrom, $objTo)
     {
-        foreach($this->customMapConfig[$fromClass][$toClass] as $callback)
+
+        if(is_array($objFrom))
         {
-            $objFrom = $callback($objFrom, $objTo);
+            $ret = [];
+            for( $i =0; $i <  count($objFrom); $i++)
+            {
+                foreach ($this->customMapConfig[$fromClass][$toClass] as $callback) {
+                    $objTo[$i] = $callback($objFrom[$i], $objTo[$i]);
+                }
+            }
+        }
+        else {
+            foreach ($this->customMapConfig[$fromClass][$toClass] as $callback) {
+                $objTo = $callback($objFrom, $objTo);
+            }
         }
 
-        return $objFrom;
+        return $objTo;
     }
 /*
     private function executeCustomMapToModelOLD(BaseEntity $entity,  Model $model)

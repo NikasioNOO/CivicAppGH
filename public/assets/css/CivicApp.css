@@ -14,3 +14,24 @@ body{
     overflow:hidden;*/
 }
 
+
+.border-radios-page{
+    -webkit-border-top-right-radius: 32px;
+    -webkit-border-bottom-right-radius: 30px;
+    -moz-border-radius-topright: 32px;
+    -moz-border-radius-bottomright: 30px;
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 30px;
+    border-color: #0078a3;
+}
+
+.div-panel-form{
+    max-height: 300px;
+    overflow-y: scroll;
+    max-width: 500px;
+}
+
+th {
+    background-color: lightslategray;
+    color: #ffffff;
+}

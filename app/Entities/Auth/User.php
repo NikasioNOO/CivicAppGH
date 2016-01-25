@@ -18,6 +18,7 @@ class User extends BaseEntity {
     protected $_first_name;
     protected $_last_name;
     protected $_email;
+    protected  $_remember_token;
 
 
 }

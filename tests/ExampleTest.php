@@ -3,13 +3,14 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use CivicApp\DAL\Auth\AppUserRepository as UserRepo;
+use CivicApp\DAL\Auth\UserRepository as UserRepo;
 use Illuminate\Support\Collection;
 use CivicApp\Entities\Auth;
 use CivicApp\Entities\Auth\AppUser;
 use CivicApp\Models\Auth\App_User;
 use CivicApp\Entities\Auth\Role;
 use CivicApp\Utilities\Mapper;
+use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Enums;
 
 class ExampleTest extends TestCase
@@ -94,7 +95,7 @@ class ExampleTest extends TestCase
         $faker = Faker\Factory::create();
 
         $user = $this->app->make('AppUser');
-
+        $user->username = $faker->userName;
         $user->first_name=$faker->name;
         $user->last_name =$faker->lastName;
         $user->id = 0;
@@ -109,9 +110,10 @@ class ExampleTest extends TestCase
     {
         $faker = Faker\Factory::create();
 
+        /** @var Role $role */
         $role = $this->app->make('Role');
 
-        $role->id = $faker->unique()->randomDigit;
+        $role->id =   1 ;// $faker->unique()->randomDigit;
         $role->role_name = $faker->text(10);
 
         return $role;
@@ -120,8 +122,8 @@ class ExampleTest extends TestCase
     private function ContainerSimulate()
     {
 
-        $this->app->singleton('Mapper',function(){
-            $mapper = new Mapper($this->app);
+        $this->app->singleton( IMapper::class ,function(){
+            $mapper = $this->app->make(Mapper::class);
             $mapper->addMap('CivicApp\Entities\Auth\AppUser','CivicApp\Models\Auth\App_User', Enums\MapperConfig::toModel );
             $mapper->addCustomMap('CivicApp\Entities\Auth\AppUser','CivicApp\Models\Auth\App_User',
                 function (AppUser $entityUser, App_User $modelUser){
@@ -174,15 +176,21 @@ class ExampleTest extends TestCase
         var_dump($user);
 
         /** @var Mapper  $userMapper */
-        $mapper = $this->app->make('Mapper');
+        $mapper = $this->app->make(IMapper::class);
 
        // $userMapper->addMap('CivicApp\Entities\Auth\AppUser','CivicApp\Models\Auth\App_User', Enums\MapperConfig::toModel );
 
 
         //$userMapper->setClasses('CivicApp\Entities\Auth\AppUser','CivicApp\Models\Auth\App_User');
 
+        /** @var Eloquent $userModel */
+        $userModel = $mapper->map(CivicApp\Entities\Auth\AppUser::class,CivicApp\Models\Auth\App_User::class,$user);
 
-        $userModel = $mapper->map('CivicApp\Entities\Auth\AppUser','CivicApp\Models\Auth\App_User',$user);
+
+
+        $userModel->save();
+        $ids = $userModel->roles->pluck('id');
+        $userModel->roles()->attach($ids->all());
 
         var_dump($userModel);
 

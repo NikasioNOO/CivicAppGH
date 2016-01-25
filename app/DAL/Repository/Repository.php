@@ -10,17 +10,39 @@ namespace CivicApp\DAL\Repository;
 use CivicApp\DAL\Auth\IlegalEntityAuthException;
 use Illuminate\Database\Eloquent\Model as Model;
 use Illuminate\Container\Container as App;
+use CivicApp\Utilities\Mapper;
+use CivicApp\Utilities\IMapper;
+use Illuminate\Support\Collection;
 
 abstract class Repository implements IRepository, ICriteria {
-
+    /** @var App
+     */
     private  $app;
 
+    /** @var
+     * */
     protected  $model;
 
-    public function  __construct(App $app){
+    /**
+     * @var Collection
+     */
+    protected $criteria;
+
+
+    /** @var Mapper $mapper */
+    protected $mapper;
+
+    /**
+     * @var bool
+     */
+    protected $skipCriteria = false;
+
+    public function  __construct(App $app, IMapper  $mapperparam  ){
 
         $this->app = $app;
-        $this->model = $this->makemodel();
+        $this->resetScope();
+        $this->makemodel();
+        $this->mapper = $mapperparam;
     }
 
     /**
@@ -32,31 +54,12 @@ abstract class Repository implements IRepository, ICriteria {
 
     abstract protected function entity();
 
-    abstract function mapToModel($entity);
-
-    abstract function mapToEntity($dataModel);
 
     protected function validateEntity($ent)
     {
         $classEntity = $this->entity();
         if(!$ent instanceof $classEntity)
             throw new IlegalEntityAuthException("Entity must be an instance of ".$classEntity);
-    }
-
-    protected function basicMapToModel($entity)
-    {
-        $this->validateEntity($entity);
-        $model = $this->makeModel();
-        foreach( $entity->getters as $attribute)
-        {
-            if(!is_object($entity->$attribute))
-            {
-                $model->$attribute = $entity->$attribute;
-
-            }
-
-        }
-        return $model;
     }
 
     /**
@@ -69,7 +72,7 @@ abstract class Repository implements IRepository, ICriteria {
         if (!$model instanceof Model)
             throw new RepositoryException("Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model");
 
-        return $model;
+        return $this->model = $model->newQuery();
     }
 
     /**
@@ -78,7 +81,8 @@ abstract class Repository implements IRepository, ICriteria {
      * @return mixed
      */
     public function all($columns = array('*')) {
-        return $this->model->get($columns);
+        $this->applyCriteria();
+        return new Collection($this->mapper->map( $this->model(), $this->entity(), $this->model->get($columns)->toArray()));
     }
 
     /**
@@ -87,6 +91,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @return mixed
      */
     public function paginate($perPage = 15, $columns = array('*')) {
+        $this->applyCriteria();
         return $this->model->paginate($perPage, $columns);
     }
 
@@ -96,8 +101,7 @@ abstract class Repository implements IRepository, ICriteria {
      */
     public function create($data) {
 
-
-        return $this->mapToEntity($this->model->create($this->mapToModel($data)->toArray()));
+        return $this->model->create(($this->mapper->map( $this->entity() ,$this->model(),$data)));
     }
 
     /**
@@ -124,6 +128,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @return mixed
      */
     public function find($id, $columns = array('*')) {
+        $this->applyCriteria();
         return $this->model->find($id, $columns);
     }
 
@@ -134,6 +139,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @return mixed
      */
     public function findBy($attribute, $value, $columns = array('*')) {
+        $this->applyCriteria();
         return $this->model->where($attribute, '=', $value)->first($columns);
     }
 

@@ -50,8 +50,7 @@ class Mapper implements IMapper
         if($typeMapper == Enums\MapperConfig::toEntity) {
             $this->mapperConfig[$fromClass][$toClass] = self::BASIC_MAP_TO_ENTITY;
         }
-
-        if($typeMapper == Enums\MapperConfig::toModel) {
+        elseif($typeMapper == Enums\MapperConfig::toModel) {
             $this->mapperConfig[$fromClass][$toClass] = self::BASIC_MAP_TO_MODEL;
         }
         else
@@ -141,7 +140,7 @@ class Mapper implements IMapper
      * @return mixed
      * @throws MapperException
      */
-    protected function basicMapToModel($fromEntity, $ModelToMap , BaseEntity $paramentity)
+    protected function basicMapToModel($fromEntity, $ModelToMap ,  $paramentity)
     {
 
         $returnModel = null;
@@ -194,7 +193,7 @@ class Mapper implements IMapper
      * @return BaseEntity
      * @throws MapperException
      */
-    protected function basicMapToEntity($fromModel, $EntityToMap,Model $paramModel)
+    protected function basicMapToEntity($fromModel, $EntityToMap, $paramModel)
     {
 
         $returnEntity= null;
@@ -208,7 +207,7 @@ class Mapper implements IMapper
                     throw new MapperException('Model Mapper for '.$EntityToMap.'not exist');
                 $this->validate($model,$fromModel);
                 $entityNew = $this->makeEntity($EntityToMap);
-                foreach( $model->getAttributes() as $attribute)
+                foreach( $model->getAttributes() as $attribute => $attrValue)
                 {
                     if(!is_object($model->$attribute))
                     {
@@ -229,7 +228,7 @@ class Mapper implements IMapper
                 throw new MapperException('Model Mapper for ' . $EntityToMap . 'not exist');
             $this->validate($paramModel, $fromModel);
             $entity = $this->makeEntity($EntityToMap);
-            foreach ($paramModel->getAttributes() as $attribute) {
+            foreach ($paramModel->getAttributes() as $attribute => $attrValue) {
                 if (!is_object($paramModel->$attribute)) {
                     $entity->$attribute = $paramModel->$attribute;
 

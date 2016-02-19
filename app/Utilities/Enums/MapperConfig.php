@@ -10,8 +10,8 @@ namespace CivicApp\Utilities\Enums;
 
 
  abstract class MapperConfig {
-    const toModel = 0;
-    const toEntity = 0;
+    const toModel = 1;
+    const toEntity = 2;
 
 }
 

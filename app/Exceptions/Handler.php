@@ -5,6 +5,7 @@ namespace CivicApp\Exceptions;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use CivicApp\BLL\Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -15,6 +16,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         HttpException::class,
+        Auth\AuthValidateException::class,
     ];
 
     /**

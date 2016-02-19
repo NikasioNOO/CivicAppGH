@@ -4,6 +4,8 @@ namespace CivicApp\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use CivicApp\DAL\Auth\IUserRepository;
+use CivicApp\DAL\Auth\UserRepository;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->bind('\DAL\Auth\IUserRepository','\DAL\Auth\IUserRepository');
+        $this->app->bind( IUserRepository::class , UserRepository::class);
 
     }
 }

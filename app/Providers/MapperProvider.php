@@ -2,6 +2,7 @@
 
 namespace CivicApp\Providers;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use CivicApp\Utilities\Enums;
 use CivicApp\Utilities\Mapper;
@@ -58,6 +59,7 @@ class MapperProvider extends ServiceProvider
 
                 //var_dump($modelUser);
 
+                 $mapper = App::make(IMapper::class);
                 foreach($entityUser->roles as $role)
                 {
                     //$rolModel = $this->app->make(Models\Auth\Role::class);
@@ -67,7 +69,7 @@ class MapperProvider extends ServiceProvider
                     //$rolModel->id = $role->id;
                     //$rolModel->role_name = $role->role_name;
 
-                    $rolModel = $this->map(Entities\Auth\Role::class, Models\Auth\Role::class, $role);
+                    $rolModel = $mapper->map(Entities\Auth\Role::class, Models\Auth\Role::class, $role);
 
                     $modelUser->roles->push($rolModel);
                 }

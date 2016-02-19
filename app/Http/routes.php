@@ -24,8 +24,11 @@ Route::get('home', [
 
 Route::group(['prefix'=> 'admin','middleware' => 'auth:Admin'],function()
 {
-   Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getHome']);
+   Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);
 
+    Route::get('/CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@getCreateAppUser']);
+
+    Route::post('/CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@postCreateAppUser']);
 });
 
 Route::group(['prefix'=>'user','middleware'=> 'auth:Viewer'],function(){
@@ -34,11 +37,12 @@ Route::group(['prefix'=>'user','middleware'=> 'auth:Viewer'],function(){
 
 Route::get('AdminLogin',['as'=>'authApp.login', 'uses' =>'Auth\AuthController@getLogin']);
 
-Route::post('AdminLogin',['as'=>'authApp.post-login', 'uses'=>'Auth\AuthContoller@postLogin']);
+Route::post('AdminLogin',['as'=>'authApp.post-login', 'uses' =>'Auth\AuthController@postLogin']);
 
-Route::get('CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@getCreateAppUser']);
 
-Route::post('CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@postCreateAppUser']);
+
+
+Route::get('Logout',['as'=>'logout', 'uses' =>'Auth\AuthController@getLogout']);
 
 /*
 Route::get('CrearAppUser',function(){

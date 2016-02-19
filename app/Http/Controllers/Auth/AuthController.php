@@ -3,11 +3,14 @@
 namespace CivicApp\Http\Controllers\Auth;
 
 use App;
+use CivicApp\BLL\Auth\AuthHandler;
 use CivicApp\Entities\Auth\AppUser;
 use CivicApp\Entities\Auth\Role as RoleEnt;
+use CivicApp\Models\Auth\Role;
 use CivicApp\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mockery\CountValidator\Exception;
 use Psy\Util\Json;
@@ -17,6 +20,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use CivicApp\Utilities\Logger;
 use CivicApp\Utilities\JsonMapper;
+use CivicApp\BLL\Auth as BllAuth;
 
 class AuthController extends Controller
 {
@@ -33,13 +37,16 @@ class AuthController extends Controller
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
+    private $authHandler;
+
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BllAuth\AuthHandler $handler)
     {
+        $this->authHandler = $handler;
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
@@ -89,6 +96,7 @@ class AuthController extends Controller
     ];
 
     private static $messagesAppUser = [
+        'username.required'     => 'El nombre de usuario es requerido',
         'first_name.required'   => 'El nombre es requerido',
         'last_name.required'    => 'El apellido es requerido',
         'email.required'        => 'El email es requerido',
@@ -97,7 +105,8 @@ class AuthController extends Controller
         'password.required'     => 'La contraseña es requerida',
         'password.min'          => 'La contraseña necesita tener al menos 6 caracteres',
         'password.max'          => 'La contraseña sólo permite hasta 20 caracteres',
-        'password_confirmation' => 'La contraseña y la confirmación de la contraseña deben coincidir'
+        'password_confirmation.same' => 'La contraseña y la confirmación de la contraseña deben coincidir',
+        'password_confirmation.required' =>'La confirmación de contraseña es requerida'
     ];
 
     /**
@@ -123,29 +132,30 @@ class AuthController extends Controller
             $rolesView  = json_decode($request->input('hdnRoles'));
 
             $roles = new Collection();
+            if($rolesView != null) {
+                foreach ($rolesView as $role) {
+                    $roleEntity = App::make(RoleEnt::class);
+                    $roleEntity->id = $role->id;
+                    $roleEntity->role_name = $role->role_name;
 
-            foreach($rolesView as $role )
-            {
-                $roleEntity = App::make('CivicApp\Entities\Auth\Role');
-                $roleEntity->id = $role->id;
-                $roleEntity->role_name = $role->role_name;
-
-                $roles->push($roleEntity);
+                    $roles->push($roleEntity);
+                }
             }
-
             $appUser->username = $request->input('username');
             $appUser->first_name = $request->input('first_name');
             $appUser->last_name = $request->input('last_name');
             $appUser->email = $request->input('email');
-            $appUser->password = $request->input('password');
+            $appUser->password = bcrypt($request->input('password'));
            // $appUser->remember_token = $request->
             $appUser->roles = $roles;
 
+            $this->authHandler->CreateUser($appUser);
 
-            $jm = new JsonMapper();
-            $user = $jm->map(
-                json_decode('{"str":"stringvalue"}'),
-                App::make('Role'));
+
+//            $jm = new JsonMapper();
+//            $user = $jm->map(
+//                json_decode('{"str":"stringvalue"}'),
+//                App::make(Role::class));
 
 
 
@@ -158,8 +168,17 @@ class AuthController extends Controller
 
             //$appUser->
 
-            Logger::endMethod('postCreateAppUser');
-            return view($methodName);
+            Logger::endMethod($methodName);
+            return redirect()->route('authApp.login')
+                ->with('status', 'success')
+                ->with('message', 'Se ha registrado satisfactoriamente.');
+        }
+        catch(BllAuth\AuthValidateException $ex)
+        {
+            Logger::logError($methodName,$ex->getMessage());
+            return redirect()->back()
+                ->withErrors($ex->getMessage())
+                ->withInput();
         }
         catch(Exception $ex)
         {
@@ -168,5 +187,58 @@ class AuthController extends Controller
                 ->withErrors('No se pudo crear el usuario, disculpe las molestias.')
                 ->withInput();
         }
+
     }
+
+    public function getLogin()
+    {
+        return view('auth.LoginApp');
+    }
+
+    public function postLogin(Request $request)
+    {
+        $email      = $request->input('email');
+        $password   = $request->input('password');
+        $remember   = $request->input('remember');
+
+
+        if(  Auth::attempt([
+            'email'     => $email,
+            'password'  => $password
+        ], $remember == 1 ? true : false))
+        {
+            if( Auth::user()->hasRole('Admin'))
+            {
+                return redirect()->route('admin.home');
+            }
+            else
+            {
+
+                return redirect()->route('public.home');
+            }
+
+
+
+        }
+        else
+        {
+            return redirect()->back()
+                ->with('message','Incorrect email or password')
+                ->with('status', 'danger')
+                ->withInput();
+        }
+
+    }
+
+    public function getLogout()
+    {
+        Auth::logout();
+
+        return redirect()->route('authApp.login')
+            ->with('status', 'success')
+            ->with('message', 'Logged out');
+
+    }
+
+
 }

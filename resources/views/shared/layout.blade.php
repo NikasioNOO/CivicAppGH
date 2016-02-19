@@ -39,8 +39,16 @@
 <div class="container">
     {!! csrf_field() !!}
 <header>
-    <div class="img-logo-wrapper">
-        <img src="{{ asset('assets/images/logo_nc.gif') }}" class="img-responsive" alt="LOGO">
+    <div style="width: 100%">
+        <div class="img-logo-wrapper" >
+            <img src="{{ asset('assets/images/logo_nc.gif') }}" class="img-responsive" alt="LOGO">
+        </div>
+        @if(Auth::check())
+            <div class="label label-default" style="right: 0;" >
+                <span>{{ Auth::user()->username }}</span>
+            </div>
+        @endif
+
     </div>
 </header>
 <nav class="navbar navbar-default">
@@ -72,6 +80,10 @@
                         <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
+                @if(Auth::check())
+                    <li><a href="#/Logout">Cerrar sessi&oacute;n</a></li>
+                @endif
+
             </ul>
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->

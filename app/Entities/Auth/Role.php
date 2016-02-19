@@ -27,7 +27,7 @@ class Role extends BaseEntity
     /**
      * @var Collection
      */
-    protected $_Pages;
+    protected $_pages;
 
 
 
@@ -38,7 +38,7 @@ class Role extends BaseEntity
         $this->getters = ['id', 'role_name','pages'];
 
         $this->_id = 0;
-        $this->_Pages = $pages;
+        $this->_pages = $pages;
 
     }
 

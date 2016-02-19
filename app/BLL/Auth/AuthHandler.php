@@ -14,7 +14,9 @@ use CivicApp\DAL\Auth;
 use CivicApp\Models;
 use CivicApp\Entities;
 
+
 use Illuminate\Support\Collection;
+use Mockery\CountValidator\Exception;
 
 class AuthHandler {
 
@@ -34,6 +36,8 @@ class AuthHandler {
 
         $this->userRepository->SaveUser($user);
 
+
+
     }
 
     /***
@@ -44,22 +48,28 @@ class AuthHandler {
     function validateCreateUser(Entities\Auth\AppUser $user)
     {
 
-        $
 
-        if($user->roles->count() == 0)
-        {
-            throw new AuthValidateException(trans('autherrorcodes.0001'),10001);
-        }
+            if ($user->roles->count() == 0) {
+                throw new AuthValidateException(trans('autherrorcodes.0001'), 10001);
+            }
 
-        $rolesId = $this->userRepository->getRolesIDByIdCollectin($user->roles);
+            $rolesIdDB = $this->userRepository->getRolesIDByIdCollectin($user->roles);
 
-        /** @var Collection $diff */
-        $diff = $user->roles->diff($rolesId);
+            $rolesId = new Collection();
 
-        if($diff->count())
-        {
-            throw new AuthValidateException(trans('autherrorcodes.0002'),10002);
-        }
+            foreach ($user->roles as $role) {
+                $rolesId->push($role->id);
+            }
+
+            /** @var Collection $diff */
+            $diff = $rolesId->diff($rolesIdDB);
+
+            if ($diff->count()) {
+                throw new AuthValidateException(trans('autherrorcodes.0002'), 10002);
+            }
+
+
+
 
 
     }

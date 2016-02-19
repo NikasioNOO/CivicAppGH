@@ -9,13 +9,33 @@
 namespace CivicApp\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
+use CivicApp\Utilities;
+use CivicApp\DAL\Auth;
 
 class UserComposer {
 
+    private  $mapper;
+    private  $userRepository;
 
+    public function __construct(Utilities\IMapper $mapperNew, Auth\IUserRepository $userRepo )
+    {
+        $this->mapper = $mapperNew;
+        $this->userRepository = $userRepo;
+    }
+
+    /**
+     * @param View $view
+     */
     public function compose(View $view)
     {
-        $ddlRoles = ['1'=>'Administrator','2'=>'User']  ;
+
+        $roles=  $this->userRepository->getRoles();
+
+        $ddlRoles = [];
+        foreach( $roles as $role) {
+            $ddlRoles[$role->id] = $role->role_name;
+        }
+        //$ddlRoles = ['1'=>'Administrator','2'=>'User']  ;
 
         $view->with('ddlRoles',$ddlRoles);
     }

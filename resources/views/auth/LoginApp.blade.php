@@ -7,13 +7,16 @@
 @section('content')
 
 
-    <form class="form-signin" action="#">
+    {!! Form::open(['url' => '#', 'class' => 'form-signin' ] ) !!}
+
+        @include('includes.status')
+
         <div class="form-group">
             <h class="form-signin-heading">Por favor inicie sesi&oacute;n</h>
         </div>
         <div class="form-group">
             <label for="inputEmail" class="sr-only">Email</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+            <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
         </div>
         <div class="form-group">
             <label for="inputPassword" class="sr-only">Contraseña</label>
@@ -28,5 +31,5 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesi&oacute;n</button>
             <a href="#">¿Olvid&oacute; su contraseña?</a>
         </div>
-    </form>
+    {!! Form::close() !!}
 @stop

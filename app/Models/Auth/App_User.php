@@ -2,10 +2,16 @@
 
 namespace CivicApp\Models\Auth;
 
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-class App_User extends Model
+class App_User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
+
+    use Authenticatable, CanResetPassword;
 
     protected $table='app_users';
 
@@ -29,5 +35,15 @@ class App_User extends Model
     {
         return $this->belongsToMany('CivicApp\Models\Auth\Role','app_user_role',
                                     'app_user_id', 'role_id');
+    }
+
+    public function hasRole($name)
+    {
+        foreach($this->roles as $role)
+        {
+            if($role->role_name == $name) return true;
+        }
+
+        return false;
     }
 }

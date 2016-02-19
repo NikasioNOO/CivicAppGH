@@ -13,6 +13,12 @@ body{
     height:0;
     overflow:hidden;*/
 }
+.user-login {
+    position: relative;
+    float: right;
+    padding: 1%;
+    width: 15%;
+}
 
 
 .border-radios-page{

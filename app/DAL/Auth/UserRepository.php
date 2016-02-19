@@ -52,8 +52,11 @@ class UserRepository extends Repository implements IUserRepository
 
         $userModel->save();
 
-        if(isset($user->roles))
-            $userModel->roles()->sync([$userModel->roles->pluck('id')->all()]);
+        if(isset($userModel->roles) && $userModel->roles->count() > 0) {
+          //  $rolesIds = $userModel->roles->pluck('id')->all();
+          //  $userModel->roles()->attach([$userModel->roles->pluck('id')->all()]);
+            $userModel->roles()->sync($userModel->roles->pluck('id')->all());
+        }
 
         return $userModel->id;
     }
@@ -82,13 +85,16 @@ class UserRepository extends Repository implements IUserRepository
 
     }
 
+    /***
+     * @return Collection
+     */
     public  function getRoles()
     {
 
         $roles =  AuthModels\Role::all();
 
 
-        $entityRoles = $this->mapper->map(AuthModels\Role::class, AuthEntities\Role::class, $roles->toArray());
+        $entityRoles = $this->mapper->map(AuthModels\Role::class, AuthEntities\Role::class, $roles->all());
 
         return $entityRoles;
 
@@ -96,7 +102,13 @@ class UserRepository extends Repository implements IUserRepository
 
     public  function getRolesIDByIdCollectin(Collection $roles)
     {
-         return AuthModels\Role::whereIn('id', $roles->pluck('id'))->distinct()->lists('id');
+        $listRoles = [];
+        foreach($roles as $role)
+        {
+            $listRoles[]= $role->id;
+
+        }
+         return AuthModels\Role::whereIn('id', $listRoles)->distinct()->lists('id');
 
     }
 

@@ -19,10 +19,24 @@ class SocialUser extends User {
 
     public function  __construct()
     {
-        $this->setters = ['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'provider',
-            'provider_id','remember_token'];
-        $this->getters = ['id', 'username', 'first_name', 'last_name', 'email','avatar','provider',
-             'provider_id','remember_token' ];
+        $this->setters = ['id'
+                        , 'username'
+                        , 'first_name'
+                        , 'last_name'
+                        , 'email'
+                        , 'avatar'
+                        , 'provider'
+                        , 'provider_id'
+                        ,'remember_token'];
+        $this->getters = ['id'
+                        , 'username'
+                        , 'first_name'
+                        , 'last_name'
+                        , 'email'
+                        ,'avatar'
+                        ,'provider'
+                        ,'provider_id'
+                        ,'remember_token' ];
 
     }
 

@@ -63,4 +63,12 @@ interface IRepository {
      * @return mixed
      */
     public function findBy($field, $value, $columns = array('*'));
+
+    /**
+     * @param $attribute
+     * @param $value
+     * @param array $columns
+     * @return mixed
+     */
+    public function findByRetEntity($attribute, $value, $columns = array('*'));
 }

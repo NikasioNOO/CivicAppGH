@@ -12,8 +12,8 @@ return [
     | application. If disabled, a simple generic error page is shown.
     |
     */
-
-    'debug' => env('APP_DEBUG', false),
+    'env' => env('APP_ENV', 'local'),
+    'debug' => env('APP_DEBUG', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'log' => 'single',
+    'log' => env('APP_LOG', 'single'),
 
     /*
     |--------------------------------------------------------------------------
@@ -113,13 +113,13 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
+       // Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
-        Illuminate\Routing\ControllerServiceProvider::class,
+     //   Illuminate\Routing\ControllerServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
@@ -138,6 +138,14 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Upgrade Laravel to 5.1.1
+         */
+        CivicApp\Providers\AuthServiceProvider::class,
+
+
+
+
+        /*
          * Application Service Providers...
          */
         CivicApp\Providers\AppServiceProvider::class,
@@ -151,12 +159,13 @@ return [
          * Laravel Plugin Service Providers
          */
 
-        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider', // Laravel IDE helper
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class, // Laravel IDE helper
         Collective\Html\HtmlServiceProvider::class,
-        Illuminate\Html\HtmlServiceProvider::class,
+       // Illuminate\Html\HtmlServiceProvider::class,
 
         Laravel\Socialite\SocialiteServiceProvider::class,
 
+        GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
 
     ],
 
@@ -206,6 +215,11 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
         /*
+        * Upgrade Laravel to 5.1.1
+        */
+        'Gate'      => Illuminate\Support\Facades\Gate::class,
+
+        /*
          * Alias LaravelCollective
          */
         'Form' => 'Collective\Html\FormFacade',
@@ -214,8 +228,8 @@ return [
         /*
          * Alias Illuminate Html
          */
-        'FormH' => Illuminate\Html\FormFacade::class,
-        'HtmlH' => Illuminate\Html\HtmlFacade::class,
+       // 'Form' => Illuminate\Html\FormFacade::class,
+        //'Html' => Illuminate\Html\HtmlFacade::class,
 
         /*
          * Socialite
@@ -223,6 +237,7 @@ return [
 
         'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
 
+        'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
     ],
 
 ];

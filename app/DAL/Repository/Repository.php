@@ -96,12 +96,14 @@ abstract class Repository implements IRepository, ICriteria {
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @return mixed
      */
     public function create($data) {
 
-        return $this->model->create(($this->mapper->map( $this->entity() ,$this->model(),$data)));
+        $newModel = $this->mapper->map( $this->entity() ,$this->model(),$data);
+        $newModel->save();
+        return $newModel;//$this->model->create($arr);
     }
 
     /**
@@ -140,7 +142,25 @@ abstract class Repository implements IRepository, ICriteria {
      */
     public function findBy($attribute, $value, $columns = array('*')) {
         $this->applyCriteria();
-        return $this->model->where($attribute, '=', $value)->first($columns);
+       return $this->model->where($attribute, '=', $value)->first($columns);
+
+    }
+
+    /**
+     * @param $attribute
+     * @param $value
+     * @param array $columns
+     * @return mixed
+     */
+    public function findByRetEntity($attribute, $value, $columns = array('*')) {
+        $this->applyCriteria();
+        $res = $this->model->where($attribute, '=', $value)->first($columns);
+        if(isset($res) )
+        {
+            return $this->mapper->map( $this->model() ,$this->entity() ,$res);
+        }
+        else
+            return $res;
     }
 
     /**
@@ -192,9 +212,12 @@ abstract class Repository implements IRepository, ICriteria {
         if($this->skipCriteria === true)
             return $this;
 
-        foreach($this->getCriteria() as $criteria) {
-            if($criteria instanceof Criteria)
-                $this->model = $criteria->apply($this->model, $this);
+        $criterias = $this->getCriteria();
+        if(isset($criterias)) {
+            foreach ($this->getCriteria() as $criteria) {
+                if ($criteria instanceof Criteria)
+                    $this->model = $criteria->apply($this->model, $this);
+            }
         }
 
         return $this;

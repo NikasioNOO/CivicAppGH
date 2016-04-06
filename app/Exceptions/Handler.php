@@ -1,8 +1,10 @@
 <?php
 
 namespace CivicApp\Exceptions;
-
 use Exception;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use CivicApp\BLL\Auth;
@@ -15,7 +17,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
+        ModelNotFoundException::class,
+        ValidationException::class,
         Auth\AuthValidateException::class,
     ];
 
@@ -29,7 +34,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**

@@ -32,22 +32,22 @@ class MapperProvider extends ServiceProvider
         $this->app->singleton(IMapper::class,function(){
             $mapper = $this->app->make(Mapper::class);
 
-            $this->createRoleMapper($mapper);
-            $this->createAppUserMapper($mapper);
-
+            $this->CreateRoleMapper($mapper);
+            $this->CreateAppUserMapper($mapper);
+            $this->CreateSocialUserMapper($mapper);
 
             return $mapper;
         });
     }
 
-    private function createRoleMapper ( IMapper $mapper )
+    private function CreateRoleMapper ( IMapper $mapper )
     {
         $mapper->addMap( Entities\Auth\Role::class , Models\Auth\Role::class , Enums\MapperConfig::toModel);
         $mapper->addMap(Models\Auth\Role::class, Entities\Auth\Role::class, Enums\MapperConfig::toEntity);
 
     }
 
-    private function createAppUserMapper( IMapper $mapper)
+    private function CreateAppUserMapper( IMapper $mapper)
     {
         $mapper->addMap( Entities\Auth\AppUser::class,Models\Auth\App_User::class, Enums\MapperConfig::toModel );
         $mapper->addCustomMap(Entities\Auth\AppUser::class,Models\Auth\App_User::class,
@@ -59,7 +59,7 @@ class MapperProvider extends ServiceProvider
 
                 //var_dump($modelUser);
 
-                 $mapper = App::make(IMapper::class);
+                $mapper = App::make(IMapper::class);
                 foreach($entityUser->roles as $role)
                 {
                     //$rolModel = $this->app->make(Models\Auth\Role::class);
@@ -90,17 +90,17 @@ class MapperProvider extends ServiceProvider
 
                 //foreach($modelUser->roles as $role)
                 //{
-                    ////$rolEntity = $this->app->make(Entities\Auth\Role::class);
+                ////$rolEntity = $this->app->make(Entities\Auth\Role::class);
 
-                    // var_dump($role);
+                // var_dump($role);
 
-                    ////$rolEntity->id = $role->id;
-                    ////$rolEntity->role_name = $role->role_name;
+                ////$rolEntity->id = $role->id;
+                ////$rolEntity->role_name = $role->role_name;
 
 //                    $rolEntity = $this->map( Models\Auth\Role::class,Entities\Auth\Role::class, $role);
 
-  //                  $entityUser->roles->push($rolEntity);
-  //              }
+                //                  $entityUser->roles->push($rolEntity);
+                //              }
 
                 $entityRoles = $this->map( Models\Auth\Role::class,Entities\Auth\Role::class, $modelUser->roles->all());
 
@@ -110,5 +110,13 @@ class MapperProvider extends ServiceProvider
                 return $entityUser;
 
             });
+    }
+
+    private function CreateSocialUserMapper( IMapper $mapper)
+    {
+        $mapper->addMap( Entities\Auth\SocialUser::class,Models\Auth\Social_User::class, Enums\MapperConfig::toModel );
+
+        $mapper->addMap(Models\Auth\Social_User::class,Entities\Auth\SocialUser::class, Enums\MapperConfig::toEntity );
+
     }
 }

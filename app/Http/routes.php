@@ -11,41 +11,61 @@
 |
 */
 
-Route::get('/', function () {
 
-    return view('welcome');
+
+Route::group(['middleware' => ['web']], function () {
+    //
+    Route::get('/map', function(){
+        return view('map');
+    });
+
+    Route::get('/', [
+        'as' => 'public.home',
+        'uses' => 'HomeController@index'
+    ]);
+
+    Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
+        Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
+    });
+
+    Route::get('AdminLogin',['as'=>'authApp.login', 'uses' =>'Auth\AuthController@getLogin']);
+
+    Route::post('AdminLogin',['as'=>'authApp.post-login', 'uses' =>'Auth\AuthController@postLogin']);
+
+
+    Route::get('/Logout',['as'=>'logout', 'uses' =>'Auth\AuthController@getLogout']);
+    Route::get('/LogoutSocial',['as'=>'logoutSocial', 'uses' =>'Auth\AuthController@getLogoutSocial']);
+    Route::group(['prefix'=> 'admin','middleware' => 'auth:webadmin'],function()
+    {
+        Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);
+
+        Route::group(['namespace' => 'Auth'], function() {
+
+            Route::get('CrearAppUser','AuthController@getCreateAppUser');
+            Route::post('CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'AuthController@postCreateAppUser']);
+        });
+
+    });
+
+    $s = 'social.';
+    Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);
+    Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
+
+
 
 });
 
-Route::get('home', [
-    'as' => 'public.home',
-    'uses' => 'HomeController@index'
-]);
-
-Route::group(['prefix'=> 'admin','middleware' => 'auth:Admin'],function()
-{
-   Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);
-
-    Route::get('/CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@getCreateAppUser']);
-
-    Route::post('/CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'Auth\AuthController@postCreateAppUser']);
-});
-
-Route::group(['prefix'=>'user','middleware'=> 'auth:Viewer'],function(){
-   Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
-});
-
-Route::get('AdminLogin',['as'=>'authApp.login', 'uses' =>'Auth\AuthController@getLogin']);
-
-Route::post('AdminLogin',['as'=>'authApp.post-login', 'uses' =>'Auth\AuthController@postLogin']);
 
 
 
 
-Route::get('Logout',['as'=>'logout', 'uses' =>'Auth\AuthController@getLogout']);
 
-/*
-Route::get('CrearAppUser',function(){
-   return view('auth.CreateAppUser');
-});
-*/
+
+
+
+
+
+
+
+
+

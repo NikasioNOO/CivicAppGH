@@ -17,59 +17,62 @@ use CivicApp\Entities;
 
 use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
+use CivicApp\Utilities\Logger;
 
 class AuthHandler {
 
     private $mapper;
     private $userRepository;
+    private $socialUserRepository;
 
-    public function __construct(Utilities\IMapper $mapperNew, Auth\IUserRepository $userRepo )
+    public function __construct(Utilities\IMapper $mapperNew, Auth\IUserRepository $userRepo
+                                , Auth\ISocialUserRepository $socialUserRepo)
     {
         $this->mapper = $mapperNew;
         $this->userRepository = $userRepo;
+        $this->socialUserRepository = $socialUserRepo;
     }
 
     public function CreateUser(Entities\Auth\AppUser $user)
     {
-
+        $method = 'CreateUser';
+        Logger::startMethod($method);
         $this->validateCreateUser($user);
 
         $this->userRepository->SaveUser($user);
-
-
-
+        Logger::endMethod($method);
     }
 
-    /***
-     * Validate the User Entity
+    /**
      * @param Entities\Auth\AppUser $user
-     * @return boolean
+     * @throws AuthValidateException
      */
     function validateCreateUser(Entities\Auth\AppUser $user)
     {
 
+        $method = 'validateCreateUser';
+        Logger::startMethod($method);
+        if ($user->roles->count() == 0) {
+            throw new AuthValidateException(trans('autherrorcodes.0001'), 10001);
+        }
 
-            if ($user->roles->count() == 0) {
-                throw new AuthValidateException(trans('autherrorcodes.0001'), 10001);
-            }
+        $rolesIdDB = $this->userRepository->getRolesIDByIdCollectin($user->roles);
 
-            $rolesIdDB = $this->userRepository->getRolesIDByIdCollectin($user->roles);
+        $rolesId = new Collection();
 
-            $rolesId = new Collection();
+        foreach ($user->roles as $role) {
+            $rolesId->push($role->id);
+        }
 
-            foreach ($user->roles as $role) {
-                $rolesId->push($role->id);
-            }
+        /** @var Collection $diff */
+        $diff = $rolesId->diff($rolesIdDB);
 
-            /** @var Collection $diff */
-            $diff = $rolesId->diff($rolesIdDB);
-
-            if ($diff->count()) {
-                throw new AuthValidateException(trans('autherrorcodes.0002'), 10002);
-            }
+        if ($diff->count()) {
+            throw new AuthValidateException(trans('autherrorcodes.0002'), 10002);
+        }
 
 
-
+        Logger::endMethod($method);
 
 
     }
@@ -78,9 +81,20 @@ class AuthHandler {
      */
     function getAllRoles()
     {
+        Logger::startMethod('getAllRoles');
         return $this->userRepository->getRoles();
 
     }
+
+    function CreateOrUpdateSocialUser(Entities\Auth\SocialUser $user)
+    {
+        Logger::startMethod('CreateOrUpdateSocialUser');
+
+        $user->id = $this->socialUserRepository->CreateOrUpdateUser($user);
+        return $user;
+    }
+
+
 
 
 

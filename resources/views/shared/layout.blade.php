@@ -43,9 +43,16 @@
         <div class="img-logo-wrapper" >
             <img src="{{ asset('assets/images/logo_nc.gif') }}" class="img-responsive" alt="LOGO">
         </div>
-        @if(Auth::check())
+        @if(Auth::guard('webadmin')->check())
             <div class="label label-default" style="right: 0;" >
-                <span>{{ Auth::user()->username }}</span>
+                <span>{{ Auth::guard('webadmin')->user()->username }}</span>
+            </div>
+        @elseif(Auth::guard('websocial')->check())
+            <div class="label label-default" style="right: 0;" >
+                <span>{{ Auth::guard('websocial')->user()->username }}</span>
+            </div>
+            <div class="img-logo-wrapper" >
+                <img src="{{ Auth::guard('websocial')->user()->avatar }}" class="img-responsive" alt="LOGO">
             </div>
         @endif
 
@@ -65,14 +72,15 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li  ><a href="/home"><span class="glyphicon glyphicon-home"></span></a></li>
+                <li  ><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
                 <li ><a href="/">Presupuesto P&uacute;blico</a></li>
                 <li><a href="#">Presupuesto Participativo</a></li>
                 <li><a href="#">Concejo Deliberante</a></li>
+                @can('admin-role')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administraci&oacute;n <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/CrearAppUser">Crear usuario</a></li>
+                        <li><a href="/admin/CrearAppUser">Crear usuario</a></li>
                         <li><a href="#">Another action</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Nav header</li>
@@ -80,8 +88,11 @@
                         <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
-                @if(Auth::check())
-                    <li><a href="#/Logout">Cerrar sessi&oacute;n</a></li>
+                @endcan
+                @if(  Auth::guard("webadmin")->check())
+                    <li><a href="/Logout">Cerrar sessi&oacute;n</a></li>
+                @elseif(Auth::guard("websocial")->check())
+                    <li><a href="/LogoutSocial">Cerrar sessi&oacute;n</a></li>
                 @endif
 
             </ul>

@@ -1,27 +1,35 @@
 <?php
 
 namespace CivicApp\Providers;
-use Illuminate\Support\ServiceProvider;
+
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap the application services.
+     * The policy mappings for the application.
      *
-     * @return void
+     * @var array
      */
-    public function boot()
-    {
-        //
-    }
+    protected $policies = [
+        'CivicApp\Model' => 'CivicApp\Policies\ModelPolicy',
+    ];
 
     /**
-     * Register the application services.
+     * Register any application authentication / authorization services.
      *
+     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function register()
+    public function boot(GateContract $gate)
     {
+        $this->registerPolicies($gate);
+
+        $gate->define('admin-role',function($user){
+           return $user->hasRole('Admin');
+        });
+
         //
     }
 }

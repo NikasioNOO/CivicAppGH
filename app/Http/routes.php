@@ -43,9 +43,14 @@ Route::group(['middleware' => ['web']], function () {
 
             Route::get('CrearAppUser','AuthController@getCreateAppUser');
             Route::post('CrearAppUser',['as'=>'authApp.crearUser', 'uses' =>'AuthController@postCreateAppUser']);
+
         });
 
+        Route::get('ObrasPresupAdmin',['as'=>'admin.obras','uses' => 'ObrasAdminController@getIndex']);
+
     });
+
+    Route::get('/Obras',['as'=>'social.obras', 'uses' =>'ObrasSocialController@getIndex']);
 
     $s = 'social.';
     Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);

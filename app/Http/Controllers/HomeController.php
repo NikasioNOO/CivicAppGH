@@ -10,18 +10,19 @@ use Gmaps;
 
 class HomeController extends Controller
 {
+
     public function index()
     {
-        $config = array();
+        $config           = [ ];
         $config['center'] = 'auto';
         //$config['cluster'] = TRUE;
-       // $config['zoom'] = 'auto';
-        $config['places'] = TRUE;
-        $config['placesAutocompleteInputID'] = 'autocompleteMap';
-        $config['placesAutocompleteBoundsMap'] = TRUE; // set results biased towards the maps viewport
-        $config['placesAutocompleteOnChange'] = 'CivicApp.GmapHelper.AutocompleteChange();';
-        $config['onclick'] = 'createMarker_map({ map: map, position:event.latLng });';
-        $config['apiKey'] = 'AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&callback';
+        // $config['zoom'] = 'auto';
+        $config['places']                      = true;
+        $config['placesAutocompleteInputID']   = 'autocompleteMap';
+        $config['placesAutocompleteBoundsMap'] = true; // set results biased towards the maps viewport
+        $config['placesAutocompleteOnChange']  = 'CivicApp.GmapHelper.AutocompleteChange();';
+        $config['onclick']                     = 'createMarker_map({ map: map, position:event.latLng });';
+        $config['apiKey']                      = 'AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&callback';
         /*$config['onboundschanged'] = 'if (!centreGot) {
             var mapCentre = map.getCenter();
             marker_0.setOptions({
@@ -36,15 +37,15 @@ class HomeController extends Controller
         $marker['animation'] = 'DROP';
         $marker['icon'] = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|9999FF|000000';*/
 
-       // Gmaps::add_marker($marker);
+        // Gmaps::add_marker($marker);
 
         $dircasa = Gmaps::get_lat_long_from_address('Mariano Fragueiro 1011, Córdoba, Argentina');
 
-        $marker = array();
-        $marker['position'] = $dircasa[0].','.$dircasa[1]; // '-31.4029389, -64.18895850000001 ';
+        $marker                       = [ ];
+        $marker['position']           = $dircasa[0] . ',' . $dircasa[1]; // '-31.4029389, -64.18895850000001 ';
         $marker['infowindow_content'] = 'Casa';
-        $marker['animation'] = 'DROP';
-        $marker['icon'] = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|9999FF|000000';
+        $marker['animation']          = 'DROP';
+        $marker['icon']               = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|9999FF|000000';
 
         Gmaps::add_marker($marker);
 
@@ -52,12 +53,12 @@ class HomeController extends Controller
 
         // set up the marker ready for positioning
         // once we know the users location
-        $marker = array();
+        $marker = [ ];
         Gmaps::add_marker($marker);
 
         $map = Gmaps::create_map();
 
-        return view('home', ['map' => $map]);
+        return view('home', [ 'map' => $map ]);
 
     }
 }

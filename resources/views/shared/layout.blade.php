@@ -10,6 +10,7 @@
     <title>Nuestra C&oacute;rdoba</title>
 
     {!! Html::style('assets/css/bootstrap.css') !!}
+    {!! Html::style('assets/css/font-awesome.min.css') !!}
     {!! Html::style('assets/css/CivicApp.css') !!}
     <!-- Fonts -->
     <link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
@@ -28,7 +29,7 @@
     {!! Html::script('assets/js/bootstrap.min.js') !!}
     {!! Html::script('assets/js/Custom/menu.js') !!}
     {!! Html::script('assets/js/Custom/utilities.js') !!}
-    @yield('scripts')
+    @stack('scripts')
 
 
     @yield('head')
@@ -36,26 +37,61 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container-fluid">
     {!! csrf_field() !!}
 <header>
-    <div style="width: 100%">
-        <div class="img-logo-wrapper" >
-            <img src="{{ asset('assets/images/logo_nc.gif') }}" class="img-responsive" alt="LOGO">
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="img-logo-wrapper">
+                <img src="{{ asset('assets/images/logo_nc.gif') }}" class="img-responsive" alt="LOGO">
+            </div>
         </div>
-        @if(Auth::guard('webadmin')->check())
-            <div class="label label-default" style="right: 0;" >
-                <span>{{ Auth::guard('webadmin')->user()->username }}</span>
-            </div>
-        @elseif(Auth::guard('websocial')->check())
-            <div class="label label-default" style="right: 0;" >
-                <span>{{ Auth::guard('websocial')->user()->username }}</span>
-            </div>
-            <div class="img-logo-wrapper" >
-                <img src="{{ Auth::guard('websocial')->user()->avatar }}" class="img-responsive" alt="LOGO">
-            </div>
-        @endif
+    @if(Auth::guard('webadmin')->check())
+        <div class="col-sm-offset-7 col-sm-3" >
+            <div class="form-inline right user-loggued">
+                <div class="form-group " >
+                    <label class="label label-blue " style="font-size: smaller">Administrador</label>
+                </div>
+                <div class="form-group ">
+                    <label class="label label-success">{{ Auth::guard('webadmin')->user()->username }}</label>
 
+
+                </div>
+            </div>
+        </div>
+
+    @elseif(!Auth::guard('websocial')->check())
+            <div class="col-sm-offset-6 col-sm-2" style="padding: 5px" >
+                <div class="form-group-sm form-social-singin" style="padding-right: 0"><label class="label-blue fullWidth">Iniciar sesion con</label></div>
+            </div>
+            <div class="col-sm-2" style="padding: 5px 15px 5px 0px" >
+                <div class="form-group-sm">
+
+
+                        {!! Form::open(['url' => '#', 'class' => 'form-social-singin form-horizontal' ] ) !!}
+
+                        <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="btn btn-primary btn-sm btn-block facebook" type="submit">Facebook <span class="fa fa-facebook-official"></span> </a>
+                        <a href="{{ route('social.redirect', ['provider' => 'twitter']) }}" class="btn btn-primary btn-sm btn-block twitter" type="submit">Twitter <span class="fa fa-twitter"></span></a>
+
+                        {!! Form::close() !!}
+
+                </div>
+            </div>
+    @elseif(Auth::guard('websocial')->check())
+        <div class="col-sm-offset-7 col-sm-3" >
+            <div class="form-inline right user-loggued">
+                <div class="form-group " >
+                    <label class="label label-primary">{{ Auth::guard('websocial')->user()->username }}</label>
+                </div>
+                <div class="form-group ">
+                    <div style="" class="avatar-wrapper img-circle">
+                        <img src="{{ Auth::guard('websocial')->user()->avatar }}"  class="img-responsive avatar-width" alt="Avatar">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endif
     </div>
 </header>
 <nav class="navbar navbar-default">
@@ -71,17 +107,17 @@
             <a class="navbar-brand" href="#">Ciudadano</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" style="width: 90%">
                 <li  ><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
-                <li ><a href="/">Presupuesto P&uacute;blico</a></li>
-                <li><a href="#">Presupuesto Participativo</a></li>
-                <li><a href="#">Concejo Deliberante</a></li>
+                <li><a href="/Obras">Presupuesto Participativo</a></li>
+                <li><a href="#">Espacios Verdes</a></li>
                 @can('admin-role')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administraci&oacute;n <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/admin/CrearAppUser">Crear usuario</a></li>
-                        <li><a href="#">Another action</a></li>
+                        <li><a href="/admin/ObrasPresupAdmin">Presupuesto Participativo</a></li>
+                        <li><a href="/admin/ObrasPresupAdmin">Espacios Verdes</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Nav header</li>
                         <li><a href="#">Separated link</a></li>
@@ -90,9 +126,9 @@
                 </li>
                 @endcan
                 @if(  Auth::guard("webadmin")->check())
-                    <li><a href="/Logout">Cerrar sessi&oacute;n</a></li>
+                    <li style="float: right"><a href="/Logout" >Cerrar sessi&oacute;n</a></li>
                 @elseif(Auth::guard("websocial")->check())
-                    <li><a href="/LogoutSocial">Cerrar sessi&oacute;n</a></li>
+                    <li style="float: right"><a href="/LogoutSocial" >Cerrar sessi&oacute;n</a></li>
                 @endif
 
             </ul>

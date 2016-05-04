@@ -11,20 +11,26 @@
         <div class="panel-heading">
             <h class="panel-title">Inicio</h>
         </div>
-        <div class="panel-body">
-            {!! Form::open(['url' => '#', 'class' => 'form-signin form-horizontal' ] ) !!}
-            @include('includes.errors')
-            <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="btn btn-primary btn-block facebook" type="submit">Facebook</a>
-            <a href="{{ route('social.redirect', ['provider' => 'twitter']) }}" class="btn btn-primary btn-block twitter" type="submit">Twitter</a>
+        <div class="panel-body" style="padding: 0px">
 
-            {!! Form::close() !!}
+            <div   style="width: 70%;float: left;border-top: 6px solid transparent;border-right: 20px solid transparent;border-color: #3B6999;background-color:#3B6999 ">
+                <div style="margin: 4px">
+                    <input type="text" name="autocompleteMap" id="autocompleteMap" class="form-control" placeholder="Buscar"  autofocus>
+                </div>
+                {!!$map['html']!!}
+            </div>
+            <div class=" " style="width:30%;float: right       ">
+                <div class="" style="background-color:#3B6999;color: #fff;padding: 15px ">
+                    <h>Informaci&oacute;n</h>
+                </div>
+
+            </div>
+
+
         </div>
 
     </div>
-    <div>
-        <input type="text" name="autocompleteMap" id="autocompleteMap" class="form-control" placeholder="Buscar"  autofocus>
-    </div>
-    {!!$map['html']!!}
+
 @endsection
 @section('scripts')
     {!! Html::script('assets/js/Custom/gmaphelper.js') !!}

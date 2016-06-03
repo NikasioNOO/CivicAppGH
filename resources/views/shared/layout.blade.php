@@ -6,10 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Nuestra Córdoba">
     <meta name="author" content="Ortiz Olmos, Nicolás D.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/vnd.microsoft.icon">
     <title>Nuestra C&oacute;rdoba</title>
 
     {!! Html::style('assets/css/bootstrap.css') !!}
+    {!! Html::style('assets/css/jquery-ui.css') !!}
     {!! Html::style('assets/css/font-awesome.min.css') !!}
     {!! Html::style('assets/css/CivicApp.css') !!}
     <!-- Fonts -->
@@ -24,15 +26,7 @@
 
     <!-- Scripts -->
 
-    {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
-    {!! Html::script('assets/js/jquery-ui.min.js') !!}
-    {!! Html::script('assets/js/bootstrap.min.js') !!}
-    {!! Html::script('assets/js/Custom/menu.js') !!}
-    {!! Html::script('assets/js/Custom/utilities.js') !!}
-    @stack('scripts')
 
-
-    @yield('head')
 
 </head>
 <body>
@@ -144,6 +138,14 @@
 @yield('content')
 
     </div>
+{!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
+{!! Html::script('assets/js/jquery-ui.min.js') !!}
+{!! Html::script('assets/js/bootstrap.min.js') !!}
+{!! Html::script('assets/js/Custom/menu.js') !!}
+{!! Html::script('assets/js/Custom/utilities.js') !!}
+@stack('scripts')
 
+
+@yield('head')
 </body>
 </html>

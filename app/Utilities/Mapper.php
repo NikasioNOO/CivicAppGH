@@ -209,10 +209,9 @@ class Mapper implements IMapper
                 $entityNew = $this->makeEntity($EntityToMap);
                 foreach( $model->getAttributes() as $attribute => $attrValue)
                 {
-                    if(!is_object($model->$attribute))
+                    if(!is_object($model->$attribute) && !Utilities::Endswith($attribute,'_id'))
                     {
                         $entityNew->$attribute = $model->$attribute;
-
                     }
                 }
                 array_push($entityArray,$entityNew);
@@ -229,7 +228,7 @@ class Mapper implements IMapper
             $this->validate($paramModel, $fromModel);
             $entity = $this->makeEntity($EntityToMap);
             foreach ($paramModel->getAttributes() as $attribute => $attrValue) {
-                if (!is_object($paramModel->$attribute)) {
+                if (!is_object($paramModel->$attribute) && !Utilities::Endswith($attribute,'_id')) {
                     $entity->$attribute = $paramModel->$attribute;
 
                 }

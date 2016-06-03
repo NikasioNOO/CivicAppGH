@@ -1,7 +1,15 @@
 /**
  * Created by Nico on 20/10/2015.
  */
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 (function () {
+
     this.Utilities = this.Utilities || {};
     Date.now = Date.now || function () { return +new Date(); };
 
@@ -563,3 +571,61 @@ Utilities.trimRight = function (str, charlist) {
 Utilities.trim = function (str, charlist) {
     return this.trimRight(this.trimLeft(str, charlist),charlist);
 };
+
+Utilities.Autocomplete = function (inputNameParam, methodAddParam)
+{
+    var input = $('#'+inputNameParam);
+
+    input.data('methodadd',methodAddParam);
+
+    input.autocomplete({
+
+        source: function (request, response)
+        {
+            var listValues = this.element.data('listvalues');
+            response(listValues.filter(function(entry){
+                return entry.value.toUpperCase().indexOf(request.term.toUpperCase()) >=0;
+            }));
+
+        },
+
+        change: function (event, ui) {
+
+
+            var flag =  this.value.trim() != "" && !ui.item;
+            if(!flag)
+                $(this).data('idSelected',ui.item.id);
+            $('#add'+this.id).toggle(flag);
+        }
+    });
+
+    $('#add'+inputNameParam).on("click", function () {
+        var control = this;
+        var input = $('#'+this.id.substring(3));
+        var newValue = input.val().trim();
+        $.post(input.data('methodadd'),{"newValue":newValue},
+            function(data){
+                if(data.status =='Ok')
+                {
+                    var item ={
+                        id :data.data.id,
+                        value : newValue,
+                        label : newValue
+                    };
+                    var listValues =  input.data('listvalues');
+                    listValues.push(item);
+                    input.data('listvalues', listValues);
+                    $(control).hide();
+                }
+                else
+                {
+                    alert(data.message);
+                }
+            }).fail(function(){
+                alert('No se pudo guardar el nuevo valor.Error');
+            });
+
+    });
+
+
+}

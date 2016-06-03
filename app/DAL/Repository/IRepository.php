@@ -8,6 +8,7 @@
 
 namespace CivicApp\DAL\Repository;
 
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Interface IRepository
@@ -21,14 +22,14 @@ interface IRepository {
      * @param array $columns : Columna que se requiere retornar para todos los registros
      * @return mixed
      */
-    public function all($columns = array('*'));
+  //  function search($columns = ['*']);
 
     /**
      * @param int $perPage
      * @param array $columns
      * @return mixed
      */
-    public function paginate($perPage = 15, $columns = array('*'));
+    public function paginate($perPage = 15, $columns = ['*']);
 
     /**
      * @param array $data
@@ -54,7 +55,7 @@ interface IRepository {
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = array('*'));
+    public function find($id, $columns = ['*']);
 
     /**
      * @param $field
@@ -62,7 +63,7 @@ interface IRepository {
      * @param array $columns
      * @return mixed
      */
-    public function findBy($field, $value, $columns = array('*'));
+    public function findBy($field, $value, $columns = ['*']);
 
     /**
      * @param $attribute
@@ -70,5 +71,9 @@ interface IRepository {
      * @param array $columns
      * @return mixed
      */
-    public function findByRetEntity($attribute, $value, $columns = array('*'));
+    public function findByRetEntity($attribute, $value, $columns = ['*']);
+
+
+
+    public function findOrFail($id);
 }

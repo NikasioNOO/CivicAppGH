@@ -39,6 +39,8 @@ Route::group(['middleware' => ['web']], function () {
     {
         Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);
 
+        Route::post('/AddCategory',['as'=>'addCategory','uses'=>'CatalogController@AddCategory']);
+
         Route::group(['namespace' => 'Auth'], function() {
 
             Route::get('CrearAppUser','AuthController@getCreateAppUser');

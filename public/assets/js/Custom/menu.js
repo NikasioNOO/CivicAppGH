@@ -1,7 +1,10 @@
 /**
  * Created by Nico on 29/08/2015.
  */
+
+
 (function(){
+
     var menu = menu || {};
 
     menu.menuActive = null;

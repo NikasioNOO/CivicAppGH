@@ -13,6 +13,8 @@ use CivicApp\Utilities\Mapper;
 use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Enums;
 
+use CivicApp\BLL\Catalog\CatalogHandler;
+
 class ExampleTest extends TestCase
 {
     /**
@@ -29,11 +31,11 @@ class ExampleTest extends TestCase
 
 
 
-        $user = new UserRepo($this->app);
+     //   $user = new UserRepo($this->app);
 //        var_dump($user);
 
 
-        $newUser = $user->create(['first_name'=>'nico',
+       /* $newUser = $user->create(['first_name'=>'nico',
                        'last_name'=>'Ortiz Olmos',
                        'email'=>'nic2o@nico.com',
                        'password' => bcrypt('password')]);
@@ -43,13 +45,11 @@ class ExampleTest extends TestCase
 
        // var_dump('hola');
        // $this->visit('    /')
-       //      ->see('Laravel 5');
+       //      ->see('Laravel 5');*/
     }
 
     private function testBasicExample2()
     {
-
-
         $this->assertInstanceOf('Illuminate\Container\Container', $this->app);
 
         $user = factory(CivicApp\Models\Auth\App_User::class)->make();
@@ -59,7 +59,7 @@ class ExampleTest extends TestCase
 
 
 
-        $userRepo = new UserRepo($this->app);
+       $userRepo =  $this->app->make(\CivicApp\DAL\Auth\UserRepository::class);
 
 
         $newUser = $userRepo->create($user->toArray());
@@ -119,6 +119,8 @@ class ExampleTest extends TestCase
         return $role;
     }
 
+
+
     private function ContainerSimulate()
     {
 
@@ -154,7 +156,141 @@ class ExampleTest extends TestCase
 
     }
 
-    public function testMapperToModel()
+    public function testPaginateObras()
+    {
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+        /** @var CivicApp\DAL\MapItem\MapItemRepository $mapItemRepo */
+        $mapItemRepo = $this->app->make(\CivicApp\DAL\MapItem\MapItemRepository::class);
+
+        $obras = $mapItemRepo->paginate(10);
+
+        var_dump($obras);
+
+        echo $obras->links();
+    }
+
+    public function testGetAllObras()
+    {
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+        /** @var \CivicApp\DAL\MapItem\MapItemRepository $mapItemRepo */
+        $mapItemRepo = $this->app->make(\CivicApp\DAL\MapItem\MapItemRepository::class);
+
+        $mapItemRepo->GetAllObras();
+
+        var_dump($mapItemRepo);
+
+
+    }
+
+    public function testGetCriteria()
+    {
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+        $ObraCriteria = new \CivicApp\DAL\MapItem\Criterias\ObrasCriteria();
+        $criteriaYear = new \CivicApp\DAL\MapItem\Criterias\YearCriteria(2016);
+
+
+        /** @var \CivicApp\DAL\MapItem\MapItemRepository $mapItemRepo */
+        $mapItemRepo = $this->app->make(\CivicApp\DAL\MapItem\MapItemRepository::class);
+        $mapItemRepo->pushCriteria($ObraCriteria);
+        $mapItemRepo->pushCriteria($criteriaYear);
+
+        $mapItemRepo->Search();
+
+        var_dump($mapItemRepo);
+
+
+    }
+
+    public function testCreateObra(){
+
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+
+
+        $obraEntity = new \CivicApp\Entities\MapItem\MapItem();
+
+        $obraEntity->year= 2016;
+        $obraEntity->description = 'obra 1';
+        $obraEntity->address= 'direccion 1';
+        $obraEntity->budget= 100000;
+        $obraEntity->cpc = new \CivicApp\Entities\MapItem\Cpc();
+        $obraEntity->cpc->id = 1;
+        $obraEntity->barrio = new \CivicApp\Entities\MapItem\Barrio();
+        $obraEntity->barrio->id = 1;
+        $obraEntity->category = new \CivicApp\Entities\MapItem\Category();
+        $obraEntity->category->id=1;
+        $obraEntity->status = new \CivicApp\Entities\MapItem\Status();
+        $obraEntity->status->id=1;
+        $obraEntity->mapItemType= new \CivicApp\Entities\MapItem\MapItemType();
+        $obraEntity->mapItemType->id = 1;
+        $obraEntity->location = new \CivicApp\Entities\Common\GeoPoint();
+        $obraEntity->location->location = '-31.42161608,-64.15921783';
+
+        /** @var \CivicApp\DAL\MapItem\MapItemRepository $mapItemRepo */
+        $mapItemRepo = $this->app->make(\CivicApp\DAL\MapItem\MapItemRepository::class);
+
+        $rest = $mapItemRepo->SaveObra($obraEntity);
+
+        $newObra = $mapItemRepo->find($rest);
+
+        var_dump($newObra);
+
+        /** @var Mapper $mapper */
+        $mapper = $this->app->make(IMapper::class);
+
+        $newObraEntity = $mapper->map(CivicApp\Models\MapItem::class, CivicApp\Entities\MapItem\MapItem::class,$newObra);
+
+        $newObraEntity->location->location = '-41.42161608,-84.15921783';
+
+        $newObraEntity->cpc->id = 2;
+
+        $rest = $mapItemRepo->UpdateObra($newObraEntity);
+
+        $newObra = $mapItemRepo->find($rest);
+
+
+        var_dump($newObra);
+
+
+    }
+
+    public function testCatalogs()
+    {
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+        /** @var CatalogHandler $catalogHandler */
+        $catalogHandler = $this->app->make(CatalogHandler::class);
+
+        $categories = $catalogHandler->GetAllCategories();
+        var_dump($categories);
+        $statuses = $catalogHandler->GetAllStatuses();
+        var_dump($statuses);
+        $barrios = $catalogHandler->GetAllBarrios();
+        var_dump($barrios);
+        $cpcs = $catalogHandler->GetAllCpcs();
+        var_dump($cpcs);
+    }
+
+
+    private function testMapperToModel()
     {
 
         $this->bindEntities();

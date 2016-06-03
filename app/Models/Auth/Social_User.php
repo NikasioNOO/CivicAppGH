@@ -2,6 +2,9 @@
 
 namespace CivicApp\Models\Auth;
 
+use CivicApp\Models\Post;
+use CivicApp\Models\PostComplaint;
+use CivicApp\Models\PostMarker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -29,4 +32,20 @@ class Social_User extends Model implements AuthenticatableContract, Authorizable
      * @var array
      */
     protected $hidden = [ 'remember_token'];
+
+
+    public function Posts()
+    {
+        return $this->hasMany(Post::class,'user_id');
+    }
+
+    public function PostMarkers()
+    {
+        return $this->hasMany(PostMarker::class,'user_id');
+    }
+
+    public function PostComplaints()
+    {
+        return $this->hasMany(PostComplaint::class,'user_id');
+    }
 }

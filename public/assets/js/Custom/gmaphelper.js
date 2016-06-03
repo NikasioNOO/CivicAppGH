@@ -7,11 +7,14 @@
     this.CivicApp.GmapHelper = this.CivicApp.GmapHelper || new function(){
         var map = null ;
         var geocoder = null;
+        var markers = [];
+        var iconsCategory = [];
+            iconsCategory["espaciosVerdes"] = "../assets/images/mapicons/tree.png";
+            iconsCategory["transito"] = "../assets/images/mapicons/trafficlight.png";
 
         var InitializeMap = function()
         {
             var centerLocation = codeAdress("Córdoba, Córdoba, Argentina");
-
 
 
             centerLocation.then(
@@ -21,6 +24,7 @@
                         center: center
                     });
                     AddUserLocationInfoWindows();
+                    addDummyMarkers();
 
                    /* var mapStyle = [
                         {
@@ -43,11 +47,37 @@
                     });
                     AddUserLocationInfoWindows();
 
-                    map.setOptions(mapStyle);
 
                 });
         };
 
+        var addDummyMarkers = function()
+        {
+            addMarker({lat: -31.42161608, lng: -64.15921783},"espaciosVerdes","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
+            addMarker({lat: -31.39105049, lng: -64.19076446},"espaciosVerdes","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
+            addMarker({lat: -31.39782931, lng: -64.17567226},"espaciosVerdes","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
+            addMarker({lat: -31.44850747, lng: -64.16407324},"transito","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
+            addMarker({lat: -31.40415877, lng: -64.19074358},"transito","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
+
+        }
+
+        var addMarker = function(location, category, info){
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                animation: google.maps.Animation.DROP,
+                icon: iconsCategory[category]
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: info
+            });
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+            if(!markers[category])
+                markers[category] = [];
+            markers[category].push(marker);
+        }
 
         var AddUserLocationInfoWindows = function()
         {
@@ -63,7 +93,7 @@
                     infoWindow.setContent('Usted está aquí');
 
                 }, function() {
-                    handleLocationError(true, infoWindow, map.getCenter());
+                  //  handleLocationError(true, infoWindow, map.getCenter());
                 });
             }
         };

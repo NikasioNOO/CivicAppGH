@@ -1,9 +1,7 @@
-/**
- * Created by Nico on 23/04/2016.
- */
+
 (function(){
     this.CivicApp = this.CivicApp || {};
-    this.CivicApp.ObrasPres = this.CivicApp.ObrasPres || new function(){
+    this.CivicApp.ObrasGrid = this.CivicApp.ObrasGrid || new function(){
         var grid = null
         var InitGrid = function() {
             grid = $('#obrasGrid').DataTable({
@@ -33,7 +31,7 @@
                     },
                     {
                         render:function(data, type, row ){
-                            return '<a>Editar | Eliminar</a>';
+                            return '<a>Editar</a> | <a>Eliminar</a>';
                         },
                         targets:9
                     },
@@ -61,5 +59,5 @@
 
 $(document).ready(function(){
 
-    CivicApp.ObrasPres.InitGrid();
+    CivicApp.ObrasGrid.InitGrid();
 });

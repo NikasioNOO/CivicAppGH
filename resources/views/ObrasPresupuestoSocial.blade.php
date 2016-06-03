@@ -40,7 +40,7 @@
 
     <div class="panel panel-primary ">
         <div class="panel-heading">
-            <h1 class="panel-title">Obras del Presupuesto P&uacute;blico</h1>
+            <h1 class="panel-title">Obras del Presupuesto Participativo</h1>
         </div>
         <div class="panel-body custom-panel-primary-body " >
             @include('includes.errors')
@@ -62,7 +62,7 @@
                         <div class="form-group col-sm-5">
                             <label for="categoriaFilter" class="label-blue">Categoría</label>
                             <select id="categoriaFilter" style="width: 78%" name="categoriaFilte" class="form-control input-sm ">
-                                <option>Alumbrado</option>
+                                <option>Espacios Verdes</option>
                                 <option>Trasito</option>
                                 <option>Social</option>
                             </select>
@@ -206,7 +206,7 @@
                 </div>
                 <div class="panel-body" style="padding-bottom: 0">
                     <div class="container-fluid">
-                       <div class="row">
+                       <div class="row" style="padding-bottom: 15px">
                            <div class="col-md-9">
                                <div class="row">
                                    <div class="col-md-12">
@@ -252,10 +252,10 @@
                                <div class="row">
                                    <div class="col-sm-5"><a class="btn btn-sm btn-default "><sapn class="fa fa-camera"></sapn> Subir Foto</a></div>
                                    <div class="col-sm-7">
-                                       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                                           <!-- Indicators -->
+<!--                                       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 
-                                           <!-- Wrapper for slides -->
+
+                                           <!-- Wrapper for slides --
                                            <div class="carousel-inner " role="listbox">
                                                <div class="item active">
                                                    <a href="#lightbox" data-toggle="modal" data-slide-to="0"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque2.png') }}" alt="..."></a>
@@ -278,7 +278,7 @@
 
                                            </div>
 
-                                           <!-- Controls -->
+                                           <!-- Controls --
                                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
                                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                                <span class="sr-only">Previous</span>
@@ -287,21 +287,261 @@
                                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                                <span class="sr-only">Next</span>
                                            </a>
-                                       </div>
+                                       </div> -->
                                    </div>
 
                                </div>
 
                            </div>
                        </div>
-                        <div class="row" style="margin: 5px 0 5px 0">
 
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
             <p class="subtitle fancy"><label>3 Comentarios </label></p>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-title user-comment posted novedad">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="avatar-wrapper img-circle">
+                                <img src="{{ Auth::guard('websocial')->user()->avatar }}"  class="img-responsive avatar-width" alt="Avatar">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">{{ Auth::guard('websocial')->user()->username }}</label>
+                            <label >01/05/2016 12:34:21</label>
+                        </div>
+                        <div class="form-group pull-right">
+                            <span class="glyphicon glyphicon-thumbs-up"></span><span style="margin-left: 5px" class="badge">4</span>
+                            <span class="glyphicon glyphicon-thumbs-down"></span><span style="margin-left: 5px" class="badge">2</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0">
+                    <div class="container-fluid">
+                        <div class="row" style="padding-bottom: 15px">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-12 well">Se estan iniciando las instalaciones de bancos en las plazas </div>
+                                </div>
+                                <div class="row" style="margin-top:5px;" >
+
+                                    <div class="col-sm-6">
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label class="control-label label-small ">Cambio de estado: <b> En Ejecucion </b></label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-inline pull-right">
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-up" style="margin-right: 3px"></span>Me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-down" style="margin-right: 3px"></span>No me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-left: 20px"><span class="fa fa-hand-stop-o" style="margin-right: 3px"></span>Denunciar comentario</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <span  class="label label-warning" style="padding: 3px 20px">Novedad</span>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                            <!-- Indicators -->
+
+                                            <!-- Wrapper for slides -->
+                                            <div class="carousel-inner " role="listbox">
+                                                <div class="item active">
+                                                    <a href="#lightbox" data-toggle="modal" data-slide-to="0"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque2.png') }}" alt="..."></a>
+                                                    <div class="carousel-caption">
+
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <a href="#lightbox" data-toggle="modal" data-slide-to="1"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="..."></a>
+                                                    <div class="carousel-caption">
+
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <a href="#lightbox" data-toggle="modal" data-slide-to="2"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="..."></a>
+                                                    <div class="carousel-caption">
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Controls -->
+                                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-title user-comment posted positivo">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="avatar-wrapper img-circle">
+                                <img src="{{ Auth::guard('websocial')->user()->avatar }}"  class="img-responsive avatar-width" alt="Avatar">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">{{ Auth::guard('websocial')->user()->username }}</label>
+                            <label >01/05/2016 12:34:21</label>
+                        </div>
+                        <div class="form-group pull-right">
+                            <span class="glyphicon glyphicon-thumbs-up"></span><span style="margin-left: 5px" class="badge">4</span>
+                            <span class="glyphicon glyphicon-thumbs-down"></span><span style="margin-left: 5px" class="badge">2</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0">
+                    <div class="container-fluid">
+                        <div class="row" style="padding-bottom: 15px">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-12 well">Que bueno que van a arreglar las plazas jajajajjajaajjajajajaj ajajaj jaja ajaja aj jajajaja ja aja  jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajaj jajajajjajaajjajajajaj ajajajaja a ajajaja a ja jaaj ajajajja aja ja  </div>
+                                </div>
+                                <div class="row" style="margin-top:5px;" >
+
+                                    <div class="col-sm-6">
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label class="control-label label-small "></label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-inline pull-right">
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-up" style="margin-right: 3px"></span>Me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-down" style="margin-right: 3px"></span>No me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-left: 20px"><span class="fa fa-hand-stop-o" style="margin-right: 3px"></span>Denunciar comentario</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <span  class="label label-success" style="padding: 3px 20px">Positivo</span>
+                                    </div>
+                                    <div class="col-sm-7">
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-title user-comment posted reclamo">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="avatar-wrapper img-circle">
+                                <img src="{{ Auth::guard('websocial')->user()->avatar }}"  class="img-responsive avatar-width" alt="Avatar">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">{{ Auth::guard('websocial')->user()->username }}</label>
+                            <label >01/05/2016 12:34:21</label>
+                        </div>
+                        <div class="form-group pull-right">
+                            <span class="glyphicon glyphicon-thumbs-up"></span><span style="margin-left: 5px" class="badge">4</span>
+                            <span class="glyphicon glyphicon-thumbs-down"></span><span style="margin-left: 5px" class="badge">2</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0">
+                    <div class="container-fluid">
+                        <div class="row" style="padding-bottom: 15px">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-12 well">Hace 2 meses que estan paradas las obras </div>
+                                </div>
+                                <div class="row" style="margin-top:5px;" >
+
+                                    <div class="col-sm-6">
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label class="control-label label-small "></label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-inline pull-right">
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-up" style="margin-right: 3px"></span>Me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-right: 5px"><span class="glyphicon glyphicon-thumbs-down" style="margin-right: 3px"></span>No me gusta</a>
+                                            </div>
+                                            <div class="form-group">
+                                                <a class="" style="margin-left: 20px"><span class="fa fa-hand-stop-o" style="margin-right: 3px"></span>Denunciar comentario</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <span  class="label label-danger" style="padding: 3px 20px">Reclamo</span>
+                                    </div>
+                                    <div class="col-sm-7">
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
 

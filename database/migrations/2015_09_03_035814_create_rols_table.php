@@ -21,8 +21,6 @@ class CreateRolsTable extends Migration
             $table->timestamps();
         });
 
-        Role::create(['role_name'=>'Admin']);
-        Role::create(['role_name'=>'Viewer']);
 
     }
 

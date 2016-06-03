@@ -38,4 +38,9 @@ interface ICriteria {
      * @return $this
      */
     public function  applyCriteria();
+
+
+
+
+
 }

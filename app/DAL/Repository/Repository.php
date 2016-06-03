@@ -19,7 +19,7 @@ abstract class Repository implements IRepository, ICriteria {
      */
     private  $app;
 
-    /** @var
+    /** @var Model
      * */
     protected  $model;
 
@@ -37,12 +37,13 @@ abstract class Repository implements IRepository, ICriteria {
      */
     protected $skipCriteria = false;
 
-    public function  __construct(App $app, IMapper  $mapperparam  ){
+    public function  __construct(App $app, IMapper  $mapperparam, Collection $criteria  ){
 
         $this->app = $app;
         $this->resetScope();
         $this->makemodel();
         $this->mapper = $mapperparam;
+        $this->criteria = $criteria;
     }
 
     /**
@@ -80,9 +81,9 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns : Columna que se requiere retornar para todos los registros
      * @return mixed
      */
-    public function all($columns = array('*')) {
+    protected function all($columns = ['*']) {
         $this->applyCriteria();
-        return new Collection($this->mapper->map( $this->model(), $this->entity(), $this->model->get($columns)->toArray()));
+        return $this->model->get($columns);
     }
 
     /**
@@ -90,7 +91,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns
      * @return mixed
      */
-    public function paginate($perPage = 15, $columns = array('*')) {
+    public function paginate($perPage = 15, $columns = ['*']) {
         $this->applyCriteria();
         return $this->model->paginate($perPage, $columns);
     }
@@ -129,9 +130,14 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = array('*')) {
+    public function find($id, $columns = ['*']) {
         $this->applyCriteria();
         return $this->model->find($id, $columns);
+    }
+
+    public function findOrFail($id)
+    {
+        return $this->model->findOrFail($id);
     }
 
     /**
@@ -140,7 +146,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns
      * @return mixed
      */
-    public function findBy($attribute, $value, $columns = array('*')) {
+    public function findBy($attribute, $value, $columns = ['*']) {
         $this->applyCriteria();
        return $this->model->where($attribute, '=', $value)->first($columns);
 
@@ -152,7 +158,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns
      * @return mixed
      */
-    public function findByRetEntity($attribute, $value, $columns = array('*')) {
+    public function findByRetEntity($attribute, $value, $columns = ['*']) {
         $this->applyCriteria();
         $res = $this->model->where($attribute, '=', $value)->first($columns);
         if(isset($res) )
@@ -221,5 +227,47 @@ abstract class Repository implements IRepository, ICriteria {
         }
 
         return $this;
+    }
+
+    /**
+    * @param Model $dbModel
+    * @param Model $updatedModel
+     */
+    protected function UpdatModelAttribute($dbModel, $updatedModel)
+    {
+        foreach($updatedModel->getAttributes() as $attribute => $attrValue)
+        {
+            if (!is_object($updatedModel->$attribute))
+                $dbModel->$attribute = $updatedModel->$attribute;
+        }
+
+    }
+
+    public function SearchCriteria()
+    {
+        $method = "SearchCriteria";
+        try {
+
+            Logger::startMethod($method);
+
+            $itemas = $this->all();
+
+            $itemsEntities = $this->mapper->map($this->model(), $this->entity(), $itemas->all());
+
+            Logger::endMethod($method);
+
+            return $itemsEntities;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql() );
+            throw new RepositoryException(trans('repositoryerrorcodes.0200'),0103);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('repositoryerrorcodes.0200'),0103);
+        }
+
     }
 }

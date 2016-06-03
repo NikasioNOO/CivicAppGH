@@ -294,6 +294,27 @@ th {
     color: rgba(104, 101, 119, 0.91);
 }
 
+.panel-title.user-comment.posted
+{
+    background-color: rgba(192, 192, 192, 0.48);
+    border-bottom: 5px solid;
+}
+
+.panel-title.user-comment.posted.novedad
+{
+    border-bottom-color: #F0AD4E;
+}
+
+.panel-title.user-comment.posted.positivo
+{
+    border-bottom-color: #5cb85c;
+}
+
+.panel-title.user-comment.posted.reclamo
+{
+    border-bottom-color: #d9534f;
+}
+
 .small-select
 {
     height: 23px !important;

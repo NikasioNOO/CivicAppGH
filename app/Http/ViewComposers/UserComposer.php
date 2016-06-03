@@ -14,12 +14,11 @@ use CivicApp\DAL\Auth;
 
 class UserComposer {
 
-    private  $mapper;
+
     private  $userRepository;
 
-    public function __construct(Utilities\IMapper $mapperNew, Auth\IUserRepository $userRepo )
+    public function __construct( Auth\IUserRepository $userRepo )
     {
-        $this->mapper = $mapperNew;
         $this->userRepository = $userRepo;
     }
 

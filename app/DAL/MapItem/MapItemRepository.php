@@ -76,6 +76,31 @@ class MapItemRepository extends Repository implements IMapItemRepository {
 
     }
 
+    function GetMapItem($id)
+    {
+        $method = 'GetObra';
+        Logger::startMethod($method);
+        try
+        {
+            $MapItemDB =  Models\MapItem::find($id);
+            if(is_null($MapItemDB))
+                return null;
+            else
+                return $this->mapper->map(Models\MapItem::class, Entities\MapItem\MapItem::class, $MapItemDB);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('mapitemserrorcodes.0104'),0104);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('mapitemserrorcodes.0104'),0104);
+        }
+    }
+
     public function SearchCriteria()
     {
         $method = "GetAllObras";
@@ -108,7 +133,7 @@ class MapItemRepository extends Repository implements IMapItemRepository {
     /**
      * @param Entities\MapItem\MapItem $obra
      */
-    public function SaveObra(Entities\MapItem\MapItem $obra )
+    public function SaveObra( $obra )
     {
         $method = 'SaveObra';
         Logger::startMethod($method);
@@ -206,6 +231,49 @@ class MapItemRepository extends Repository implements IMapItemRepository {
             throw new RepositoryException(trans('mapitemserrorcodes.0101'),0100);
 
         }
+    }
+
+    public function DeleteObra( $id )
+    {
+        $method = 'DeleteObra';
+        Logger::startMethod($method);
+        try {
+            DB::beginTransaction();
+            /** @var Models\MapItem $obraModel */
+
+            $obra = $this->model->where('id',$id)->first();
+
+            $geoPointId = $obra->location->id;
+
+            $obra->delete();
+
+            Models\GeoPoint::where('id', $geoPointId)->delete();
+
+
+            DB::commit();
+
+
+            Logger::endMethod($method);
+
+
+        }
+        catch(QueryException $ex)
+        {
+            DB::rollBack();
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('mapitemserrorcodes.0100'),0100);
+
+        }
+        catch(Exception $ex)
+        {
+            DB::rollBack();
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('mapitemserrorcodes.0100'),0100);
+
+        }
+
     }
 
 

@@ -26,12 +26,31 @@ class CatalogComposer {
             ->map(function($item,$key){
                 return ['id'=>$item->id,'value'=>$item->category,'label'=>$item->category];
             }));
-        $barrios = json_encode( $this->catalogRepository->GetAllBarrios());
-        $statuses = json_encode($this->catalogRepository->GetAllStatuses());
-        $cpcs = json_encode($this->catalogRepository->GetAllCpcs());
+        $barrios = json_encode(collect($this->catalogRepository->GetAllBarrios())
+            ->map(function($item,$key){
+                return ['id'=>$item->id,'value'=>$item->name, 'label'=>$item->name];
+            }));
 
+
+
+        $cpcs = json_encode(collect($this->catalogRepository->GetAllCpcs())
+            ->map(function($item,$key){
+                return ['id'=>$item->id,'value'=>$item->name, 'label'=>$item->name];
+            }));
+
+        $years = [];
+
+        $currentYear = date('Y')+1;
+
+
+        for($i = $currentYear; $i > ($currentYear-10);$i-- )
+        {
+            $years[] =   $i;
+        }
+
+        $statuses = $this->catalogRepository->GetAllStatuses();
         $view->with(['categories'=>$categories,'barrios'=>$barrios,'statuses'=>$statuses,
-            'cpcs'=>$cpcs]);
+            'cpcs'=>$cpcs, 'years'=>$years]);
 
 
 

@@ -122,7 +122,7 @@ abstract class Repository implements IRepository, ICriteria {
      * @return mixed
      */
     public function delete($id) {
-        return $this->model->destroy($id);
+        return $this->model->where('id',$id)->delete();
     }
 
     /**

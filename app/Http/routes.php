@@ -40,6 +40,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);
 
         Route::post('/AddCategory',['as'=>'addCategory','uses'=>'CatalogController@AddCategory']);
+        Route::post('/AddBarrio',['as'=>'addBarrio','uses'=>'CatalogController@AddBarrio']);
+        Route::post('/AddCpc',['as'=>'addCpc','uses'=>'CatalogController@AddCpc']);
 
         Route::group(['namespace' => 'Auth'], function() {
 
@@ -49,6 +51,9 @@ Route::group(['middleware' => ['web']], function () {
         });
 
         Route::get('ObrasPresupAdmin',['as'=>'admin.obras','uses' => 'ObrasAdminController@getIndex']);
+        Route::post('SaveObra',['as'=>'admin.saveObra','uses' => 'ObrasAdminController@postSaveObra']);
+        Route::post('DeleteObra',['as'=>'admin.deleteObra','uses' => 'ObrasAdminController@postDeleteObra']);
+        Route::post('GetAllObras',['as'=>'admin.getAllObras','uses' => 'ObrasAdminController@postGetAllObra']);
 
     });
 

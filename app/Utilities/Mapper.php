@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model ;
 use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
 use CivicApp\Utilities\Enums;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Cast\Object_;
 
 
@@ -37,8 +38,8 @@ class Mapper implements IMapper
     const BASIC_MAP_TO_ENTITY ='basicMapToEntity';
     const BASIC_MAP_TO_MODEL = 'basicMapToModel';
 
-    protected $mapperConfig =  array();
-    protected $customMapConfig = array();
+    protected $mapperConfig =  [];
+    protected $customMapConfig = [];
 
     public function addMap($fromClass, $toClass,  $typeMapper)
     {
@@ -58,7 +59,7 @@ class Mapper implements IMapper
             throw new MapperException('Type mapper not exist');
         }
 
-        $this->customMapConfig[$fromClass][$toClass] = array();
+        $this->customMapConfig[$fromClass][$toClass] = [];
 
 
     }
@@ -91,6 +92,16 @@ class Mapper implements IMapper
         return $this->executeCustomMap($fromClass,$toClass,$obj,$objResult );
 
         
+    }
+
+    public function mapArray($toClass, $array)
+    {
+
+        $arrayResult = $this->basicMapArrayToEntity($toClass, $array);
+
+        return $this->executeCustomArrayMap($toClass,$array,$arrayResult );
+
+
     }
 
 /*
@@ -174,7 +185,7 @@ class Mapper implements IMapper
             $this->validate($paramentity, $fromEntity);
             $model = $this->makeModel($ModelToMap);
             foreach ($paramentity->getters as $attribute) {
-                if (!is_object($paramentity->$attribute)) {
+                if (!is_object($paramentity->$attribute) && !is_null($paramentity->$attribute)) {
                     $model->$attribute = $paramentity->$attribute;
 
                 }
@@ -238,6 +249,37 @@ class Mapper implements IMapper
         }
         return $returnEntity;
     }
+
+    protected function basicMapArrayToEntity($EntityToMap, $paramArray)
+    {
+
+        $returnEntity= null;
+
+        $entity = $this->makeEntity($EntityToMap);
+        foreach ($paramArray as $attribute => $attrValue) {
+            if (!is_array($paramArray[$attribute])) {
+                $entity->$attribute = $attrValue;
+            }
+        }
+
+        $returnEntity = $entity;
+
+        return $returnEntity;
+    }
+
+    private function executeCustomArrayMap($toClass,  $array, $objResult)
+    {
+
+        if(isset($this->customMapConfig['Array'][$toClass]) &&
+            !is_null(isset($this->customMapConfig['Array'][$toClass])))
+            foreach ($this->customMapConfig['Array'][$toClass] as $callback) {
+                $objResult = $callback($array, $objResult);
+            }
+
+
+        return $objResult;
+    }
+
 
 /*
     private function basicMapToEntityOLD(Model $paramModel)
@@ -314,6 +356,16 @@ class Mapper implements IMapper
             throw new MapperException('the configuration map '.$classFrom.'-'.$classTo.' not exist');
 
         $this->customMapConfig[$classFrom][$classTo][] = $callbackCustom;
+    }
+
+    public function addCustomMapArray($classTo, $callbackCustom)
+    {
+
+        if(!isset($this->customMapConfig['Array'][$classTo]))
+            $this->customMapConfig['Array'][$classTo] = [];
+            //throw new MapperException('the configuration map '.'Array-'.$classTo.' not exist');
+
+        $this->customMapConfig['Array'][$classTo][] = $callbackCustom;
     }
 /*
     public function addCustomMapToModel($callbackCustom)

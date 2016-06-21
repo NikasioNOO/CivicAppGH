@@ -11,7 +11,7 @@
     <title>Nuestra C&oacute;rdoba</title>
 
     {!! Html::style('assets/css/bootstrap.css') !!}
-    {!! Html::style('assets/css/jquery-ui.css') !!}
+    {!! Html::style('assets/jquery-ui/jquery-ui.css') !!}
     {!! Html::style('assets/css/font-awesome.min.css') !!}
     {!! Html::style('assets/css/CivicApp.css') !!}
     <!-- Fonts -->
@@ -139,8 +139,9 @@
 
     </div>
 {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
-{!! Html::script('assets/js/jquery-ui.min.js') !!}
+{!! Html::script('assets/jquery-ui/jquery-ui.js') !!}
 {!! Html::script('assets/js/bootstrap.min.js') !!}
+{!! Html::script('assets/js/jquery.blockUI.js') !!}
 {!! Html::script('assets/js/Custom/menu.js') !!}
 {!! Html::script('assets/js/Custom/utilities.js') !!}
 @stack('scripts')

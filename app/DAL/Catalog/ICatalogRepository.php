@@ -31,7 +31,7 @@ interface ICatalogRepository {
 
     function AddCpc(Cpc $cpc);
 
-    function AddStatus(Status $status);
+   // function AddStatus(Status $status);
 
     function FindCategory($category);
 

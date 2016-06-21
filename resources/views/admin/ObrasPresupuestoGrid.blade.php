@@ -1,8 +1,9 @@
 @push('scripts')
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css"/>
 
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
 
 {!! Html::script('assets/js/Custom/obras-presupuesto-grid.js') !!}
 @endpush
@@ -14,10 +15,9 @@
     </div>
     <div class="panel-body custom-panel-primary-body" style="padding: 0px">
         <div id="tableWrapper" class="col-sm-12 table-responsive" style="padding: 10px">
-            <table id="obrasGrid" class=" table table-striped table-bordered table-hover ">
+            <table id="obrasGrid" class=" table smaller table-striped table-bordered table-hover ">
                 <thead>
                     <tr>
-                        <th>Select</th>
                         <th>Año</th>
                         <th>CPC</th>
                         <th>Barrio</th>
@@ -41,7 +41,7 @@
                         <th>Ubicaci&oacute;n</th>
                     </tr>
                 </tfoot> -->
-                <tbody>
+                <!--<tbody>
                     <tr>
                         <td></td>
                         <td>2013</td>
@@ -78,7 +78,7 @@
                         <td>Nores Martinez 567</td>
                         <td></td>
                     </tr>
-                </tbody>
+                </tbody>-->
             </table>
         </div>
     </div>

@@ -1,8 +1,4 @@
-<input type="hidden" id="categoriesJson" value="{{ $categories }}" />
-<input type="hidden" id="barriosJson" value="{{$barrios}}" />
-<input type="hidden" id="statusesJson" value="{{$statuses}}" />
-<input type="hidden" id="cpcsJson" value="{{$cpcs}}" />
-<div class="panel panel-primary ">
+<div class="panel panel-primary " id="FormObra">
     <div class="panel-heading">
         <h1 class="panel-title">Agregar / Editar Obra </h1>
     </div>
@@ -28,15 +24,17 @@
             </div>
         </div>
         <hr>
+        <input type="hidden" id="idObra" value=0" />
         <div class="form-horizontal col-sm-12">
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                    <label for="Ano" class="col-sm-4 control-label">Año</label>
+                    <label for="year" class="col-sm-4 control-label">Año</label>
                     <div class="col-sm-8">
-                        <select id="Ano" name="Ano" class="form-control input-sm">
-                            <option>2016</option>
-                            <option>2015</option>
-                            <option>2014</option>
+                        <select id="year" name="year" class="form-control input-sm">
+                            <option value=""></option>
+                            @foreach($years as $year)
+                                <option value="{{$year}}">{{ $year}}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -45,11 +43,13 @@
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group" >
                     <label for="CPC" class="col-sm-4 control-label">CPC</label>
-                    <div class="col-sm-8">
-                        <select id="CPC" name="CPC" class="form-control input-sm fullWidth">
-                            <option>Villa Libertador</option>
-                            <option>Ruta 20</option>
-                        </select>
+                    <div class="input-group col-sm-8 autocomplete" >
+                            <input name="CPC" id="CPC" class="form-control input-sm fullWidth" type="text" data-methodadd="" data-listvalues="{{ $cpcs }}"/>
+                            <span class="input-group-btn" >
+                                <button id="addCPC" class="btn btn-primary input-sm fullWidth display-none"  type="button">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </span>
                     </div>
                 </div>
             </div>
@@ -58,19 +58,24 @@
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
                     <label for="barrio" class="col-sm-4 control-label">Barrio</label>
-                    <div class="col-sm-8">
-                        <input name="barrio" id="barrio" class="form-control input-sm fullWidth" type="text"/>
+                    <div class="input-group col-sm-8 autocomplete" >
+                            <input name="barrio" id="barrio" class="form-control input-sm fullWidth" type="text" data-methodadd="" data-listvalues="{{ $barrios }}"/>
+                            <span class="input-group-btn" >
+                                <button id="addbarrio" class="btn btn-primary input-sm fullWidth display-none"  type="button">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </span>
                     </div>
                 </div>
 
             </div>
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                    <label for="categoria" class="col-sm-4 control-label">Categor&iacute;a</label>
-                    <div class="input-group col-sm-8" style="padding-left: 15px;padding-right: 15px">
+                    <label for="category" class="col-sm-4 control-label">Categor&iacute;a</label>
+                    <div class="input-group col-sm-8 autocomplete" >
                         <input name="category" id="category" class="form-control input-sm fullWidth " data-methodadd="" data-listvalues="{{ $categories }}" type="text"/>
                         <span class="input-group-btn" >
-                                <button id="addcategory" class="btn btn-primary input-sm fullWidth " style="display: none" type="button">
+                                <button id="addcategory" class="btn btn-primary input-sm fullWidth display-none"  type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                          </span>
@@ -81,17 +86,19 @@
         <div class="form-horizontal col-sm-12">
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                    <label for="" class="col-sm-4 control-label">T&iacute;tulo</label>
+                    <label for="title" class="col-sm-4 control-label">T&iacute;tulo</label>
                     <div class="col-sm-8">
-                        <input name="categoria" id="categoria" class="form-control input-sm fullWidth" type="text"/>
+                        <input name="title" id="title" class="form-control input-sm fullWidth" type="text"/>
                     </div>
                 </div>
             </div>
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                    <label for="presupuesto" class="col-sm-4 control-label">Presupuesto</label>
-                    <div class="col-sm-8">
-                        <input name="presupuesto" id="presupuesto" class="form-control input-sm fullWidth" type="text"/>
+                    <label for="badget" class="col-sm-4 control-label">Presupuesto</label>
+                    <div class="input-group col-sm-8 autocomplete">
+                        <span class="input-group-addon">$</span>
+                        <input name="badget" id="badget" aria-label="Monto en Pesos Argentinos" class="form-control input-sm input-number" type="number"/>
+
                     </div>
                 </div>
             </div>
@@ -99,12 +106,13 @@
         <div class="form-horizontal col-sm-12">
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                    <label for="estado" class="col-sm-4 control-label">Estado</label>
+                    <label for="status" class="col-sm-4 control-label">Estado</label>
                     <div class="col-sm-8">
-                        <select id="estado" name="CPC" class="form-control input-sm fullWidth">
-                            <option>Comprometido</option>
-                            <option>En Ejecuci&oacute;n</option>
-                            <option>Finalizado</option>
+                        <select id="status" name="status" class="form-control input-sm fullWidth">
+                            <option value=""></option>
+                        @foreach( $statuses as $status )
+                            <option value="{{$status->id}}">{{ $status->status }}</option>
+                        @endforeach
                         </select>
                     </div>
                 </div>
@@ -121,9 +129,9 @@
                     <div class="form-horizontal col-sm-12">
                         <div class="form-inline col-sm-6 custom-form-inline" >
                             <div class="form-group form-group-sm col-sm-12 custom-form-group " >
-                                <label for="barrio" class="col-sm-3 control-label">Ubicar</label>
+                                <label for="autocompleteMap" class="col-sm-3 control-label">Ubicar</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="autocompleteMap" id="autocompleteMap" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
+                                    <input type="text" name="autocompleteMap" id="autocompleteMap" data-idGeoPoint="0" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
                                 </div>
                             </div>
                         </div>
@@ -144,10 +152,10 @@
         </div>
         <div class="row" style="margin: 10px">
             <div class="col-sm-2 col-sm-offset-8">
-                <button class="btn btn-sm  btn-primary btn-block" type="button">Cancelar</button>
+                <div class="btn btn-sm  btn-primary btn-block" id="cancel">Cancelar</div>
             </div>
             <div class="col-sm-2">
-                <div class="btn btn-sm btn-primary btn-block fullWidth"  type="submit">Guardar</div>
+                <div class="btn btn-sm btn-primary btn-block fullWidth"  id="save">Guardar</div>
             </div>
         </div>
 
@@ -157,6 +165,10 @@
 
 @push('scripts')
 
-
+{!! Html::script('assets/js/Custom/gmaphelper.js') !!}
 {!! Html::script('assets/js/Custom/obras-admin.js') !!}
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.Obra.InitMap">
+</script>
 @endpush

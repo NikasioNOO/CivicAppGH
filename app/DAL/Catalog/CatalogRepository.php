@@ -43,12 +43,12 @@ class CatalogRepository implements  ICatalogRepository {
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0400'),400);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0400'),400);
         }
 
     }
@@ -141,31 +141,91 @@ class CatalogRepository implements  ICatalogRepository {
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0404'),404);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0404'),404);
         }
     }
 
 
     function AddBarrio(Entities\MapItem\Barrio $barrio)
     {
-        // TODO: Implement AddBarrio() method.
+        $method = 'AddBarrio';
+        Logger::startMethod($method);
+        try
+        {
+
+            $barrioModel = $this->mapper->map(Entities\MapItem\Barrio::class, Models\Barrio::class, $barrio);
+            if (!is_null( $barrioModel->location )) {
+                $barrioModel->location->save();
+                $barrioModel->Location()->associate($barrioModel->location->id);
+            }
+            $barrioModel->save();
+
+            return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,  $barrioModel);
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
+        }
     }
 
 
     function AddCpc(Entities\MapItem\Cpc $cpc )
     {
-        // TODO: Implement AddCpc() method.
+        $method = 'AddCpc';
+        Logger::startMethod($method);
+        try
+        {
+
+            $cpcModel = $this->mapper->map(Entities\MapItem\Cpc::class, Models\Cpc::class, $cpc);
+            $cpcModel->save();
+
+            return $this->mapper->map(Models\Cpc::class, Entities\MapItem\Cpc::class,  $cpcModel);
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('catalogerrorcodes.0406'),405);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('catalogerrorcodes.0406'),405);
+        }
     }
 
-    function AddStatus(Entities\MapItem\Status $status)
+    /*function AddStatus(Entities\MapItem\Status $status)
     {
-        // TODO: Implement AddStatus() method.
-    }
+        $method = 'AddStatus';
+        Logger::startMethod($method);
+        try
+        {
+            $statusModel = $this->mapper->map(Entities\MapItem\Status::class, Models\Status::class, $status);
+            $statusModel->save();
+
+            return $this->mapper->map(Models\Status::class, Entities\MapItem\Status::class,  $statusModel);
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('catalogerrorcodes.0407'),407);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('catalogerrorcodes.0407'),407);
+        }
+    }*/
 
 
     function FindCategory($category)
@@ -184,12 +244,12 @@ class CatalogRepository implements  ICatalogRepository {
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0408'),408);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0408'),408);
         }
 
     }
@@ -201,17 +261,23 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $barrioDB = Models\Barrio::where('name','like',$barrio)->first();
+
+            if(is_null($barrioDB))
+                return null;
+            else
+                return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,$barrioDB);
 
         }
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0409'),409);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0409'),409);
         }
     }
 
@@ -222,17 +288,22 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $cpcDB = Models\Cpc::where('name','like',$cpc)->first();
 
+            if(is_null($cpcDB))
+                return null;
+            else
+                return $this->mapper->map(Models\Cpc::class, Entities\MapItem\Cpc::class,$cpcDB);
         }
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0410'),410);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0410'),0410);
         }
     }
 
@@ -243,27 +314,44 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $statusDB = Models\Status::where('status','like',$status)->first();
 
+            if(is_null($statusDB))
+                return null;
+            else
+                return $this->mapper->map(Models\Cpc::class, Entities\MapItem\Cpc::class,$statusDB);
         }
         catch(QueryException $ex)
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0411'),0411);
         }
         catch(Exception $ex)
         {
             Logger::logError($method, $ex->getMessage());
-            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+            throw new RepositoryException(trans('catalogerrorcodes.0411'),0411);
         }
     }
 
 
+    /**
+     *
+     * @param $id
+     *
+     * @return Entities\MapItem\Category
+     * @throws RepositoryException
+     */
     function GetCategory($id)
     {
         $method = 'GetCategory';
         Logger::startMethod($method);
         try
         {
+            $categoryDB =  Models\Category::find($id);
+            if(is_null($categoryDB))
+                return null;
+            else
+                return $this->mapper->map(Models\Category::class, Entities\MapItem\Category::class, $categoryDB);
 
         }
         catch(QueryException $ex)
@@ -285,6 +373,12 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $barrioDb = Models\Barrio::find($id);
+
+            if(is_null($barrioDb))
+                return null;
+            else
+                return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,$barrioDb);
 
         }
         catch(QueryException $ex)
@@ -306,6 +400,12 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $cpcDb = Models\Cpc::find($id);
+
+            if(is_null($cpcDb))
+                return null;
+            else
+                return$this->mapper->map(Models\Cpc::class, Entities\MapItem\Cpc::class, $cpcDb);
 
         }
         catch(QueryException $ex)
@@ -327,6 +427,12 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
+            $statusDb = Models\Status::find($id);
+
+            if(is_null($statusDb))
+                return null;
+            else
+                return $this->mapper->map(Models\Status::class, Entities\MapItem\Status::class, $statusDb);
 
         }
         catch(QueryException $ex)

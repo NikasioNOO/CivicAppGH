@@ -87,7 +87,7 @@
     </div>
 
 @stop
-@section('scripts')
+@push('scripts')
 {!! Html::script('assets/js/Custom/auth/createUser.js') !!}
 
-@stop
+@endpush

@@ -80,9 +80,6 @@
 
 @endsection
 @push('scripts')
-    {!! Html::script('assets/js/Custom/gmaphelper.js') !!}
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&callback=CivicApp.GmapHelper.InitMap">
-    </script>
+
 
 @endpush

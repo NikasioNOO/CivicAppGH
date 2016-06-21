@@ -2,6 +2,8 @@
  * Created by Nico on 20/10/2015.
  */
 
+
+
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -21,6 +23,19 @@ $.ajaxSetup({
         return this.push.apply(this, rest);
     };
 }());
+
+Utilities.block = function(){
+    $.blockUI({ message: '<div><img src="../assets/images/loading.gif" style="width: 30px" /> Espere por favor...</div>' });
+};
+
+
+$(document).ajaxStart(Utilities.block).ajaxStop($.unblockUI);
+
+/*$(document).ajaxError(function(event, jqxhr, settings, thrownError)
+{
+   var error = jqxhr.error();
+
+});*/
 
 /*
  Descripción: Busca el elemento del array de Objetos y lo eliminar en base a valor de una propiedad del objeto
@@ -626,6 +641,54 @@ Utilities.Autocomplete = function (inputNameParam, methodAddParam)
             });
 
     });
+
+
+};
+
+Utilities.ShowSuccesMessage=function(message)
+{
+    this.ShowMessage(message, 'Satisfactorio');
+};
+
+Utilities.ShowError =function(message)
+{
+    this.ShowMessage(message,'Error');
+};
+
+Utilities.ShowMessage = function(message, title)
+{
+    var html = '<div>  \
+                   <p> '+ message +'</p>         \
+                </div>';
+
+    $(html).dialog(
+        {
+            resizable:false,
+            modal: false,
+            title: title,
+            width:500,
+            closeOnEscape:true,
+            show: { effect: "blind", duration: 200 },
+            hide: { effect: "blind", duration: 200 },
+            dialogClass: 'dialog-style no-close',
+            /*close: { function()
+            {
+                $(this).dialog('destroy');
+                $(this).remove();
+                return;
+            },*/
+            buttons:[
+                { text:'Aceptar',
+                    click : function()
+                {
+                    $(this).dialog('destroy');
+                    $(this).remove();
+                    return;
+                }, class :'btn btn-sm btn-primary'}
+            ]
+
+        }
+    )
 
 
 }

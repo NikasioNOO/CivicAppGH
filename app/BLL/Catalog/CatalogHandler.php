@@ -10,7 +10,9 @@ namespace CivicApp\BLL\Catalog;
 
 
 use CivicApp\DAL\Catalog\ICatalogRepository;
+use CivicApp\Entities\MapItem\Barrio;
 use CivicApp\Entities\MapItem\Category;
+use CivicApp\Entities\MapItem\Cpc;
 use CivicApp\Utilities\Logger;
 
 class CatalogHandler {
@@ -67,6 +69,50 @@ class CatalogHandler {
         $categoryExist->category = $category;
 
         return $this->catalogRepository->AddCategory($categoryExist);
+
+    }
+
+    public function AddCpc($cpc)
+    {
+        $method = 'AddCpc';
+        Logger::startMethod($method);
+
+        if(is_null($cpc)) {
+            throw new CatalogValidateException(trans('catalogerrorcodes.0450'),0450);
+        }
+
+        $cpcExist=$this->catalogRepository->FindCpc($cpc);
+
+        if(!is_null($cpcExist))
+            throw new CatalogValidateException(trans('catalogerrorcodes.0452'),0451);
+
+        $cpcExist = new Cpc();
+
+        $cpcExist->name = $cpc;
+
+        return $this->catalogRepository->AddCpc($cpcExist);
+
+    }
+
+    public function AddBarrio($barrio)
+    {
+        $method = 'AddBarrio';
+        Logger::startMethod($method);
+
+        if(is_null($barrio)) {
+            throw new CatalogValidateException(trans('catalogerrorcodes.0450'),0450);
+        }
+
+        $barrioExist=$this->catalogRepository->FindBarrio($barrio);
+
+        if(!is_null($barrioExist))
+            throw new CatalogValidateException(trans('catalogerrorcodes.0452'),0451);
+
+        $barrioExist = new Barrio();
+
+        $barrioExist->name = $barrio;
+
+        return $this->catalogRepository->AddBarrio($barrioExist);
 
     }
 

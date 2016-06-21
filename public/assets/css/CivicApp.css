@@ -354,3 +354,40 @@ th {
     left: 100%;
     margin-left: 15px;
 }
+
+.input-group.autocomplete {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.display-none
+{
+    display: none;
+}
+
+.table.smaller
+{
+    font-size: smaller;
+}
+
+.input-number
+{
+    text-align: right;
+    width: 50% !important;
+}
+
+.linkAction {
+    cursor: pointer;
+}
+
+
+.dialog-style
+{
+    font-size: small;
+}
+
+.dialog-style .btn
+{
+    padding: 2px 20px 2px 20px;
+}
+.no-close .ui-dialog-titlebar-close {display: none;  }

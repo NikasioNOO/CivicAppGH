@@ -14,4 +14,8 @@ interface IMapper
     public function map($fromClass, $toClass, $obj);
 
     public function addCustomMap($classFrom, $classTo, $callbackCustom);
+
+    public function addCustomMapArray($classTo, $callbackCustom);
+
+    public function mapArray($toClass, $array);
 }

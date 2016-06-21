@@ -33,4 +33,40 @@ class CatalogController extends Controller
             'data'=>  $newCategory]);
 
     }
+
+    public function AddBarrio(Request $request )
+    {
+
+        if(!$request->has('newValue'))
+        {
+            response()->json(['status'=>'Error',
+                              'message'=>'Error al recibir el barrio para agregar']);
+        }
+
+        $barrio = $request->newValue;
+
+        $newBarrio = $this->catalogHandler->AddBarrio($barrio);
+
+        return response()->json(['status' =>'Ok',
+                                 'data'=>  $newBarrio]);
+
+    }
+
+    public function AddCpc(Request $request )
+    {
+
+        if(!$request->has('newValue'))
+        {
+            response()->json(['status'=>'Error',
+                              'message'=>'Error al recibir el cpc para agregar']);
+        }
+
+        $cpc = $request->newValue;
+
+        $newCpc = $this->catalogHandler->AddCpc($cpc);
+
+        return response()->json(['status' =>'Ok',
+                                 'data'=>  $newCpc]);
+
+    }
 }

@@ -17,10 +17,14 @@ interface IMapItemRepository extends IRepository, ICriteria {
 
     public function UpdateObra(Entities\MapItem\MapItem $obra );
 
-    public function SaveObra(Entities\MapItem\MapItem $obra );
+    public function SaveObra( $obra );
+
+    public function DeleteObra( $id );
 
     public  function GetAllObras();
 
     public function SearchCriteria();
+
+    public function GetMapItem($id);
 
 }

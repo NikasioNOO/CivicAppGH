@@ -6,10 +6,13 @@ namespace CivicApp\Http\Controllers;
 use CivicApp\BLL\ObraHandler\ObraHandler;
 use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Logger;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Http\Requests;
 use Gmaps;
+use League\Csv\Reader;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ObrasAdminController extends Controller
 {
@@ -145,7 +148,6 @@ class ObrasAdminController extends Controller
 
     public  function  postGetAllObra(Request $request, MapItem $item, IMapper $mapper )
     {
-
         $method = 'postGetAllObra';
         Logger::startMethod($method);
         try {
@@ -170,8 +172,48 @@ class ObrasAdminController extends Controller
             ]);
         }
 
+    }
 
+    public function postLoadObrasFromFile(Request $request)
+    {
+        $method = 'postLoadObrasFromFile';
+        Logger::startMethod($method);
+        try {
+
+            $obras = new Collection();
+            if($request->hasFile('importFileCSV'))
+            {
+
+                $obrasFile = Excel::load($request->file('importFileCSV'))->get();
+
+                foreach($obrasFile as $obra)
+                {
+                    $obraValidated = $this->obraHandler->ValidateObraValues($obra);
+                    $obras->push($obraValidated);
+                }
+
+
+
+            }
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'Ok',
+                'data'   => $obras
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            response()->json([
+                'status'  => 'Error',
+                'message' => $ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
 
 
     }
+
 }

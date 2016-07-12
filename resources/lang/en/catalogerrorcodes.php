@@ -32,7 +32,9 @@ return [
     '0450' => 'Parámetro Inválido',
     '0451' => 'Ya existe la categoría',
     '0452' => 'Ya existe el Cpc',
-    '0453' => 'Ya existe el Barrio'
+    '0453' => 'Ya existe el Barrio',
+
+    '0454' => ':catalog no existe',
 
 
 ];

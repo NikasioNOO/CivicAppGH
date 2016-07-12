@@ -98,7 +98,7 @@ class MapperProvider extends ServiceProvider
             function(Models\Barrio $modelBarrio, Entities\MapItem\Barrio $entityBarrio){
                 $mapper = App::make(IMapper::class);
                 if(isset($modelBarrio->location)) {
-                    $entityBarrio->location = $mapper->map(Entities\Common\GeoPoint::class, Models\GeoPoint::class,
+                    $entityBarrio->location = $mapper->map( Models\GeoPoint::class, Entities\Common\GeoPoint::class,
                         $modelBarrio->location);
                 }
                 return $entityBarrio;

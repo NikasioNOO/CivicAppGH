@@ -14,6 +14,8 @@ use CivicApp\DAL\MapItem\IMapItemRepository;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Utilities\Logger;
 use CivicApp\Entities\MapItem\MapItemType;
+use CivicApp\Utilities\Utilities;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 
 class ObraHandler {
@@ -87,6 +89,82 @@ class ObraHandler {
 
         if(is_null($this->catalogRepo->GetStatus($obra->status->id)))
             throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El estado']),0200);
+
+    }
+
+    public function ValidateObraValues(Collection $obra)
+    {
+        if($obra->has('ano'))
+        {
+            $currentYear = date('Y')+1;
+            if($obra->ano <= $currentYear && $obra->ano > ($currentYear-10))
+                $obra->put('isValidYear',true);
+            else
+                $obra->put('isValidYear',false);
+        }
+        else
+            $obra->put('isValidYear',false);
+
+        if($obra->has('cpc')&& isset($obra->cpc) && !is_null($obra->cpc) &&  trim($obra->cpc) != ''
+            && !is_null($this->catalogRepo->FindCpc($obra->cpc)))
+            $obra->put('isValidCpc', true);
+        else
+            $obra->put('isValidCpc',false);
+
+        if($obra->has('barrio')&& isset($obra->barrio) && !is_null($obra->barrio) &&  trim($obra->barrio) != ''
+            && !is_null($this->catalogRepo->FindBarrio($obra->barrio)))
+            $obra->put('isValidBarrio', true);
+        else
+            $obra->put('isValidBarrio',false);
+
+        if($obra->has('categoria')&& isset($obra->categoria) && !is_null($obra->categoria) &&  trim($obra->categoria) != ''
+            && !is_null($this->catalogRepo->FindCategory($obra->categoria)))
+            $obra->put('isValidCategory', true);
+        else
+            $obra->put('isValidCategory',false);
+
+        if($obra->has('titulo')&& isset($obra->titulo) && !is_null($obra->titulo) &&  trim($obra->titulo) != '')
+            $obra->put('isValidTitle', true);
+        else
+            $obra->put('isValidTitle',false);
+
+        if($obra->has('presupuesto')&& isset($obra->presupuesto) && !is_null($obra->presupuesto) &&  trim($obra->presupuesto) != ''
+            && is_numeric($obra->presupuesto))
+            $obra->put('isValidBudget', true);
+        else
+            $obra->put('isValidBudget',false);
+
+        if($obra->has('estado')&& isset($obra->estado) && !is_null($obra->estado) &&  trim($obra->estado) != ''
+            && !is_null($this->catalogRepo->FindStatus($obra->estado)))
+            $obra->put('isValidCategory', true);
+        else
+            $obra->put('isValidCategory',false);
+
+
+        if($obra->has('ubicacion')&& isset($obra->ubicacion))
+            if(is_null($obra->ubicacion) ||  trim($obra->ubicacion) == '') {
+                $obra->put('isValidAddress', true);
+                $obra->put('location', null);
+            }
+            else
+            {
+                $location = Utilities::GeoCodeAdrress($obra->ubicacion);
+                if($location['status']=='OK')
+                {
+                    $obra->put('isValidAddress', true);
+                    $obra->put('location', $location['lat'].','.$location['lng']);
+                }
+                else {
+                    $obra->put('isValidCategory', false);
+                    $obra->put('location', null);
+                }
+            }
+        else {
+            $obra->put('isValidCategory', false);
+            $obra->put('location', null);
+        }
+
+        return $obra;
 
     }
 

@@ -15,11 +15,12 @@ use Illuminate\Contracts\Support\Jsonable;
 class Category extends BaseEntity {
     protected $_id;
     protected $_category;
+    protected $_images;
 
     public function __construct()
     {
-        $this->setters = ['id','category'];
-        $this->getters = ['id','category'];
+        $this->setters = ['id','category','images'];
+        $this->getters = ['id','category','images'];
         $this->_id=0;
     }
 

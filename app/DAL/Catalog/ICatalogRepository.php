@@ -29,6 +29,8 @@ interface ICatalogRepository {
 
     function AddBarrio(Barrio $barrio);
 
+    function UpdateBarrio(Barrio $barrio);
+
     function AddCpc(Cpc $cpc);
 
    // function AddStatus(Status $status);
@@ -48,5 +50,7 @@ interface ICatalogRepository {
     function GetCpc($id);
 
     function GetStatus($id);
+
+    function SaveCategoryImages($id, $images);
 
 }

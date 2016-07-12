@@ -167,6 +167,8 @@ return [
 
         GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
 
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -238,6 +240,8 @@ return [
         'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
 
         'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

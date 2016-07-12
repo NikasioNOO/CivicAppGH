@@ -28,7 +28,8 @@ class CatalogComposer {
             }));
         $barrios = json_encode(collect($this->catalogRepository->GetAllBarrios())
             ->map(function($item,$key){
-                return ['id'=>$item->id,'value'=>$item->name, 'label'=>$item->name];
+
+                return ['id'=>$item->id,'value'=>$item->name, 'label'=>$item->name, 'location'=> !is_null($item->location)?$item->location->location : null ];
             }));
 
 

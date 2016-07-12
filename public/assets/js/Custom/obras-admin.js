@@ -4,11 +4,11 @@
 
     this.CivicApp = this.CivicApp || {};
     this.CivicApp.Obra = this.CivicApp.Obra || new function(){
-        var categories = [];
-        var barrios = [];
-        var statuses = [];
-        var cpcs = [];
-        var categoryAcutocomplete;
+
+        var mapBarrio= null;
+        var map = null;
+
+
 
         var yearSelect = $('#year');
         var locationInput = $('#autocompleteMap');
@@ -68,13 +68,14 @@
                     if(value) {
                         locationInput.data('idgeopoint', value.id);
                         locationInput.data('latLng', value.location);
-                        CivicApp.GmapHelper.SetIndividualMarker(value.location, this.address);
+                        map.SetIndividualMarker(value.location, this.address);
+                        //CivicApp.GmapHelper.SetIndividualMarker(value.location, this.address);
                     }
                     else
                     {
                         locationInput.data('idgeopoint', 0);
                         locationInput.data('latLng', '');
-                        CivicApp.GmapHelper.HideIndividualMarker();
+                        map.HideIndividualMarker();
                     }
                 },
                 enumerable:true
@@ -111,13 +112,20 @@
                     var newValue = Utilities.findandGetInList(listvalues,'id',value.id);
                     if(newValue) {
                         barrioInput.data('idSelected',newValue.id);
+                        barrioInput.data('location', newValue.location);
                         barrioInput.val(newValue.value);
+                        $('#editBarrio').toggle(true);
                     }
                     else
                     {
                         barrioInput.data('idSelected',0);
+                        barrioInput.data('location', '');
                         barrioInput.val('');
+                        $('#editBarrio').toggle(false);
                     }
+
+
+
 
                 },
                 enumerable:true
@@ -126,7 +134,7 @@
             Object.defineProperty(this, 'category', {
                 get: function() {
                     var id = categoryInput.data('idSelected');
-                    return id ? { id:id }: {id:0} ;
+                    return id ? { id:id , category:categoryInput.val()}: {id:0, category:''} ;
                 },
                 set: function(value) {
                     var listvalues = categoryInput.data('listvalues');
@@ -134,12 +142,15 @@
                     if(newValue) {
                         categoryInput.data('idSelected',newValue.id);
                         categoryInput.val(newValue.value);
+                        $('#editIcons').toggle(true);
                     }
                     else
                     {
                         categoryInput.data('idSelected',0);
                         categoryInput.val('');
+                        $('#editIcons').toggle(false);
                     }
+
                 },
                 enumerable:true
             });
@@ -196,7 +207,7 @@
             obra.description = '';
             obra.year = '';
 
-            CivicApp.GmapHelper.HideIndividualMarker();
+            map.HideIndividualMarker();
 
         };
 
@@ -215,6 +226,144 @@
             $('#cancel').on('click',function()
             {
               CleanObra();
+            });
+
+            $('.imageUploader').on('change',function(){
+                var file = this.files[0];
+                var id = this.id ;
+                var imageFile = file.type;
+               // var match= ["image/jpeg","image/png","image/jpg"];
+                var match= "image/png";
+                var img = $('#img'+id);
+                if(!(imageFile==match))
+                {
+                    $('#previewing').attr('src','noimage.png');
+                    Utilities.ShowMessage('Debe elegir archivos de imagen png, gracias');
+                    if(!img.hasClass('hidden'))
+                        img.addClass('hidden');
+                    return false;
+                }
+                else
+                {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        img.attr('src', e.target.result).removeClass('hidden');
+                    };
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            $('#saveIcons').on('click',function()
+            {
+                var inputFiles = $('.imageUploader');
+                var inputFileNames = [];
+                for(var i=0; i< inputFiles.length ; i++)
+                {
+                    inputFileNames.push(inputFiles[i].name);
+                }
+
+                var formData = new FormData($('#imgUploadForm')[0]);
+                formData.append('filesNames',inputFileNames);
+                formData.append('categoryId', obra.category.id);
+                formData.append('category',obra.category.category);
+
+                $.ajax({
+                    url: "/admin/UploadIcons", // Url to which the request is send
+                    type: "POST",             // Type of request to be send, called as method
+                    data: formData, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+                    contentType: false,       // The content type used when sending data to the server.
+                    cache: false,             // To unable request pages to be cached
+                    processData:false,        // To send DOMDocument or non processed data file it is set to false
+                    success: function(data)   // A function to be called if request succeeds
+                    {
+                        $('#imagesUpload').modal('hide');
+                        if(data.status == 'Ok' ) {
+                            Utilities.ShowSuccesMessage('Se ha subido correctamente los iconos');
+
+                        }
+                        else
+                        {
+                            Utilities.ShowError(data.message);
+                        }
+
+                        ;
+
+                    },
+                    error:function( jqXHR, textStatus,  errorThrown )
+                    {
+                        Utilities.ShowError('Se ha producido un error al subir los iconos.'+errorThrown);
+                    }
+                });
+
+            });
+
+            $('#imagesUpload').on('show.bs.modal',function(e)
+            {
+                LoadCategoryIcons();
+            });
+
+            $('#barrioLocation').on('shown.bs.modal',function(e)
+            {
+
+
+
+                var location = barrioInput.data('location');
+                if(location) {
+                    var latlng = location.split(',');
+                    mapBarrio.SetAutocompleteAddressAndMarker(latlng[0],latlng[1]);
+
+                }
+                else
+                {
+                    mapBarrio.MapCenter();
+                    mapBarrio.CleanAutocomplete();
+
+                }
+
+                google.maps.event.trigger(mapBarrio.map, 'resize');
+
+
+            });
+
+            $('#saveBarrioLocation').on('click',
+            function()
+            {
+                SaveBarrioLocation();
+                $('#barrioLocation').modal('hide');
+            }
+            );
+
+        };
+
+
+
+
+        var LoadCategoryIcons =  function()
+        {
+            $("#status option").each(function(status)
+            {
+                // Add $(this).val() to your list
+                if(this.value) {
+                    var id = this.value;
+                    var name = this.text.replace(' ', '');
+
+                    var inputName = 'imgico_' + id + '_' + name;
+                    var img = 'ico_' + id + '_' + name+'.png';
+                    var host = window.location.protocol+'//'+window.location.host+'//';
+                    var src = host+ ENV_MAPICONS_PATH + 'cat' + obra.category.id + '_' + img;
+
+                    if (Utilities.ImageExists(src))
+                        $('#' + inputName).attr('src', src);
+                    else {
+                        src = host + ENV_MAPICONS_PATH + '_' + img;
+                        if (Utilities.ImageExists(src))
+                            $('#' + inputName).attr('src', src);
+                        else
+                            $('#' + inputName).attr('src', host + ENV_MAPICONS_PATH + ENV_DEFAULT_ICON);
+                    }
+                }
+
             });
 
         };
@@ -284,18 +433,72 @@
 
         };
 
+        var SaveBarrioLocation = function()
+        {
 
+            var location = mapBarrio.GetLatLng();
+            if(!location) {
+                Utilities.ShowError('No hay ningúna ubicación seleccionada para guardar');
+                return;
+            }
+
+            $.post('/admin/SaveBarrioLocation',{"barrioId":obra.barrio.id, "location": location},
+                function(data)
+                {
+                    if(data.status == 'Ok')
+                    {
+                        var listvalues = barrioInput.data('listvalues');
+                        var barrioSelectedId = barrioInput.data('idSelected');
+
+                        var barrio = Utilities.findandGetInList(listvalues,'id',barrioSelectedId);
+                        barrio.location = location;
+                        Utilities.findAndReplaceList(listvalues,'id',barrioSelectedId,barrio);
+
+                        barrioInput.data('location', location);
+                    }
+                    else
+                    {
+                        Utilities.ShowError(data.message);
+                    }
+
+                }).fail(function()
+                {
+                    Utilities.ShowError('Ocurrió un error al intentar guardar la ubicación del barrio');
+                });
+
+
+
+        };
 
 
         var InitilizeMap = function()
         {
-            var init = CivicApp.GmapHelper.InitMap();
+           /* var init = CivicApp.GmapHelper.InitMap();
             init.then(function() {
 
                 CivicApp.GmapHelper.SouthWest = '-31.471168, -64.278946';
                 CivicApp.GmapHelper.NorthEast = '-31.361003, -64.090805';
                 CivicApp.GmapHelper.CreateAutocomplete('autocompleteMap');
                 CivicApp.GmapHelper.AddEventClickAddMarker();
+            });*/
+
+            map = new CivicApp.GmapHelper2.Map();
+            var init = map.InitMap('map');
+            init.then(function() {
+                map.southWest = '-31.471168, -64.278946';
+                map.northEast = '-31.361003, -64.090805';
+                map.CreateAutocomplete('autocompleteMap');
+                map.AddEventClickAddMarker();
+            });
+
+            mapBarrio = new CivicApp.GmapHelper2.Map();
+            var initMapBarrio = mapBarrio.InitMap('barrioMap');
+            initMapBarrio.then(function() {
+                mapBarrio.southWest = '-31.471168, -64.278946';
+                mapBarrio.northEast = '-31.361003, -64.090805';
+                mapBarrio.CreateAutocomplete('autocompleteBarrioMap');
+                mapBarrio.AddEventClickAddMarker();
+
             });
 
         };
@@ -304,8 +507,28 @@
             debugger;
 
 
-            Utilities.Autocomplete('category','/admin/AddCategory');
-            Utilities.Autocomplete('barrio','/admin/AddBarrio');
+            Utilities.Autocomplete('category','/admin/AddCategory',
+                function(value, ui, event, control){
+                    var flag =  value.trim() != "" && !ui.item;
+                    $('#editIcons').toggle(!flag);
+                },
+                function(){
+                    $('#imagesUpload').modal('show');
+                    $('#editIcons').toggle(true);
+                });
+            Utilities.Autocomplete('barrio','/admin/AddBarrio',
+                function(value, ui, event, control){
+                    var flag =  value.trim() != "" && !ui.item;
+
+                    if(!flag)
+                        $(control).data('location', ui.item.location)
+
+                    $('#editBarrio').toggle(!flag);
+                },
+                function(){
+                    $('#barrioLocationd').modal('show');
+                    $('#editBarrio').toggle(true);
+                });
             Utilities.Autocomplete('CPC','/admin/AddCpc');
 
         };

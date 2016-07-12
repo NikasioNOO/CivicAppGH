@@ -10,7 +10,9 @@
         "laravelcollective/html": "v5.2.*",
         "laravel/socialite": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.1",
-        "genealabs/phpgmaps": "~0.3.0"
+        "genealabs/phpgmaps": "~0.3.0",
+        "league/csv": "^8.0",
+        "maatwebsite/excel":"~2.1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

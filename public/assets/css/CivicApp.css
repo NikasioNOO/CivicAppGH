@@ -5,6 +5,26 @@ body{
 
 }
 
+/** fix autocomplete map **/
+div.pac-container {
+    z-index: 1050 !important;
+}
+
+div.ui-dialog
+{
+    z-index: 1051 !important;
+}
+
+div.blockUI.blockOverlay
+{
+    z-index: 1060 !important;
+}
+
+div.blockUI.blockMsg
+{
+    z-index: 1062 !important;
+}
+
 .img-logo-wrapper {
   /*  position:relative;*/
     padding:2% ;
@@ -109,6 +129,7 @@ th {
 }
 
 /* Icon- Excel */
+/*
 .cus- {
     background-image: url("../images/spritesheetIcons.png");
     background-repeat: no-repeat;
@@ -153,7 +174,7 @@ th {
     background-position: -5px -5px;
 }
 
-/* icons */
+/* icons *
 [class^="cus-"],
 [class*=" cus-"] {
     display: inline-block;
@@ -170,12 +191,12 @@ th {
 [class*=" cus-"]:last-child {
     *margin-left: 0;
 }
-/* icons code below */
+/* icons code below *
 .cus-accept{ background-position: 0 0;  }
 .cus-add{ background-position: -21px 0;  }
 .cus-anchor{ background-position: -42px 0;  }
 .cus-application{ background-position: -63px 0;  }
-
+*/
 .map-wrapper {
     width: 100%;
     height: 500px;
@@ -391,3 +412,59 @@ th {
     padding: 2px 20px 2px 20px;
 }
 .no-close .ui-dialog-titlebar-close {display: none;  }
+
+
+
+/***********  Modal Imges   ****************/
+
+
+.custom-modal .modal-header {
+    background: #337ab7;
+    color: #ffffff;
+    padding: 1%;
+}
+
+.custom-modal .rightLabel label {
+    text-align: right;
+    margin-right: 1px;
+}
+
+.custom-modal .modal-images img
+{
+    max-height: 30px;
+}
+
+.custom-modal .grid-bulkLoad
+{
+    padding: 6px;
+}
+.custom-modal .grid-bulkLoad .header
+{
+    background-color: rgb(51, 122, 183);
+    padding: 6px 0px 6px 0px;
+    font-weight: bold;
+
+}
+
+
+.custom-modal .grid-bulkLoad input
+{
+    padding: 2px;
+}
+
+.custom-modal .grid-bulkLoad .form-horizontal
+{
+    padding: 0px;
+}
+
+.custom-modal .grid-bulkLoad .form-horizontal div
+{
+    padding: 1px 2px 1px 2px;
+}
+
+.custom-modal .grid-bulkLoad .form-horizontal:nth-child(odd)
+{
+    background-color: #91ccea;
+}
+
+/***********  Modal Imges   ****************/

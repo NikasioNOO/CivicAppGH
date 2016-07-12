@@ -43,6 +43,11 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/AddBarrio',['as'=>'addBarrio','uses'=>'CatalogController@AddBarrio']);
         Route::post('/AddCpc',['as'=>'addCpc','uses'=>'CatalogController@AddCpc']);
 
+        Route::post('UploadIcons',['as'=>'admin.uploadIcons','uses' => 'CatalogController@postUploadIcons']);
+        Route::post('SaveBarrioLocation',['as'=>'admin.saveBarrioLocation','uses' => 'CatalogController@postSaveBarrioLocation']);
+
+
+
         Route::group(['namespace' => 'Auth'], function() {
 
             Route::get('CrearAppUser','AuthController@getCreateAppUser');
@@ -51,9 +56,12 @@ Route::group(['middleware' => ['web']], function () {
         });
 
         Route::get('ObrasPresupAdmin',['as'=>'admin.obras','uses' => 'ObrasAdminController@getIndex']);
+
         Route::post('SaveObra',['as'=>'admin.saveObra','uses' => 'ObrasAdminController@postSaveObra']);
         Route::post('DeleteObra',['as'=>'admin.deleteObra','uses' => 'ObrasAdminController@postDeleteObra']);
         Route::post('GetAllObras',['as'=>'admin.getAllObras','uses' => 'ObrasAdminController@postGetAllObra']);
+
+        Route::post('ImportFromFile',['as'=>'admin.importFromFile','uses' => 'ObrasAdminController@postLoadObrasFromFile']);
 
     });
 

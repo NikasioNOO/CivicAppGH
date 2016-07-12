@@ -10,10 +10,12 @@ namespace CivicApp\BLL\Catalog;
 
 
 use CivicApp\DAL\Catalog\ICatalogRepository;
+use CivicApp\Entities\Common\GeoPoint;
 use CivicApp\Entities\MapItem\Barrio;
 use CivicApp\Entities\MapItem\Category;
 use CivicApp\Entities\MapItem\Cpc;
 use CivicApp\Utilities\Logger;
+use Illuminate\Support\Collection;
 
 class CatalogHandler {
 
@@ -115,5 +117,71 @@ class CatalogHandler {
         return $this->catalogRepository->AddBarrio($barrioExist);
 
     }
+
+    public function SaveCategoriesImages($categoryId, Collection $images)
+    {
+        $method = 'SaveCategoriesImages';
+        Logger::startMethod($method);
+
+
+       $categoryExist = $this->catalogRepository->GetCategory($categoryId);
+
+        if(is_null($categoryExist)) {
+            throw new CatalogValidateException(trans('catalogerrorcodes.0454',['catalog'=>'La categoría']),454);
+        }
+
+
+        if( is_null($categoryExist->images) || trim($categoryExist->images) == '')
+        {
+            $this->catalogRepository->SaveCategoryImages($categoryId, $images->implode(','));
+        }
+
+        $catImages = collect(explode(',',$categoryExist->images))->unique();
+
+        $catImages = $catImages->reject(function ($value, $key) {
+            return trim($value) == '';
+        });
+
+        foreach($images as $img)
+        {
+            if(!$catImages->contains($img))
+                $catImages->push($img);
+        }
+
+        $this->catalogRepository->SaveCategoryImages($categoryId, $catImages->sort()->implode(','));
+
+        Logger::endMethod($method);
+
+    }
+
+    public function SaveBarrioLocation($barrioId, $location)
+    {
+        $method = 'SaveBarrioLocation';
+        Logger::startMethod($method);
+
+
+        $barrio = $this->catalogRepository->GetBarrio($barrioId);
+
+        if(is_null($barrio)) {
+            throw new CatalogValidateException(trans('catalogerrorcodes.0454',['catalog'=>'El barrio']),454);
+        }
+
+        if(is_null($barrio->location))
+        {
+            $barrio->location = new GeoPoint();
+            $barrio->location->location = $location;
+        }
+        else
+        {
+            $barrio->location->location = $location;
+        }
+
+        $this->catalogRepository->UpdateBarrio($barrio);
+
+        Logger::endMethod($method);
+
+    }
+
+
 
 }

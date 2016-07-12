@@ -587,7 +587,7 @@ Utilities.trim = function (str, charlist) {
     return this.trimRight(this.trimLeft(str, charlist),charlist);
 };
 
-Utilities.Autocomplete = function (inputNameParam, methodAddParam)
+Utilities.Autocomplete = function (inputNameParam, methodAddParam, callBackEventAdding, callBackEventAdded)
 {
     var input = $('#'+inputNameParam);
 
@@ -608,9 +608,12 @@ Utilities.Autocomplete = function (inputNameParam, methodAddParam)
 
 
             var flag =  this.value.trim() != "" && !ui.item;
-            if(!flag)
-                $(this).data('idSelected',ui.item.id);
+            if(!flag) {
+                $(this).data('idSelected', ui.item.id);
+            }
             $('#add'+this.id).toggle(flag);
+            if(callBackEventAdding)
+                callBackEventAdding(this.value, ui, event, this);
         }
     });
 
@@ -631,6 +634,8 @@ Utilities.Autocomplete = function (inputNameParam, methodAddParam)
                     listValues.push(item);
                     input.data('listvalues', listValues);
                     $(control).hide();
+                    if(callBackEventAdded)
+                        callBackEventAdded();
                 }
                 else
                 {
@@ -690,5 +695,16 @@ Utilities.ShowMessage = function(message, title)
         }
     )
 
+
+}
+
+Utilities.ImageExists = function(image_url){
+
+    var http = new XMLHttpRequest();
+
+    http.open('HEAD', image_url, false);
+    http.send();
+
+    return http.status != 404;
 
 }

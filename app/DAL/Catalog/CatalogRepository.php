@@ -9,6 +9,7 @@
 namespace CivicApp\DAL\Catalog;
 
 
+use CivicApp\DAL\Repository\Repository;
 use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Models\Category;
 use CivicApp\Utilities\IMapper;
@@ -17,6 +18,7 @@ use Illuminate\Database\QueryException;
 use CivicApp\Models;
 use CivicApp\Entities;
 use Exception;
+use DB;
 
 class CatalogRepository implements  ICatalogRepository {
 
@@ -54,6 +56,10 @@ class CatalogRepository implements  ICatalogRepository {
     }
 
 
+    /**
+     * @return mixed
+     * @throws RepositoryException
+     */
     function GetAllBarrios()
     {
         $method='GetAllBarrios';
@@ -157,7 +163,7 @@ class CatalogRepository implements  ICatalogRepository {
         Logger::startMethod($method);
         try
         {
-
+            DB::beginTransaction();
             $barrioModel = $this->mapper->map(Entities\MapItem\Barrio::class, Models\Barrio::class, $barrio);
             if (!is_null( $barrioModel->location )) {
                 $barrioModel->location->save();
@@ -165,20 +171,83 @@ class CatalogRepository implements  ICatalogRepository {
             }
             $barrioModel->save();
 
+            DB::commit();
+
             return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,  $barrioModel);
         }
         catch(QueryException $ex)
         {
+            DB::rollBack();
             Logger::logError($method, $ex->getMessage().$ex->getSql());
             throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
         }
         catch(Exception $ex)
         {
+            DB::rollBack();
             Logger::logError($method, $ex->getMessage());
             throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
         }
     }
 
+    function UpdateBarrio(Entities\MapItem\Barrio $barrio)
+    {
+        $method = 'AddBarrio';
+        Logger::startMethod($method);
+        try
+        {
+            DB::beginTransaction();
+            $barrioModel = $this->mapper->map(Entities\MapItem\Barrio::class, Models\Barrio::class, $barrio);
+
+            /** @var Models\Barrio $barrioDB */
+            $barrioDB = Models\Barrio::findOrFail($barrio->id);
+
+            $barrioDB->name = $barrioModel->name;
+
+
+            if (!is_null( $barrioModel->location )) {
+
+                if($barrioModel->location->id != 0) {
+                    /** @var Model $locationDB */
+                    $locationDB = Models\GeoPoint::findOrFail($barrioModel->location->id);
+                    $locationDB->location = $barrioModel->location->location;
+                    $locationDB->save();
+                }
+                else
+                {
+                    $newLocation = new Models\GeoPoint();
+                    $newLocation->location = $barrioModel->location->location;
+                    $newLocation->save();
+                    $barrioDB->location()->associate($newLocation);
+                    //$barrioDB->location()->associate($barrioDB->location->id);
+                }
+
+            }
+            else if(!is_null($barrioDB->location))
+            {
+                $id= $barrioDB->location->id;
+                $barrioDB->location()->dissociate();
+                Models\GeoPoint::destroy($id);
+            }
+            $barrioDB->save();
+
+            DB::commit();
+
+           // return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,  $barrioModel);
+        }
+        catch(QueryException $ex)
+        {
+            DB::rollBack();
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
+        }
+        catch(Exception $ex)
+        {
+
+
+                        Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('catalogerrorcodes.0405'),405);
+        }
+    }
 
     function AddCpc(Entities\MapItem\Cpc $cpc )
     {
@@ -239,7 +308,7 @@ class CatalogRepository implements  ICatalogRepository {
             if(is_null($categoryDB))
                 return null;
             else
-                return $this->mapper->map(Models\Category::class, Entities\MapItem\Category::class,$category);
+                return $this->mapper->map(Models\Category::class, Entities\MapItem\Category::class,$categoryDB);
         }
         catch(QueryException $ex)
         {
@@ -319,7 +388,7 @@ class CatalogRepository implements  ICatalogRepository {
             if(is_null($statusDB))
                 return null;
             else
-                return $this->mapper->map(Models\Cpc::class, Entities\MapItem\Cpc::class,$statusDB);
+                return $this->mapper->map(Models\Status::class, Entities\MapItem\Status::class,$statusDB);
         }
         catch(QueryException $ex)
         {
@@ -445,5 +514,49 @@ class CatalogRepository implements  ICatalogRepository {
             Logger::logError($method, $ex->getMessage());
             throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
         }
+    }
+
+    function SaveCategoryImages($id, $images)
+    {
+        $method = 'SaveCategoryImages';
+        Logger::startMethod($method);
+        try
+        {
+            $categoryDB =  Models\Category::find($id);
+            if(is_null($categoryDB))
+                throw new RepositoryException(trans('catalogerrorcodes.0454'),0454);
+
+            $categoryDB->images = $images;
+
+            $categoryDB->save();
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('catalogerrorcodes.0400'),0400);
+        }
+    }
+
+
+    /**
+     * Specify Model class name
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    function model()
+    {
+        // TODO: Implement model() method.
+    }
+
+
+    protected function entity()
+    {
+        // TODO: Implement entity() method.
     }
 }

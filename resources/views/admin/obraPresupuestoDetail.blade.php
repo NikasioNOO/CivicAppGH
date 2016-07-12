@@ -9,18 +9,12 @@
 
         </div>
         <div class="form-horizontal col-sm-12">
-            <div class="form-inline col-sm-offset-6 col-sm-6 custom-form-inline" >
-                <div class="form-group col-sm-12 ">
-                    <label class="col-sm-4 control-label">Cargar desde archivo</label>
-                    <div class="input-group col-sm-8">
-                        <input type="text" class="form-control" placeholder="Seleccionar archivo">
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" type="button">Buscar
+            <div class="form-inline col-sm-offset-10 col-sm-2 custom-form-inline" >
+
+                                <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#LoadFromExcel">Cargar desde archivo
                                     <span class="glyphicon glyphicon-folder-open"></span>
                                 </button>
-                            </span>
-                    </div>
-                </div>
+
             </div>
         </div>
         <hr>
@@ -64,6 +58,9 @@
                                 <button id="addbarrio" class="btn btn-primary input-sm fullWidth display-none"  type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
+                                <button id="editBarrio" class="btn btn-primary input-sm btn-sm fullWidth display-none" data-toggle="modal" data-target="#barrioLocation">
+                                    <span class="fa fa-map-marker"></span>
+                                </button>
                             </span>
                     </div>
                 </div>
@@ -75,11 +72,15 @@
                     <div class="input-group col-sm-8 autocomplete" >
                         <input name="category" id="category" class="form-control input-sm fullWidth " data-methodadd="" data-listvalues="{{ $categories }}" type="text"/>
                         <span class="input-group-btn" >
-                                <button id="addcategory" class="btn btn-primary input-sm fullWidth display-none"  type="button">
+                                <button id="addcategory" class="btn btn-primary input-sm btn-sm fullWidth display-none" data-toggle="modal"   type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                                <button id="editIcons" class="btn btn-primary input-sm btn-sm fullWidth display-none" data-toggle="modal" data-target="#imagesUpload">
+                                    <span class="fa fa-map-marker"></span>
                                 </button>
                          </span>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -133,6 +134,7 @@
                                 <div class="col-sm-9">
                                     <input type="text" name="autocompleteMap" id="autocompleteMap" data-idGeoPoint="0" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
                                 </div>
+
                             </div>
                         </div>
                         <div class="form-inline col-sm-6 custom-form-inline" >
@@ -163,10 +165,146 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade custom-modal modal-images rightLabel " id="imagesUpload" tabindex="-1" role="dialog" aria-labelledby="imagesUpload">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content cus-modal-images">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Definir Iconos</h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="imgUploadForm" role="form" method="POST" action="" >
+                @foreach( $statuses as $status )
+                    <div class="row">
+                        <div class="form-group form-group-sm col-sm-12 custom-form-group " >
+                            <label for="icoComprometido" class="col-sm-4 control-label">Icono {{$status->status}}</label>
+                            <div class="col-sm-6">
+                                <input name="ico_{{$status->id.'_'.str_replace(' ','', $status->status)}}"  placeholder="Subir Icono" id="ico_{{$status->id.'_'.str_replace(' ','', $status->status)}}" class="form-control input-sm fullWidth imageUploader" type="file"/>
+                            </div>
+                            <div class="col-sm-1">
+                                <img id="imgico_{{$status->id.'_'.str_replace(' ','', $status->status)}}" src="" alt="default"  >
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="saveIcons">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade custom-modal " id="barrioLocation" tabindex="-1" role="dialog" aria-labelledby="barrioLocation">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content cus-modal-images">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ubicar Barrio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-horizontal col-sm-offset-1 col-sm-10">
+                        <label for="autocompleteBarrioMap" class="col-sm-2 control-label">Dirección</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="autocompleteBarrioMap" id="autocompleteBarrioMap" data-idGeoPoint="0" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
+                        </div>
+
+                    </div>
+                    <div class="form-horizontal col-sm-offset-1 col-sm-10 ">
+                        <div id="barrioMap" style="width:100%;height:250px; border: 2px solid; border-color:#3B6999; margin: 0 auto; margin-top: 5px">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="saveBarrioLocation">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade custom-modal " data-backdrop="static" id="LoadFromExcel" tabindex="-1" role="dialog" aria-labelledby="LoadFromExcel">
+    <div class="modal-dialog modal-lg" style="width: 98%" role="document">
+        <div class="modal-content cus-modal-images">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Cargar desde Archivo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form enctype="multipart/form-data" id="importFileForm" role="form" method="POST" action="" >
+                    <div class="form-horizontal  col-sm-12">
+                        <label for="autocompleteBarrioMap" class="col-sm-3 control-label">Seleccione archivo CSV</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="importFileCSV" id="importFileCSV" data-idGeoPoint="0" class="form-control input-sm fullWidth"  autofocus>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" id="LoadFileObras" >Cargar</button>
+
+                    </div>
+                    </form>
+                </div>
+                <div class="row">
+                    @include('admin.ObrasBulkLoad')
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="saveBarrioLocation">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal
+<div class="modal fade custom-modal" id="barrioLocation" tabindex="-1" role="dialog" aria-labelledby="barrioLocation">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content cus-modal-images">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ubicar Barrio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal col-sm-12">
+
+
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="saveIcons">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
 @push('scripts')
 
+<script type="text/javascript">
+
+    var ENV_MAPICONS_PATH = "{{ env('MAPICONS_PATH')  }}";
+    var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
+
+</script>
+
 {!! Html::script('assets/js/Custom/gmaphelper.js') !!}
+{!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
 {!! Html::script('assets/js/Custom/obras-admin.js') !!}
+{!! Html::script('assets/js/Custom/obras-importFile.js') !!}
 
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.Obra.InitMap">

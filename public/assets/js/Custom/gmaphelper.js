@@ -23,18 +23,19 @@
 
 
 
-        var initializeMap = function()
+        var initializeMap = function(mapCanvas)
         {
 
            // var deferredInit = $.Deferred();
-
+            if(!mapCanvas)
+                mapCanvas = 'map';
             var centerLocation = codeAdress("Córdoba, Córdoba, Argentina");
 
 
             centerLocation.then(
                 function(center){
                     centerMap = center;
-                    map  = new google.maps.Map(document.getElementById('map'), {
+                    map  = new google.maps.Map(document.getElementById(mapCanvas), {
                         zoom: 12,
                         center: center
                     });
@@ -54,6 +55,7 @@
                         }
                     ];
                     map.setOptions({styles:mapStyle});*/
+
 
                 },
                 function() {

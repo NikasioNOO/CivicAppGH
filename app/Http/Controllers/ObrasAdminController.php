@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Http\Requests;
 use Gmaps;
-use League\Csv\Reader;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ObrasAdminController extends Controller
@@ -174,7 +173,7 @@ class ObrasAdminController extends Controller
 
     }
 
-    public function postLoadObrasFromFile(Request $request)
+    public function postLoadObrasFromFile2(Request $request)
     {
         $method = 'postLoadObrasFromFile';
         Logger::startMethod($method);
@@ -191,18 +190,16 @@ class ObrasAdminController extends Controller
                     $obraValidated = $this->obraHandler->ValidateObraValues($obra);
                     $obras->push($obraValidated);
                 }
-
-
-
             }
 
-
             Logger::endMethod($method);
-
+            $returnHTML = view('admin.ObrasBulkLoad',['obras'=>$obras->toArray()])->render();
             return response()->json([
                 'status' => 'Ok',
-                'data'   => $obras
+                'data'=> $returnHTML
             ]);
+
+
         }
         catch(\Exception $ex)
         {

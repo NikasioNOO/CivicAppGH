@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.39 on 2016-07-10.
+ * Generated for Laravel 5.2.39 on 2016-07-14.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -13740,6 +13740,17 @@ namespace {
          */
         public static function email($email){
             return \Collective\Html\HtmlBuilder::email($email);
+        }
+        
+        /**
+         * Generates non-breaking space entities based on number supplied.
+         *
+         * @param int $num
+         * @return string 
+         * @static 
+         */
+        public static function nbsp($num = 1){
+            return \Collective\Html\HtmlBuilder::nbsp($num);
         }
         
         /**

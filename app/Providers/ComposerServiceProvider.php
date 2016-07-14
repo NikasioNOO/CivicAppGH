@@ -19,7 +19,7 @@ class ComposerServiceProvider extends ServiceProvider
         //
         view()->composer('auth.CreateAppUser','CivicApp\Http\ViewComposers\UserComposer');
 
-        view()->composer('admin.obraspresupuesto','CivicApp\Http\ViewComposers\CatalogComposer');
+        view()->composer(['admin.obraspresupuesto','admin.ObrasBulkLoad'],'CivicApp\Http\ViewComposers\CatalogComposer');
 
 
     }

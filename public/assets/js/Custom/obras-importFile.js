@@ -38,7 +38,7 @@
             var formData = new FormData($('#importFileForm')[0]);
 
             $.ajax({
-                url: "/admin/ImportFromFile", // Url to which the request is send
+                url: "/admin/ImportFromFile2", // Url to which the request is send
                 type: "POST",             // Type of request to be send, called as method
                 data: formData, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
                 contentType: false,       // The content type used when sending data to the server.
@@ -46,8 +46,26 @@
                 processData:false,        // To send DOMDocument or non processed data file it is set to false
                 success: function(data)   // A function to be called if request succeeds
                 {
+
                     if(data.status == 'Ok' ) {
-                        Utilities.ShowSuccesMessage('Se ha subido correctamente el archivo');
+
+                        $('#bulkLoadObras').html(data.data);
+
+                        $('[name^="beCpc"]').each(function(index,control){
+                            Utilities.AutocompleteSimple(control.id);
+
+                        })
+
+                        $('[name^="beBarrio"]').each(function(index,control){
+                            Utilities.AutocompleteSimple(control.id);
+
+                        })
+
+                        $('[name^="beCategory"]').each(function(index,control){
+                            Utilities.AutocompleteSimple(control.id);
+
+                        })
+
 
                     }
                     else
@@ -55,12 +73,12 @@
                         Utilities.ShowError(data.message);
                     }
 
-
+                    ;
 
                 },
                 error:function( jqXHR, textStatus,  errorThrown )
                 {
-                    Utilities.ShowError('Se ha producido un error al subir el archivo.'+errorThrown);
+                    Utilities.ShowError('Se ha producido un error al subir los iconos.'+errorThrown);
                 }
             });
         };

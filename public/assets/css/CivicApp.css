@@ -25,6 +25,12 @@ div.blockUI.blockMsg
     z-index: 1062 !important;
 }
 
+.ui-autocomplete
+{
+    z-index: 1052;
+    font-size: smaller !important;
+}
+
 .img-logo-wrapper {
   /*  position:relative;*/
     padding:2% ;
@@ -434,6 +440,10 @@ th {
     max-height: 30px;
 }
 
+/***********  Modal Imges  END ****************/
+
+/*********** Modal BulkLoad **************/
+
 .custom-modal .grid-bulkLoad
 {
     padding: 6px;
@@ -450,6 +460,12 @@ th {
 .custom-modal .grid-bulkLoad input
 {
     padding: 2px;
+    font-size: x-small;
+}
+.custom-modal .grid-bulkLoad select
+{
+    padding: 0;
+    font-size: x-small;
 }
 
 .custom-modal .grid-bulkLoad .form-horizontal
@@ -467,4 +483,14 @@ th {
     background-color: #91ccea;
 }
 
-/***********  Modal Imges   ****************/
+.custom-modal .grid-bulkLoad .invalid
+{
+    background-color:  rgba(255, 59, 59, 0.83)
+}
+
+.custom-modal .grid-bulkLoad .validated
+{
+    background-color: rgba(0, 128, 0, 0.57);
+}
+
+/*********** Modal BulkLoad END **************/

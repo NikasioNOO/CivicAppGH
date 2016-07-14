@@ -254,8 +254,8 @@
                     </div>
                     </form>
                 </div>
-                <div class="row">
-                    @include('admin.ObrasBulkLoad')
+                <div class="row" id="bulkLoadObras">
+
                 </div>
             </div>
             <div class="modal-footer">

@@ -650,6 +650,32 @@ Utilities.Autocomplete = function (inputNameParam, methodAddParam, callBackEvent
 
 };
 
+Utilities.AutocompleteSimple = function (inputNameParam)
+{
+    var input = $('#'+inputNameParam);
+
+    input.autocomplete({
+
+        source: function (request, response)
+        {
+            var listValues = this.element.data('listvalues');
+            response(listValues.filter(function(entry){
+                return entry.value.toUpperCase().indexOf(request.term.toUpperCase()) >=0;
+            }));
+
+        },
+        change: function (event, ui) {
+
+
+            var flag =  this.value.trim() != "" && !ui.item;
+            if(!flag) {
+                $(this).data('idSelected', ui.item.id);
+            }
+        }
+    });
+
+};
+
 Utilities.ShowSuccesMessage=function(message)
 {
     this.ShowMessage(message, 'Satisfactorio');

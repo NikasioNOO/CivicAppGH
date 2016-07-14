@@ -61,7 +61,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('DeleteObra',['as'=>'admin.deleteObra','uses' => 'ObrasAdminController@postDeleteObra']);
         Route::post('GetAllObras',['as'=>'admin.getAllObras','uses' => 'ObrasAdminController@postGetAllObra']);
 
-        Route::post('ImportFromFile',['as'=>'admin.importFromFile','uses' => 'ObrasAdminController@postLoadObrasFromFile']);
+        Route::post('ImportFromFile2',['as'=>'admin.importFromFile','uses' => 'ObrasAdminController@postLoadObrasFromFile2']);
 
     });
 

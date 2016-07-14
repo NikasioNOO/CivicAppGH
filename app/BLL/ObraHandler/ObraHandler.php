@@ -136,9 +136,9 @@ class ObraHandler {
 
         if($obra->has('estado')&& isset($obra->estado) && !is_null($obra->estado) &&  trim($obra->estado) != ''
             && !is_null($this->catalogRepo->FindStatus($obra->estado)))
-            $obra->put('isValidCategory', true);
+            $obra->put('isValidStatus', true);
         else
-            $obra->put('isValidCategory',false);
+            $obra->put('isValidStatus',false);
 
 
         if($obra->has('ubicacion')&& isset($obra->ubicacion))

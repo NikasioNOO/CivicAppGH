@@ -167,7 +167,7 @@ return [
 
         GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
 
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+        'Maatwebsite\Excel\ExcelServiceProvider',
 
     ],
 
@@ -241,7 +241,7 @@ return [
 
         'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
 
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
     ],
 
 ];

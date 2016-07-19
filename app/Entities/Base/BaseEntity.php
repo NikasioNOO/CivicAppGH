@@ -27,7 +27,7 @@ abstract class BaseEntity implements Jsonable, \JsonSerializable  {
      */
     public function toJson($options = 0)
     {
-        // TODO: Implement toJson() method.
+
         $array = [];
         foreach($this->getters as $attribute)
         {

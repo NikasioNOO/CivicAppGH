@@ -22,6 +22,11 @@ $.ajaxSetup({
         this.length = from < 0 ? this.length + from : from;
         return this.push.apply(this, rest);
     };
+
+    String.prototype.startsWith = function(needle)
+    {
+        return(this.indexOf(needle) == 0);
+    };
 }());
 
 Utilities.block = function(){

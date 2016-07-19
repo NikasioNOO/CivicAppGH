@@ -58,7 +58,7 @@
                                 <button id="addbarrio" class="btn btn-primary input-sm fullWidth display-none"  type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
-                                <button id="editBarrio" class="btn btn-primary input-sm btn-sm fullWidth display-none" data-toggle="modal" data-target="#barrioLocation">
+                                <button id="editBarrio" class="btn btn-primary input-sm btn-sm fullWidth display-none" data-toggle="modal" data-target="#popUpLocation">
                                     <span class="fa fa-map-marker"></span>
                                 </button>
                             </span>
@@ -199,35 +199,32 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade custom-modal " id="barrioLocation" tabindex="-1" role="dialog" aria-labelledby="barrioLocation">
+<div class="modal fade custom-modal " id="popUpLocation" tabindex="-1" role="dialog" aria-labelledby="popUpLocation">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content cus-modal-images">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Ubicar Barrio</h4>
+                <h4 class="modal-title" id="myModalLabel">Ubicar </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="form-horizontal col-sm-offset-1 col-sm-10">
-                        <label for="autocompleteBarrioMap" class="col-sm-2 control-label">Dirección</label>
+                        <label for="autocompletepopUpMap" class="col-sm-2 control-label">Dirección</label>
                         <div class="col-sm-10">
-                            <input type="text" name="autocompleteBarrioMap" id="autocompleteBarrioMap" data-idGeoPoint="0" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
+                            <input type="text" name="autocompletepopUpMap" id="autocompletepopUpMap" data-idGeoPoint="0" class="form-control input-sm fullWidth" placeholder="Buscar"  autofocus>
                         </div>
 
                     </div>
                     <div class="form-horizontal col-sm-offset-1 col-sm-10 ">
-                        <div id="barrioMap" style="width:100%;height:250px; border: 2px solid; border-color:#3B6999; margin: 0 auto; margin-top: 5px">
+                        <div id="popUpMap" style="width:100%;height:250px; border: 2px solid; border-color:#3B6999; margin: 0 auto; margin-top: 5px">
 
                         </div>
                     </div>
                 </div>
-                <div class="row">
-
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="saveBarrioLocation">Guardar</button>
+                <button type="button" class="btn btn-primary" id="savepopUpLocation">Guardar</button>
             </div>
         </div>
     </div>
@@ -245,7 +242,7 @@
                 <div class="row">
                     <form enctype="multipart/form-data" id="importFileForm" role="form" method="POST" action="" >
                     <div class="form-horizontal  col-sm-12">
-                        <label for="autocompleteBarrioMap" class="col-sm-3 control-label">Seleccione archivo CSV</label>
+                        <label for="importFileCSV" class="col-sm-3 control-label">Seleccione archivo CSV</label>
                         <div class="col-sm-8">
                             <input type="file" name="importFileCSV" id="importFileCSV" data-idGeoPoint="0" class="form-control input-sm fullWidth"  autofocus>
                         </div>
@@ -254,43 +251,23 @@
                     </div>
                     </form>
                 </div>
-                <div class="row" id="bulkLoadObras">
+                <form enctype="multipart/form-data" name="formObrasImport" id="formObrasImport" role="form" method="POST" action="">
+                    <div class="row" id="bulkLoadObras">
 
-                </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
+                <input type="checkbox" name="chkUpdateEntities" style="float: left" id="chkUpdateEntities">
+                <label for="chkUpdateEntities" style="float: left" class="">Dar de alta los Barrio, CPC y Categorías que no existan</label>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="saveBarrioLocation">Guardar</button>
+                <button type="button" class="btn btn-primary" id="saveObrasFile">Guardar</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<!-- Modal
-<div class="modal fade custom-modal" id="barrioLocation" tabindex="-1" role="dialog" aria-labelledby="barrioLocation">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content cus-modal-images">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Ubicar Barrio</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-horizontal col-sm-12">
-
-
-
-
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="saveIcons">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 @push('scripts')
 
@@ -303,10 +280,13 @@
 
 {!! Html::script('assets/js/Custom/gmaphelper.js') !!}
 {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
+{!! Html::script('assets/js/Custom/popup-location-map.js') !!}
 {!! Html::script('assets/js/Custom/obras-admin.js') !!}
 {!! Html::script('assets/js/Custom/obras-importFile.js') !!}
+
 
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.Obra.InitMap">
 </script>
+
 @endpush

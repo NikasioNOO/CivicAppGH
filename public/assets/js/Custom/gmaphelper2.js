@@ -408,6 +408,16 @@
                return  $('#'+ selfi.inputAutocomplete.id).data('latLng');
             };
 
+            this.GetAutoCompleteAddress = function()
+            {
+                return  $('#'+ selfi.inputAutocomplete.id).val();
+            };
+
+            this.SetAutoCompleteAddress = function(address)
+            {
+                return  $('#'+ selfi.inputAutocomplete.id).val(address);
+            };
+
             this.MapCenter = function ()
             {
                 selfi.map.setCenter(selfi.centerMap);

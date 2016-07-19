@@ -4,6 +4,10 @@ namespace CivicApp\Http\Controllers;
 
 
 use CivicApp\BLL\ObraHandler\ObraHandler;
+use CivicApp\Entities\MapItem\Barrio;
+use CivicApp\Entities\MapItem\Category;
+use CivicApp\Entities\MapItem\Cpc;
+use CivicApp\Models\Status;
 use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Logger;
 use Illuminate\Support\Collection;
@@ -173,7 +177,7 @@ class ObrasAdminController extends Controller
 
     }
 
-    public function postLoadObrasFromFile2(Request $request)
+    public function postLoadObrasFromFile(Request $request)
     {
         $method = 'postLoadObrasFromFile';
         Logger::startMethod($method);
@@ -197,6 +201,90 @@ class ObrasAdminController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'data'=> $returnHTML
+            ]);
+
+
+        }
+        catch(\Exception $ex)
+        {
+            response()->json([
+                'status'  => 'Error',
+                'message' => $ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
+
+
+    }
+
+    public function postSaveObrasFromFile(Request $request)
+    {
+        $method = 'postSaveObrasFromFile';
+        Logger::startMethod($method);
+        try {
+
+            $obras = new Collection();
+            $withError = false;
+            if($request->has('addObraChk')) {
+                for($index = 0 ; $index < count($request->bYear) ; $index++)
+                {
+
+                    $obra = collect([
+                        'ano' => $request->beYear[$index],
+                        'cpc' => $request->beTitle[$index],
+                        'barrio' => $request->beBarrio[$index],
+                        'categoria' => $request->beCategory[$index],
+                        'titulo' => $request->beTitle[$index],
+                        'presupuesto' => $request->beBudget[$index],
+                        'estado' => $request->beStatus[$index],
+                        'ubicacion' =>  $request->beAddress[$index],
+                        'location' => $request->beLocation[$index]
+                    ]);
+
+                    if(array_has( $request->addObraChk,$index))
+                    {
+                        $obra = $this->obraHandler->ValidateObraValues($obra);
+                        if($obra->isValid)
+                        {
+                            $newObra = \App::make(MapItem::class);
+                            $newObra->year = $request->beYear[$index];
+                            $newObra->description = $request->beTitle[$index];
+                            $newObra->address= $request->beAddress[$index];
+                            $newObra->budget= $request->beBudget[$index];
+                            $newObra->cpc->name = $request->beCpc[$index];
+                            $newObra->barrio->name = $request->beBarrio[$index];
+                            $newObra->category->category = $request->beCategory[$index];
+                            $newObra->status->id = $request->beStatus[$index];
+                            $newObra->location->location = $request->beLocation[$index];
+
+                            $obra->put('created',$this->obraHandler->BulkCreateObra($newObra));
+
+                        }
+                        else
+                        {
+                            $obra->put('created',false);
+                            $withError = true;
+                        }
+
+                    }
+
+                    $obras->push($obra);
+
+                }
+
+            }
+            else
+            {
+                throw new \Exception('No hay ninguna obra seleccionada para grabar.');
+            }
+
+            Logger::endMethod($method);
+
+            $returnHTML = view('admin.ObrasBulkLoad',['obras'=>$obras->toArray()])->render();
+            return response()->json([
+                'status' => 'Ok',
+                'data'=> $returnHTML,
+                'widthErrors' => $withError
             ]);
 
 

@@ -5,7 +5,6 @@
     this.CivicApp = this.CivicApp || {};
     this.CivicApp.Obra = this.CivicApp.Obra || new function(){
 
-        var mapBarrio= null;
         var map = null;
 
 
@@ -303,36 +302,52 @@
                 LoadCategoryIcons();
             });
 
-            $('#barrioLocation').on('shown.bs.modal',function(e)
+            CivicApp.PopUpLocation.AddCallBackShownModal(function(e)
             {
 
 
+                if(e.relatedTarget.id=='editBarrio') {
+                    CivicApp.PopUpLocation.isLocationBarrio= true;
+                    var location = barrioInput.data('location');
+                    if (location) {
+                        var latlng = location.split(',');
+                        CivicApp.PopUpLocation.mapPopUp().SetAutocompleteAddressAndMarker(latlng[0], latlng[1]);
 
-                var location = barrioInput.data('location');
-                if(location) {
-                    var latlng = location.split(',');
-                    mapBarrio.SetAutocompleteAddressAndMarker(latlng[0],latlng[1]);
+                    }
+                    else {
+                        CivicApp.PopUpLocation.mapPopUp().MapCenter();
+                        CivicApp.PopUpLocation.mapPopUp().CleanAutocomplete();
 
+                    }
+                    google.maps.event.trigger(CivicApp.PopUpLocation.mapPopUp().map, 'resize');
                 }
-                else
-                {
-                    mapBarrio.MapCenter();
-                    mapBarrio.CleanAutocomplete();
 
-                }
 
-                google.maps.event.trigger(mapBarrio.map, 'resize');
 
 
             });
 
-            $('#saveBarrioLocation').on('click',
-            function()
-            {
-                SaveBarrioLocation();
-                $('#barrioLocation').modal('hide');
-            }
-            );
+
+
+            CivicApp.PopUpLocation.AddCallBackSave(function(){
+                if(CivicApp.PopUpLocation.isLocationBarrio)
+                {
+                    SaveBarrioLocation();
+                    CivicApp.PopUpLocation.HidePopUpLocation();
+                }
+
+            });
+
+            CivicApp.PopUpLocation.AddCallBackHideModal(function(){
+               if(CivicApp.PopUpLocation.isLocationBarrio)
+               {
+                    delete  CivicApp.PopUpLocation.isLocationBarrio;
+                   CivicApp.PopUpLocation.mapPopUp().CleanAutocomplete();
+               }
+            });
+
+
+
 
         };
 
@@ -371,7 +386,7 @@
         var FocusForm= function()
         {
             $(window).scrollTop($('#FormObra').position().top);
-        }
+        };
 
         var SaveObra = function()
         {
@@ -436,7 +451,7 @@
         var SaveBarrioLocation = function()
         {
 
-            var location = mapBarrio.GetLatLng();
+            var location = CivicApp.PopUpLocation.mapPopUp().GetLatLng();
             if(!location) {
                 Utilities.ShowError('No hay ningúna ubicación seleccionada para guardar');
                 return;
@@ -491,16 +506,19 @@
                 map.AddEventClickAddMarker();
             });
 
-            mapBarrio = new CivicApp.GmapHelper2.Map();
-            var initMapBarrio = mapBarrio.InitMap('barrioMap');
-            initMapBarrio.then(function() {
-                mapBarrio.southWest = '-31.471168, -64.278946';
-                mapBarrio.northEast = '-31.361003, -64.090805';
-                mapBarrio.CreateAutocomplete('autocompleteBarrioMap');
-                mapBarrio.AddEventClickAddMarker();
+
+            CivicApp.PopUpLocation.InitializeMap();
+/*
+            mapPopUp = new CivicApp.GmapHelper2.Map();
+            var initmapPopUp = mapPopUp.InitMap('popUpMap');
+            initmapPopUp.then(function() {
+                mapPopUp.southWest = '-31.471168, -64.278946';
+                mapPopUp.northEast = '-31.361003, -64.090805';
+                mapPopUp.CreateAutocomplete('autocompletepopUpMap');
+                mapPopUp.AddEventClickAddMarker();
 
             });
-
+*/
         };
 
         var LoadCatalogs = function() {
@@ -526,7 +544,8 @@
                     $('#editBarrio').toggle(!flag);
                 },
                 function(){
-                    $('#barrioLocationd').modal('show');
+                    CivicApp.PopUpLocation.DisplayPopUpLocation();
+                    //$('#popUpLocation').modal('show');
                     $('#editBarrio').toggle(true);
                 });
             Utilities.Autocomplete('CPC','/admin/AddCpc');

@@ -164,7 +164,7 @@ class MapperProvider extends ServiceProvider
                     $modelMapItem->status()->associate($mapper->map(Entities\MapItem\Status::class, Models\Status::class, $entityMapItem->status));
                 if(!is_null($entityMapItem->mapItemType))
                     $modelMapItem->mapItemType()->associate($mapper->map(Entities\MapItem\MapItemType::class, Models\MapItemType::class, $entityMapItem->mapItemType));
-                if(!is_null($entityMapItem->location))
+                if(!is_null($entityMapItem->location) )
                     $modelMapItem->location()->associate($mapper->map(Entities\Common\GeoPoint::class, Models\GeoPoint::class, $entityMapItem->location));
                 return $modelMapItem;
             });

@@ -395,13 +395,19 @@
                 {
                     if(data.status == 'Ok')
                     {
-                         Utilities.ShowSuccesMessage('Se ha guardado correctamente la Obra del Presupuesto Participativo');
+                       // Utilities.ShowSuccesMessage('Se ha guardado correctamente la Obra del Presupuesto Participativo');
                         CleanObra();
                         CivicApp.ObrasGrid.ReloadGrid();
+                        $('#divMessages').html(data.htmlMessage);
                     }
                     else
                     {
-                        Utilities.ShowError(data.message);
+                        if(data.htmlMessage)
+                        {
+                            $('#divMessages').html(data.htmlMessage);
+                        }
+                        else
+                            Utilities.ShowError(data.message);
                     }
 
                 }).fail(function()

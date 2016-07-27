@@ -4,7 +4,10 @@
     </div>
     <div class="panel-body custom-panel-primary-body">
 
-        @include('includes.errors')
+        <div id="divMessages">
+
+        </div>
+
         <div>
 
         </div>
@@ -38,7 +41,7 @@
                 <div class="form-group form-group-sm col-sm-12 custom-form-group" >
                     <label for="CPC" class="col-sm-4 control-label">CPC</label>
                     <div class="input-group col-sm-8 autocomplete" >
-                            <input name="CPC" id="CPC" class="form-control input-sm fullWidth" type="text" data-methodadd="" data-listvalues="{{ $cpcs }}"/>
+                            <input name="CPC" id="CPC" class="form-control input-sm fullWidth" required="required" type="text" data-methodadd="" data-listvalues="{{ $cpcs }}"/>
                             <span class="input-group-btn" >
                                 <button id="addCPC" class="btn btn-primary input-sm fullWidth display-none"  type="button">
                                     <span class="glyphicon glyphicon-plus"></span>

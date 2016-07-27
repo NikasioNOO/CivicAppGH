@@ -142,7 +142,8 @@ class MapItemRepository extends Repository implements IMapItemRepository {
             /** @var Models\MapItem $obraModel */
             $obraModel = $this->mapper->map($this->entity(), $this->model(), $obra);
 
-            if (!is_null( $obraModel->location )) {
+            if (!is_null( $obraModel->location ) && !is_null( $obraModel->location->location)
+                &&  $obraModel->location->location != '') {
                 $obraModel->location->save();
                 $obraModel->Location()->associate($obraModel->location->id);
             }

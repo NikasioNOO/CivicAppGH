@@ -35,6 +35,10 @@ class ObraHandler {
         $method = 'SaveObra';
         Logger::startMethod($method);
 
+        if(!is_null($obra->location) && $obra->location->id==0 &&
+            (is_null($obra->location->location)|| trim($obra->location->location)=='' ) )
+            $obra->location = null;
+
         $this->ValidateObra($obra);
 
 
@@ -43,6 +47,8 @@ class ObraHandler {
         $obra->mapItemType = App::make(MapItemType::class);
 
         $obra->mapItemType->id = 1;
+
+
 
         if($obra->id == 0)
           return  $this->mapItemRepository->SaveObra($obra);
@@ -106,20 +112,24 @@ class ObraHandler {
     }
 
     private function ValidateObra(MapItem $obra)
-{
-    if(is_null($obra->barrio) || is_null($this->catalogRepo->GetBarrio($obra->barrio->id)))
-        throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El barrio']),0200);
+    {
+        $barrio = $this->catalogRepo->GetBarrio($obra->barrio->id);
+        if(is_null($obra->barrio) || is_null($barrio))
+            throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El barrio']),0200);
 
-    if(is_null($obra->cpc) || is_null($this->catalogRepo->GetCpc($obra->cpc->id)))
-        throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El cpc']),0200);
+        if( is_null($obra->location)  && is_null($barrio->location))
+            throw new ObraValidateException(trans('mapitemserrorcodes.0202'),0202);
 
-    if(is_null($this->category) || is_null($this->catalogRepo->GetCategory($obra->category->id)))
-        throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'La categoría']),0200);
+        if(is_null($obra->cpc) || is_null($this->catalogRepo->GetCpc($obra->cpc->id)))
+            throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El cpc']),0200);
 
-    if(is_null($this->status) || is_null($this->catalogRepo->GetStatus($obra->status->id)))
-        throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El estado']),0200);
+        if(is_null($obra->category) || is_null($this->catalogRepo->GetCategory($obra->category->id)))
+            throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'La categoría']),0200);
 
-}
+        if(is_null($obra->status) || is_null($this->catalogRepo->GetStatus($obra->status->id)))
+            throw new ObraValidateException(trans('mapitemserrorcodes.0200',['catalog'=>'El estado']),0200);
+
+    }
 
     public function ValidateObraValues(Collection $obra)
     {
@@ -128,93 +138,93 @@ class ObraHandler {
         if($obra->has('ano'))
         {
             $currentYear = date('Y')+1;
-            if($obra->ano <= $currentYear && $obra->ano > ($currentYear-10))
-                $obra->put('isValidYear',true);
+            if($obra["ano"] <= $currentYear && $obra["ano"] > ($currentYear-10))
+                $obra->put('isValidYear',1);
             else {
-                $obra->put('isValidYear', false);
+                $obra->put('isValidYear', 0);
                 $isValid = false;
             }
         }
         else {
-            $obra->put('isValidYear', false);
+            $obra->put('isValidYear', 0);
             $isValid = false;
         }
 
-        if($obra->has('cpc')&& isset($obra->cpc) && !is_null($obra->cpc) &&  trim($obra->cpc) != ''
-            && !is_null($this->catalogRepo->FindCpc($obra->cpc)))
-            $obra->put('isValidCpc', true);
+        if($obra->has('cpc')&& isset($obra["cpc"]) && !is_null($obra["cpc"]) &&  trim($obra["cpc"]) != ''
+            && !is_null($this->catalogRepo->FindCpc($obra["cpc"])))
+            $obra->put('isValidCpc', 1);
         else {
-            $obra->put('isValidCpc', false);
+            $obra->put('isValidCpc', 0);
             $isValid = false;
         }
 
-        if($obra->has('barrio')&& isset($obra->barrio) && !is_null($obra->barrio) &&  trim($obra->barrio) != ''
-            && !is_null($this->catalogRepo->FindBarrio($obra->barrio)))
-            $obra->put('isValidBarrio', true);
-        else {
-            $isValid = false;
-            $obra->put('isValidBarrio', false);
-        }
-
-        if($obra->has('categoria')&& isset($obra->categoria) && !is_null($obra->categoria) &&  trim($obra->categoria) != ''
-            && !is_null($this->catalogRepo->FindCategory($obra->categoria)))
-            $obra->put('isValidCategory', true);
+        if($obra->has('barrio')&& isset($obra["barrio"]) && !is_null($obra["barrio"]) &&  trim($obra["barrio"]) != ''
+            && !is_null($this->catalogRepo->FindBarrio($obra["barrio"])))
+            $obra->put('isValidBarrio', 1);
         else {
             $isValid = false;
-            $obra->put('isValidCategory', false);
+            $obra->put('isValidBarrio', 0);
         }
 
-        if($obra->has('titulo')&& isset($obra->titulo) && !is_null($obra->titulo) &&  trim($obra->titulo) != '')
-            $obra->put('isValidTitle', true);
+        if($obra->has('categoria')&& isset($obra["categoria"]) && !is_null($obra["categoria"]) &&  trim($obra["categoria"]) != ''
+            && !is_null($this->catalogRepo->FindCategory($obra["categoria"])))
+            $obra->put('isValidCategory', 1);
         else {
             $isValid = false;
-            $obra->put('isValidTitle', false);
+            $obra->put('isValidCategory', 0);
         }
 
-        if($obra->has('presupuesto')&& isset($obra->presupuesto) && !is_null($obra->presupuesto) &&  trim($obra->presupuesto) != ''
-            && is_numeric($obra->presupuesto))
-            $obra->put('isValidBudget', true);
+        if($obra->has('titulo')&& isset($obra["titulo"]) && !is_null($obra["titulo"]) &&  trim($obra["titulo"]) != '')
+            $obra->put('isValidTitle', 1);
         else {
             $isValid = false;
-            $obra->put('isValidBudget', false);
+            $obra->put('isValidTitle', 0);
         }
 
-        if($obra->has('estado')&& isset($obra->estado) && !is_null($obra->estado) &&  trim($obra->estado) != ''
-            && !is_null($this->catalogRepo->FindStatus($obra->estado)))
-            $obra->put('isValidStatus', true);
+        if($obra->has('presupuesto')&& isset($obra["presupuesto"]) && !is_null($obra["presupuesto"]) &&  trim($obra["presupuesto"]) != ''
+            && is_numeric($obra["presupuesto"]))
+            $obra->put('isValidBudget', 1);
         else {
             $isValid = false;
-            $obra->put('isValidStatus', false);
+            $obra->put('isValidBudget', 0);
+        }
+
+        if($obra->has('estado')&& isset($obra["estado"]) && !is_null($obra["estado"]) &&  trim($obra["estado"]) != ''
+            && !is_null($this->catalogRepo->FindStatus($obra["estado"])))
+            $obra->put('isValidStatus', 1);
+        else {
+            $isValid = false;
+            $obra->put('isValidStatus', 0);
         }
 
 
-        if($obra->has('ubicacion')&& isset($obra->ubicacion))
-            if(is_null($obra->ubicacion) ||  trim($obra->ubicacion) == '') {
-                $obra->put('isValidAddress', true);
+        if($obra->has('ubicacion')&& isset($obra["ubicacion"]))
+            if(is_null($obra["ubicacion"]) ||  trim($obra["ubicacion"]) == '') {
+                $obra->put('isValidAddress', 1);
                 $obra->put('location', null);
             }
             else
             {
-                if($obra->has('location')&& isset($obra->location)
-                    && !is_null($obra->location) && trim($obra->location) != '' )
+                if($obra->has('location')&& isset($obra["location"])
+                    && !is_null($obra["location"]) && trim($obra["location"]) != '' )
                 {
-                    $obra->put('isValidAddress', true);
+                    $obra->put('isValidAddress', 1);
                 }
                 else {
 
-                    $location = Utilities::GeoCodeAdrress($obra->ubicacion);
+                    $location = Utilities::GeoCodeAdrress($obra["ubicacion"]);
                     if ($location['status'] == 'OK') {
-                        $obra->put('isValidAddress', true);
+                        $obra->put('isValidAddress', 1);
                         $obra->put('location', $location['lat'] . ',' . $location['lng']);
                     } else {
-                        $obra->put('isValidCategory', false);
+                        $obra->put('isValidAddress', 0);
                         $obra->put('location', null);
                         $isValid = false;
                     }
                 }
             }
         else {
-            $obra->put('isValidCategory', false);
+            $obra->put('isValidCategory', 0);
             $obra->put('location', null);
             $isValid = false;
         }

@@ -78,6 +78,7 @@
                     inputAddress.val(CivicApp.PopUpLocation.mapPopUp().GetAutoCompleteAddress());
                     inputLocation.val(CivicApp.PopUpLocation.mapPopUp().GetLatLng());
                     CivicApp.PopUpLocation.HidePopUpLocation();
+                    inputAddress.removeClass('invalid');
                     delete CivicApp.PopUpLocation.source;
 
 
@@ -108,26 +109,34 @@
 
             var formData = new FormData($('#formObrasImport')[0]);
 
-            if($('#chkUpdateEntities:checked')) {
+            if($('#chkUpdateEntities:checked').length>0) {
 
                 var newcpcs = [];
-                $('[name^="beCpc"] [data-validfield="false"]').each(function (index, control) {
-                    newcpcs.push(control.value);
+                $('[name^="beCpc"][data-validfield="0"]').each(function (index, control) {
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                        newcpcs.push(control.value);
                 });
 
                 var newbarrios = [];
-                $('[name^="beBarrio"] [data-validfield="false"]').each(function (index, control) {
-                    newbarrios.push(control.value);
+                $('[name^="beBarrio"][data-validfield="0"]').each(function (index, control) {
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                        newbarrios.push(control.value);
                 });
 
                 var newcategories = [];
-                $('[name^="beCategory"] [data-validfield="false"]').each(function (index, control) {
-                    newcategories.push(control.value);
+                $('[name^="beCategory"][data-validfield="0"]').each(function (index, control) {
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                        newcategories.push(control.value);
                 });
 
-                formData.append('newcpcs', newcpcs);
-                formData.append('newbarrios', newbarrios);
-                formData.append('newcategories', newcategories);
+                if(newcpcs.length >0)
+                    formData.append('newcpcs', newcpcs);
+                if(newbarrios.length > 0)
+                    formData.append('newbarrios', newbarrios);
+                if(newcategories.length>0)
+                    formData.append('newcategories', newcategories);
+
+                formData.append('chkUpdateEntities', 1);
             }
 
             $.ajax({
@@ -149,6 +158,7 @@
                         {
                             Utilities.ShowMessage('Algunas obras no se han podido grabar , revise por favor.', 'Validar Obras');
                         }
+                        BindBulkInputs();
                     }
                     else
                     {
@@ -162,6 +172,45 @@
                     Utilities.ShowError('Se ha producido un error al grabar las obras.'+errorThrown);
                 }
             });
+        };
+
+        var BindBulkInputs = function()
+        {
+            $('[name^="beCpc"]').each(function(index,control){
+                Utilities.AutocompleteSimple(control.id);
+
+            });
+
+            $('[name^="beBarrio"]').each(function(index,control){
+                Utilities.AutocompleteSimple(control.id);
+
+            });
+
+            $('[name^="beCategory"]').each(function(index,control){
+                Utilities.AutocompleteSimple(control.id);
+
+            });
+
+            $('[name^="beCpc"].invalid, [name^="beBarrio"].invalid, [name^="beCategory"].invalid ')
+                .on('change', function()
+                {
+                    var field = $(this);
+                    if(field.data('idSelected')) {
+                        field.removeClass('invalid');
+                        field.data('validfield',1);
+                    }
+                });
+
+            $('[name^="beCpc"].invalid, [name^="beBarrio"].invalid, [name^="beCategory"].invalid ')
+                .blur(function(){
+                    $(this).trigger('change');
+                });
+
+            $('#bulkLoadObras .invalid ').not('[name^="beCpc"].invalid, [name^="beBarrio"].invalid, [name^="beCategory"]')
+                .on('change', function()
+                {
+                    $(this).removeClass('invalid');
+                });
         };
 
 
@@ -193,35 +242,7 @@
                         $('#bulkLoadObras').html(data.data)
                             .css('max-height',$( window ).height()*0.6);
 
-                        $('[name^="beCpc"]').each(function(index,control){
-                            Utilities.AutocompleteSimple(control.id);
-
-                        });
-
-                        $('[name^="beBarrio"]').each(function(index,control){
-                            Utilities.AutocompleteSimple(control.id);
-
-                        });
-
-                        $('[name^="beCategory"]').each(function(index,control){
-                            Utilities.AutocompleteSimple(control.id);
-
-                        });
-
-                        $('[name^="beCpc"] .invalid, [name^="beBarrio"] .invalid, [name^="beCategory"] .invalid ')
-                            .on('change', function()
-                        {
-                            var field = $(this);
-                            if(field.data('idSelected')) {
-                                field.removeClass('invalid');
-                                field.data('validfield',true);
-                            }
-                        });
-                        $('#bulkLoadObras .invalid ').not('[name^="beCpc"] .invalid, [name^="beBarrio"] .invalid, [name^="beCategory"]')
-                            .on('change', function()
-                            {
-                                    $(this).removeClass('invalid');
-                            });
+                        BindBulkInputs();
 
                         isLoadedFlag=true;
 

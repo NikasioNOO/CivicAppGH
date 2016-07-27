@@ -3,10 +3,12 @@
 namespace CivicApp\Http\Controllers;
 
 
+use CivicApp\BLL\Catalog\CatalogHandler;
 use CivicApp\BLL\ObraHandler\ObraHandler;
 use CivicApp\Entities\MapItem\Barrio;
 use CivicApp\Entities\MapItem\Category;
 use CivicApp\Entities\MapItem\Cpc;
+use CivicApp\Models\GeoPoint;
 use CivicApp\Models\Status;
 use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Logger;
@@ -15,16 +17,19 @@ use Illuminate\Http\Request;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Http\Requests;
 use Gmaps;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ObrasAdminController extends Controller
 {
 
     private $obraHandler;
+    private $catalogHandler;
 
-    public function __construct(ObraHandler $handler)
+    public function __construct(ObraHandler $handler, CatalogHandler $catHandler)
     {
         $this->obraHandler = $handler;
+        $this->catalogHandler = $catHandler;
     }
 
     //
@@ -72,6 +77,32 @@ class ObrasAdminController extends Controller
 
     }
 
+    private static $rulesSaveObra = [
+        'year'              => 'required',
+        'cpc'            => 'required|exists:cpc,id',
+        'barrio'             => 'required|exists:barrios,id',
+        'category'                 => 'required',
+        'description'              => 'required',
+        'budget' => 'required|numeric',
+        'status' => 'required|exists:statuses,id'
+    ];
+
+    private static $messagesSaveObra = [
+        'year.required'     => 'El año es requerido',
+        'cpc.required'   => 'El CPC es requerido',
+        'cpc.exists'    => 'El CPC debe existir',
+        'barrio.required'        => 'El barrio es requerido',
+        'barrio.exists'           => 'El barrio debe existir',
+        'category.required'          => 'La categoría es requerida',
+        'category.exists'     => 'La categoría debe existir',
+        'description.required'          => 'El título de la obra es requerido',
+        'budget.required'          => 'El presupuesto es requerido',
+        'budget.numeric' => 'El presupuesto debe ser un valor numérico',
+        'status.required'        => 'El status es requerido',
+        'status.exists'           => 'El estatus debe existir',
+    ];
+
+
     public function postSaveObra(Request $request, MapItem $item, IMapper $mapper )
     {
         $method = 'postSaveObra';
@@ -80,9 +111,20 @@ class ObrasAdminController extends Controller
 
         try {
             if ( ! $request->has('obra')) {
-                response()->json([
+                return response()->json([
                     'status'  => 'Error',
                     'message' => 'Error al recibir el barrio para agregar'
+                ]);
+            }
+
+
+            $validator = Validator::make($request->obra, $this::$rulesSaveObra, $this::$messagesSaveObra);
+            if ($validator->fails()) {
+                $returnHTML = view('includes.errors')->withErrors($validator)->render();
+                return response()->json([
+                    'status'  => 'Error',
+                    'message' => 'Error de validación',
+                    'htmlMessage' => $returnHTML
                 ]);
             }
 
@@ -92,16 +134,20 @@ class ObrasAdminController extends Controller
 
             $obraEntity->id = $id;
 
+
+            $returnHTML = view('includes.status')->with('status', 'success')
+                ->with('message', 'Se ha creado la obra satisfactoriamente.')->render();
             Logger::endMethod($method);
 
             return response()->json([
                 'status' => 'Ok',
-                'data'   => $obraEntity
+                'data'   => $obraEntity,
+                'htmlMessage' => $returnHTML
             ]);
         }
         catch(\Exception $ex)
         {
-            response()->json([
+            return response()->json([
                 'status'  => 'Error',
                 'message' => $ex->getMessage(),
                 'ErrorCode' => $ex->getCode()
@@ -138,7 +184,7 @@ class ObrasAdminController extends Controller
         }
         catch(\Exception $ex)
         {
-            response()->json([
+          return  response()->json([
                 'status'  => 'Error',
                 'message' => $ex->getMessage(),
                 'ErrorCode' => $ex->getCode()
@@ -168,7 +214,7 @@ class ObrasAdminController extends Controller
         }
         catch(\Exception $ex)
         {
-            response()->json([
+           return  response()->json([
                 'status'  => 'Error',
                 'message' => $ex->getMessage(),
                 'ErrorCode' => $ex->getCode()
@@ -183,6 +229,7 @@ class ObrasAdminController extends Controller
         Logger::startMethod($method);
         try {
 
+
             $obras = new Collection();
             if($request->hasFile('importFileCSV'))
             {
@@ -192,6 +239,7 @@ class ObrasAdminController extends Controller
                 foreach($obrasFile as $obra)
                 {
                     $obraValidated = $this->obraHandler->ValidateObraValues($obra);
+                    $obraValidated->put('created',0);
                     $obras->push($obraValidated);
                 }
             }
@@ -207,7 +255,7 @@ class ObrasAdminController extends Controller
         }
         catch(\Exception $ex)
         {
-            response()->json([
+           return response()->json([
                 'status'  => 'Error',
                 'message' => $ex->getMessage(),
                 'ErrorCode' => $ex->getCode()
@@ -223,28 +271,72 @@ class ObrasAdminController extends Controller
         Logger::startMethod($method);
         try {
 
+            if($request->has('chkUpdateEntities'))
+            {
+                if($request->has('newcpcs'))
+                {
+                    if(is_array($request->newcpcs)) {
+                        foreach ($request->newcpcs as $cpc) {
+                            $this->catalogHandler->AddCpc($cpc);
+                        }
+                    }
+                    else
+                        $this->catalogHandler->AddCpc($request->newcpcs);
+
+                }
+
+                if($request->has('newbarrios'))
+                {
+                    if(is_array($request->newbarrios)) {
+                        foreach ($request->newbarrios as $barrio) {
+                            $this->catalogHandler->AddBarrio($barrio);
+                        }
+                    }
+                    else
+                        $this->catalogHandler->AddBarrio($request->newbarrios);
+                }
+
+                if($request->has('newcategories'))
+                {
+                    if(is_array($request->newcategories)) {
+                        foreach ($request->newcategories as $category) {
+                            $this->catalogHandler->AddCategory($category);
+                        }
+                    }
+                    else
+                        $this->catalogHandler->AddCategory($request->newcategories);
+                }
+
+            }
+
             $obras = new Collection();
             $withError = false;
             if($request->has('addObraChk')) {
-                for($index = 0 ; $index < count($request->bYear) ; $index++)
+                for($index = 0 ; $index < count($request->beYear) ; $index++)
                 {
+
 
                     $obra = collect([
                         'ano' => $request->beYear[$index],
-                        'cpc' => $request->beTitle[$index],
+                        'cpc' => $request->beCpc[$index],
                         'barrio' => $request->beBarrio[$index],
                         'categoria' => $request->beCategory[$index],
                         'titulo' => $request->beTitle[$index],
                         'presupuesto' => $request->beBudget[$index],
                         'estado' => $request->beStatus[$index],
                         'ubicacion' =>  $request->beAddress[$index],
-                        'location' => $request->beLocation[$index]
+                        'location' => $request->beLocation[$index],
+                        'created' => $request->beCreated[$index]
                     ]);
+
+                    $obra = $this->obraHandler->ValidateObraValues($obra);
+                    if($obra['created'] == 2 && $obra['isValid'])
+                        $obra['created'] = 0;
 
                     if(array_has( $request->addObraChk,$index))
                     {
-                        $obra = $this->obraHandler->ValidateObraValues($obra);
-                        if($obra->isValid)
+
+                        if($obra["isValid"] && $obra['created'] == 0 )
                         {
                             $newObra = \App::make(MapItem::class);
                             $newObra->year = $request->beYear[$index];
@@ -254,15 +346,19 @@ class ObrasAdminController extends Controller
                             $newObra->cpc->name = $request->beCpc[$index];
                             $newObra->barrio->name = $request->beBarrio[$index];
                             $newObra->category->category = $request->beCategory[$index];
-                            $newObra->status->id = $request->beStatus[$index];
-                            $newObra->location->location = $request->beLocation[$index];
+                            $newObra->status->status = $request->beStatus[$index];
+                            if(!is_null($request->beLocation[$index]) &&
+                                trim($request->beLocation[$index])!='') {
+                                $newObra->location= \App::make(GeoPoint::class);
+                                $newObra->location->location = $request->beLocation[$index];
+                            }
 
-                            $obra->put('created',$this->obraHandler->BulkCreateObra($newObra));
+                            $obra['created']=$this->obraHandler->BulkCreateObra($newObra) ? 1 :2 ;
 
                         }
                         else
                         {
-                            $obra->put('created',false);
+                            $obra['created']=2;
                             $withError = true;
                         }
 
@@ -291,7 +387,7 @@ class ObrasAdminController extends Controller
         }
         catch(\Exception $ex)
         {
-            response()->json([
+           return  response()->json([
                 'status'  => 'Error',
                 'message' => $ex->getMessage(),
                 'ErrorCode' => $ex->getCode()

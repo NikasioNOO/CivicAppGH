@@ -26,7 +26,8 @@ return [
     '0104' => 'Error al recuperar la obra',
 
     '0200' => ':catalog de la Obra no existe',
-    '0201' => 'La Obra del presupuesto participativo no existe en la base de datos'
+    '0201' => 'La Obra del presupuesto participativo no existe en la base de datos',
+    '0202' => 'La Obra ni el barrio posee localización'
 
 
 

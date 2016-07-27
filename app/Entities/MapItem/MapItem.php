@@ -41,7 +41,7 @@ class MapItem extends  BaseEntity{
         $this->_category = $category;
         $this->_status = $status;
         $this->_mapItemType= $mapItemType;
-        $this->_location = $location;
+        //$this->_location = $location;
 
 
     }

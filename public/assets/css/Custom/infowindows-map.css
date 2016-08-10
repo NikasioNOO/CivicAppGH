@@ -1,0 +1,40 @@
+/*.iw-container  .iw-title {
+    font-family: 'Open Sans Condensed', sans-serif;
+
+    font-weight: 400;
+    padding: 5px;
+    background-color: #00aeef;
+    color: white;
+    margin: 1px;
+    border-radius: 2px 2px 0 0; /* In accordance with the rounding of the default infowindow corners.
+}
+
+.gm-style-iw {
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 2px 2px 0 0;
+}*/
+
+#iw-container {
+    padding: 10px;
+}
+
+#iw-container .iw-title {
+
+    font-weight: bold;
+    color: #00aeef;
+}
+
+#iw-container .iw-subTitle
+{
+    font-weight: bold;
+}
+
+#iw-container .iw-content a
+{
+    cursor: pointer;
+    font-weight: bold;
+    font-style: italic;
+    max-height: 200px;
+    overflow-y: scroll;
+}

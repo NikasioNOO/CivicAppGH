@@ -10,6 +10,10 @@ namespace CivicApp\BLL\ObraHandler;
 
 
 use CivicApp\DAL\Catalog\ICatalogRepository;
+use CivicApp\DAL\MapItem\Criterias\BarrioCriteria;
+use CivicApp\DAL\MapItem\Criterias\CategoryCriteria;
+use CivicApp\DAL\MapItem\Criterias\ObrasCriteria;
+use CivicApp\DAL\MapItem\Criterias\YearCriteria;
 use CivicApp\DAL\MapItem\IMapItemRepository;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Utilities\Logger;
@@ -107,6 +111,47 @@ class ObraHandler {
         Logger::startMethod($method);
 
         return $this->mapItemRepository->GetAllObras();
+
+
+    }
+
+
+    public  function  GetAllObrasJson()
+    {
+        $method = 'GetAllObrasJson';
+        Logger::startMethod($method);
+
+        return $this->mapItemRepository->GetAllObrasJson();
+
+
+    }
+
+    public function SearchByCriteria($criteria)
+    {
+        $method = 'SearchByCriteria';
+        Logger::startMethod($method);
+
+        $this->mapItemRepository->pushCriteria(new ObrasCriteria());
+
+        if( array_has($criteria,'year') && $criteria["year"]!=null )
+        {
+            $this->mapItemRepository->pushCriteria(new YearCriteria($criteria["year"]));
+        }
+
+        if( array_has($criteria,'category') && $criteria["category"]!=null )
+        {
+            $this->mapItemRepository->pushCriteria(new CategoryCriteria($criteria["category"]));
+        }
+
+        if( array_has($criteria,'barrio') && $criteria["barrio"]!=null )
+        {
+            $this->mapItemRepository->pushCriteria(new BarrioCriteria($criteria["barrio"]));
+        }
+
+        $result = $this->mapItemRepository->SearchCriteria();
+        Logger::endMethod($method);
+
+        return $result;
 
 
     }

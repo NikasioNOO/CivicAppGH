@@ -13,7 +13,7 @@
             this.geocoder = null;
             this.centerMap = null;
             this.markers = [];
-            this.iconsCategory = [];
+            this.clusterMarkers = null;
 
             this.autoComplete = null;
             this.infowindowMarker = null;
@@ -272,25 +272,123 @@
 
             };
 
-            this.addMarker = function(location, category, info){
+
+            this.CreateAutocompleteSearch = function(input)
+            {
+                var sWest =  this.southWest.split(',');
+                var nEast =  this.northEast.split(',');
+
+                var defaultBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng( parseFloat(sWest[0]), parseFloat(sWest[1])),
+                    new google.maps.LatLng( parseFloat(nEast[0]), parseFloat(nEast[1])));
+
+                selfi.inputAutocomplete = /** @type {!HTMLInputElement} */(
+                    document.getElementById(input));
+
+                selfi.map.setOptions({mapTypeControlOptions:{
+                    position: google.maps.ControlPosition.LEFT_BOTTOM
+                }});
+                selfi.map.controls[google.maps.ControlPosition.TOP_LEFT].push(selfi.inputAutocomplete);
+
+                selfi.autoComplete = new google.maps.places.Autocomplete( selfi.inputAutocomplete, { bounds : defaultBounds });
+                selfi.autoComplete.setComponentRestrictions({'country': 'ar'});
+
+
+                selfi.autoComplete.addListener('place_changed',function(){
+
+                    var place =  selfi.autoComplete.getPlace();
+                    if (!place.geometry) {
+                        window.alert("Autocomplete's returned place contains no geometry");
+                        return;
+                    }
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        selfi.map.fitBounds(place.geometry.viewport);
+                        selfi.map.setZoom(16);
+                    } else {
+                        selfi.map.setCenter(place.geometry.location);
+                        selfi.map.setZoom(16);  // Why 17? Because it looks good.
+                    }
+
+                    $('#'+ selfi.inputAutocomplete.id).data('latLng', place.geometry.location.lat()+','+place.geometry.location.lng())
+
+
+                })
+
+
+
+            };
+
+            this.AddMarker = function(location, icon, info){
                 var marker = new google.maps.Marker({
                     position: location,
-                    map: Map.map,
+                    map: selfi.map,
                     animation: google.maps.Animation.DROP,
-                    icon: Map.iconsCategory[category]
+                    icon: icon
                 });
                 var infowindow = new google.maps.InfoWindow({
-                    content: info
+                    content: info,
+                    maxWidth: 350
                 });
                 marker.addListener('click', function() {
                     infowindow.open(Map.map, marker);
                 });
-                if(! Map.markers[category])
-                    Map.markers[category] = [];
-                Map.markers[category].push(marker);
+
+                selfi.markers.push(marker);
+
+
+
+                return marker;
             };
 
-            this.addDummyMarkers = function()
+            this.SetMapOnAll = function(map) {
+                for (var i = 0; i < selfi.markers.length; i++) {
+                    selfi.markers[i].setMap(map);
+                }
+            };
+
+            this.ShowMarkers =function() {
+                selfi.SetMapOnAll(selfi.map);
+            };
+
+            this.ClearMarkers = function() {
+                selfi.SetMapOnAll(null);
+            };
+
+            this.DeleteMarkers = function() {
+                selfi.ClearMarkers();
+                selfi.markers = [];
+            };
+
+            this.CreateCluster = function()
+            {
+                selfi.clusterMarkers = new MarkerClusterer(selfi.map, selfi.markers, {maxZoom:17 });
+            };
+
+            this.ClearCluster = function()
+            {
+                selfi.clusterMarkers.clearMarkers();
+            };
+
+            this.AddMarkerToCluster = function()
+            {
+                selfi.clusterMarkers.addMarkers(selfi.markers);
+            };
+
+
+            this.CleanMarkersMap = function(clusterflag)
+            {
+                if(!clusterflag)
+                    clusterflag = false;
+
+                selfi.DeleteMarkers();
+                if(clusterflag)
+                    selfi.ClearCluster();
+
+            };
+
+           /* this.addDummyMarkers = function()
             {
                 selfi.addMarker({lat: -31.42161608, lng: -64.15921783},"espaciosVerdes","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
                 selfi.addMarker({lat: -31.39105049, lng: -64.19076446},"espaciosVerdes","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
@@ -298,7 +396,7 @@
                 selfi.addMarker({lat: -31.44850747, lng: -64.16407324},"transito","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
                 selfi.addMarker({lat: -31.40415877, lng: -64.19074358},"transito","<div style='max-width: 200px'>Equipamiento de Bancos de H°A° y Cestos Papeleros para las plazas .Equipamiento Global</div>" )
 
-            };
+            };*/
 
             this.AddUserLocationInfoWindows = function()
             {

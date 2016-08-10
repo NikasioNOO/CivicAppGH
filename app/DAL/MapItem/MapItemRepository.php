@@ -76,6 +76,42 @@ class MapItemRepository extends Repository implements IMapItemRepository {
 
     }
 
+    /**
+     * Return all Obras Presupuesto Participativo
+     * @return String
+     * @throws RepositoryException
+     */
+    public function GetAllObrasJson()
+    {
+        $method = "GetAllObrasJson";
+        try {
+
+            Logger::startMethod($method);
+
+            $obras = $this->model->with('mapItemType','category','status','barrio','cpc','location')
+                ->whereHas('mapItemType',function($query){
+                    $query->where('type',Constants::typeObra);
+                })->get();
+
+            $obrasEntities = $obras->toArray();
+
+            Logger::endMethod($method);
+
+            return $obrasEntities;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo);
+            throw new RepositoryException(trans('mapitemserrorcodes.0103'),0103);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->errorInfo);
+            throw new RepositoryException(trans('mapitemserrorcodes.0103'),0103);
+        }
+
+    }
+
     function GetMapItem($id)
     {
         $method = 'GetObra';

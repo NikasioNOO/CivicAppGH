@@ -11,8 +11,13 @@
 |
 */
 
+Route::group(['middleware' => ['api']], function () {
 
+    Route::resource('Catalogo', 'CatalogoController', ['only' => ['show']]);
+    Route::resource('ObraPP', 'ObraPPController', ['only' => ['index','show']]);
+    Route::get('/ObraPP/Año/{year}/Categoria/{categoryId}/Barrio/{barrioId}', 'ObraPPController@Search');
 
+});
 Route::group(['middleware' => ['web']], function () {
     //
     Route::get('/map', function(){
@@ -24,9 +29,9 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'HomeController@index'
     ]);
 
-    Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
+   /* Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
         Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
-    });
+    });*/
 
     Route::get('AdminLogin',['as'=>'authApp.login', 'uses' =>'Auth\AuthController@getLogin']);
 
@@ -71,7 +76,6 @@ Route::group(['middleware' => ['web']], function () {
     $s = 'social.';
     Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);
     Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
-
 
 
 });

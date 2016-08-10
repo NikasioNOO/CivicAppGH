@@ -22,11 +22,13 @@ class CatalogComposer {
 
     public function compose(View $view)
     {
-        $categories = json_encode(collect($this->catalogRepository->GetAllCategories())
+        $categoriesArray = $this->catalogRepository->GetAllCategories();
+        $categories = json_encode(collect($categoriesArray)
             ->map(function($item,$key){
                 return ['id'=>$item->id,'value'=>$item->category,'label'=>$item->category];
             }));
-        $barrios = json_encode(collect($this->catalogRepository->GetAllBarrios())
+        $barriosArray = $this->catalogRepository->GetAllBarrios();
+        $barrios = json_encode(collect($barriosArray)
             ->map(function($item,$key){
 
                 return ['id'=>$item->id,'value'=>$item->name, 'label'=>$item->name, 'location'=> !is_null($item->location)?$item->location->location : null ];
@@ -51,7 +53,7 @@ class CatalogComposer {
 
         $statuses = $this->catalogRepository->GetAllStatuses();
         $view->with(['categories'=>$categories,'barrios'=>$barrios,'statuses'=>$statuses,
-            'cpcs'=>$cpcs, 'years'=>$years]);
+            'cpcs'=>$cpcs, 'years'=>$years, 'barriosArray'=>$barriosArray, 'categoriesArray'=>$categoriesArray]);
 
 
 

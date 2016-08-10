@@ -34,7 +34,7 @@ Utilities.block = function(){
 };
 
 
-$(document).ajaxStart(Utilities.block).ajaxStop($.unblockUI);
+//$(document).ajaxStart(Utilities.block).ajaxStop($.unblockUI);
 
 /*$(document).ajaxError(function(event, jqxhr, settings, thrownError)
 {
@@ -727,7 +727,7 @@ Utilities.ShowMessage = function(message, title)
     )
 
 
-}
+};
 
 Utilities.ImageExists = function(image_url){
 
@@ -738,4 +738,12 @@ Utilities.ImageExists = function(image_url){
 
     return http.status != 404;
 
+};
+
+Utilities.CreateLocationObj = function(location)
+{
+    var loc = location.split(',');
+
+    return {lat: parseFloat(loc[0]), lng: parseFloat(loc[1])};
 }
+

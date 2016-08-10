@@ -23,6 +23,8 @@ interface IMapItemRepository extends IRepository, ICriteria {
 
     public  function GetAllObras();
 
+    public function GetAllObrasJson();
+
     public function SearchCriteria();
 
     public function GetMapItem($id);

@@ -253,25 +253,8 @@ th {
     margin: 0 auto;
 }
 
-.avatar-wrapper {
-    width: 30px;
-    height: 30px;
-    margin: 0 auto;
-    overflow-y: hidden;
-    position:relative;
-}
 
-.avatar-width
-{
-    width: 30px;
-}
 
-.user-loggued
-{
-    padding:15px;
-    float: right;
-    text-align: right;
-}
 
 .label-small
 {
@@ -574,3 +557,162 @@ th {
 
 
 /*********** Modal BulkLoad END **************/
+
+/** shared layout ***************/
+.main-container
+{
+    padding: 0;
+}
+
+.navbar-layout
+{
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    margin: 0;
+}
+
+.navbar-layout a
+{
+    color: #000000;
+    text-decoration: none;
+    font-size: small;
+    font-weight: bold;
+}
+
+.navbar-layout a:hover ,.navbar-layout a:active
+{
+    background-color: #00aeef !important;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: small !important;
+    font-weight: normal !important;
+
+}
+
+.navbar-nav {
+    float:none;
+    margin:0 auto;
+    display: block;
+    text-align: center;
+}
+
+.navbar-nav>li {
+    display: inline-block;
+    float:none;
+}
+
+.user-loggued
+{
+    padding:0.5%;
+    float: right !important;
+    text-align: right;
+}
+
+.avatar-wrapper {
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    overflow-y: hidden;
+    position:relative;
+}
+
+.avatar-width
+{
+    width: 30px;
+}
+
+.navbar-brand {
+    padding: 10px;
+}
+.icon-bar{
+    background-color: #ffffff;
+}
+.navbar-toggle.collapsed
+{
+    background-color: #000000;
+}
+
+/***  background-color: #4b4b4b; color para el filtro ***/
+
+/*** Home Social Obras***/
+.filter-seccion {
+    background-color: #4b4b4b;
+}
+
+.filter-seccion .row
+{
+    text-align: center;
+    padding-top: 1%;
+
+}
+
+.filter-seccion .row .label
+{
+    font-size: large;
+}
+
+.filter-seccion .BuscadorSec
+{
+    padding-top: 0px;
+    font-weight: normal;
+}
+
+/*
+.custom-select  {
+
+    border: 1px solid #111;
+    background: transparent;
+    min-width: 150px;
+    padding: 0 15% 0 0;
+    border: 1px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url(../images/select_custom.png) 100% / 100% no-repeat #ffffff;
+    width: 100%;
+}
+
+*/
+
+.filter-seccion .row .row-filter-label
+{
+    text-align: left !important;
+
+}
+
+.filter-seccion .row .row-filter-label .label
+{
+    font-weight: bold !important;
+    font-size: medium !important;
+}
+
+.btn.custom-bottom
+{
+    color: #ffffff;
+    padding: 3px 10px;
+    font-weight: bold;
+    background-color: #00aeef;
+    border-color: #00aeef;
+}
+
+.btn.custom-bottom:hover
+{
+    background-color: #ffffff;
+    color:#00aeef ;
+}
+
+.divGuide
+{
+    background-color: #00aeef;
+    color: #ffffff;
+    font-size: larger;
+    font-weight: lighter;
+    padding: 10px;
+}
+
+.divGuide .point
+{
+    font-weight: 800;
+}
+

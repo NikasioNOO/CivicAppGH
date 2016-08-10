@@ -139,6 +139,7 @@
                 formData.append('chkUpdateEntities', 1);
             }
 
+            Utilities.block();
             $.ajax({
                 url: "/admin/SaveObrasFromFile", // Url to which the request is send
                 type: "POST",             // Type of request to be send, called as method
@@ -159,16 +160,20 @@
                             Utilities.ShowMessage('Algunas obras no se han podido grabar , revise por favor.', 'Validar Obras');
                         }
                         BindBulkInputs();
+
                     }
                     else
                     {
                         Utilities.ShowError(data.message);
                     }
 
+                    $.unblockUI();
+
 
                 },
                 error:function( jqXHR, textStatus,  errorThrown )
                 {
+                    $.unblockUI();
                     Utilities.ShowError('Se ha producido un error al grabar las obras.'+errorThrown);
                 }
             });
@@ -225,7 +230,7 @@
 
 
             var formData = new FormData($('#importFileForm')[0]);
-
+            Utilities.block();
             $.ajax({
                 url: "/admin/ImportFromFile", // Url to which the request is send
                 type: "POST",             // Type of request to be send, called as method
@@ -253,12 +258,13 @@
                         isLoadedFlag=false;
                     }
 
-
+                    $.unblockUI();
 
                 },
                 error:function( jqXHR, textStatus,  errorThrown )
                 {
                     Utilities.ShowError('Se ha producido un error al subir los iconos.'+errorThrown);
+                    $.unblockUI();
                 }
             });
         };

@@ -1,0 +1,3 @@
+<FilesMatch "\.(png)$">
+	FileETag MTime Size
+</FilesMatch>

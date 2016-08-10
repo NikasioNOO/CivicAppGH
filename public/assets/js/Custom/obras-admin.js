@@ -366,7 +366,7 @@
                     var inputName = 'imgico_' + id + '_' + name;
                     var img = 'ico_' + id + '_' + name+'.png';
                     var host = window.location.protocol+'//'+window.location.host+'//';
-                    var src = host+ ENV_MAPICONS_PATH + 'cat' + obra.category.id + '_' + img;
+                    var src = host+ ENV_MAPICONS_PATH + 'cat' + obra.category.id + '_' + img +"?ver="+  Date.now().toString();
 
                     if (Utilities.ImageExists(src))
                         $('#' + inputName).attr('src', src);
@@ -390,6 +390,7 @@
 
         var SaveObra = function()
         {
+            Utilities.block();
             $.post('/admin/SaveObra',{"obra":obra},
                 function(data)
                 {
@@ -409,9 +410,11 @@
                         else
                             Utilities.ShowError(data.message);
                     }
+                    $.unblockUI();
 
                 }).fail(function()
                 {
+                    $.unblockUI();
                     Utilities.ShowError('Ocurrió un error al intentar guardar la Obra del presupuesto participativo');
                 })
 
@@ -419,6 +422,7 @@
 
         var DeleteObra = function(id)
         {
+            Utilities.block();
             $.post('/admin/DeleteObra',{"obraId":id},
                 function(data)
                 {
@@ -431,9 +435,11 @@
                     {
                         Utilities.ShowError(data.message);
                     }
+                    $.unblockUI();
 
                 }).fail(function()
                 {
+                    $.unblockUI();
                     Utilities.ShowError('Ocurrió un error al intentar eliminar la Obra del presupuesto participativo');
                 })
 
@@ -462,7 +468,7 @@
                 Utilities.ShowError('No hay ningúna ubicación seleccionada para guardar');
                 return;
             }
-
+            Utilities.block();
             $.post('/admin/SaveBarrioLocation',{"barrioId":obra.barrio.id, "location": location},
                 function(data)
                 {
@@ -482,8 +488,11 @@
                         Utilities.ShowError(data.message);
                     }
 
+                    $.unblockUI();
+
                 }).fail(function()
                 {
+                    $.unblockUI();
                     Utilities.ShowError('Ocurrió un error al intentar guardar la ubicación del barrio');
                 });
 

@@ -26,59 +26,10 @@
                         <th>Presupuesto</th>
                         <th>Estado</th>
                         <th>Ubicaci&oacute;n</th>
+                        <th>NroExp</th>
                         <th>Opcion</th>
                     </tr>
                 </thead>
-              <!--  <tfoot>
-                    <tr>
-                        <th>Año</th>
-                        <th>CPC</th>
-                        <th>Barrio</th>
-                        <th>Categor&iacute;a</th>
-                        <th>Obra</th>
-                        <th>Presupuesto</th>
-                        <th>Estado</th>
-                        <th>Ubicaci&oacute;n</th>
-                    </tr>
-                </tfoot> -->
-                <!--<tbody>
-                    <tr>
-                        <td></td>
-                        <td>2013</td>
-                        <td>CPC Villa Libertador</td>
-                        <td>Barrio Jardín</td>
-                        <td>Tr&aacute;ncito</td>
-                        <td>Intalaci&oacute;n de un sem&aacute;foro</td>
-                        <td>300000</td>
-                        <td>Comprometido</td>
-                        <td>Nores Martinez 565</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>2013</td>
-                        <td>CPC Villa Libertador</td>
-                        <td>Barrio Jardín</td>
-                        <td>Tr&aacute;ncito</td>
-                        <td>Intalaci&oacute;n de un sem&aacute;foro</td>
-                        <td>300000</td>
-                        <td>Comprometido</td>
-                        <td>Nores Martinez 565</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>2013</td>
-                        <td>CPC Villa Libertador</td>
-                        <td>Barrio Jardín</td>
-                        <td>Tr&aacute;ncito</td>
-                        <td>Intalaci&oacute;n de un sem&aacute;foro</td>
-                        <td>300000</td>
-                        <td>Comprometido</td>
-                        <td>Nores Martinez 567</td>
-                        <td></td>
-                    </tr>
-                </tbody>-->
             </table>
         </div>
     </div>

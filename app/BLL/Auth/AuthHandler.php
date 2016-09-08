@@ -14,7 +14,7 @@ use CivicApp\DAL\Auth;
 use CivicApp\Models;
 use CivicApp\Entities;
 
-
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
 use CivicApp\Utilities\Logger;
@@ -95,8 +95,16 @@ class AuthHandler {
     }
 
 
-
-
+    /**
+     * @param $userId
+     *
+     * @return bool
+     */
+    function UserExists($userId)
+    {
+        Logger::startMethod('UserExists');
+        return $this->socialUserRepository->UserExists($userId);
+    }
 
 
 

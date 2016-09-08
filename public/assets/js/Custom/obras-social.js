@@ -8,6 +8,7 @@
     this.CivicApp = this.CivicApp || {};
     this.CivicApp.ObrasSocial = this.CivicApp.ObrasSocial || new function() {
 
+        var selfi = this;
         var timeVerIcon = "?ver="+  Date.now().toString();
         var map = null;
         var markers = [];
@@ -15,6 +16,7 @@
         var selectYear = $('#yearSearch');
         var selectCategory = $('#categorySearch');
         var selectBarrio = $('#barrioSearch');
+        var obrasLoaded =null;
 
         var InitilizeMap = function()
         {
@@ -35,6 +37,7 @@
 
         var LoadObrasMarkers = function(obrasparam)
         {
+            obrasLoaded = obrasparam;
             var obras = obrasparam;
             var pathIcon = window.location.protocol+'//'+window.location.host+'//' + ENV_MAPICONS_PATH;
 
@@ -69,11 +72,11 @@
                         if(geoobras[locationKey][categoryStatusKey])
                         {
                             geoobras[locationKey][categoryStatusKey].info = geoobras[locationKey][categoryStatusKey].info +
-                            '<br/><a>'+obras[i].description+'</a>';
+                            '<br/><a data-toggle="modal" data-target="#ObraDetail" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+obras[i].description+'</a>';
                         }
                         else
                         {
-                            geoobras[locationKey][categoryStatusKey] = {info : '<a>'+obras[i].description+'</a>',
+                            geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" data-target="#ObraDetail" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+obras[i].description+'</a>',
                                 icon :icon,
                                 location :location,
                                 category: obras[i].category.category,
@@ -83,7 +86,7 @@
                     else
                     {
                         geoobras[locationKey] = {};
-                        geoobras[locationKey][categoryStatusKey] = {info : '<a>'+obras[i].description+'</a>',
+                        geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" data-target="#ObraDetail">'+obras[i].description+'</a>',
                             icon :icon,
                             location :location,
                             category: obras[i].category.category,
@@ -152,6 +155,16 @@
 
             });
 
+
+            $('#ObraDetail').on('show.bs.modal',function(e)
+            {
+                var winHeight = $( window ).height();
+                var height = winHeight*0.4;
+                $('#ObraDetail .modal-dialog').height(winHeight*0.8);
+                $('#ObraDetail .carousel-inner img').height(height);
+                $('.gridthumbnail').height(height);
+
+            });
         };
 
         var LoadAllObras = function()
@@ -265,8 +278,19 @@
 
         };
 
+        var LoadObraSelected = function(obraSel)
+        {
+            debugger;
+            var index = $(obraSel).data('obraindex');
+            var obra = obrasLoaded[index];
+
+            CivicApp.ObrasSocial.ObraDetail.SetObra(obra.id, obra.description, obra.year, obra.cpc.name, obra.barrio.name,
+                obra.category.category, obra.budget, obra.status.status, obra.nro_expediente ?obra.nro_expediente:''  );
+
+        };
+
         var correctLocList = function (loclist) {
-            var lng_radius = 0.00003,         // degrees of longitude separation
+            var lng_radius = 0.00008,         // degrees of longitude separation
                 lat_to_lng = 111.23 / 71.7,  // lat to long proportion in Warsaw
                 angle = 0.5,                 // starting angle, in radians
                 loclen = Object.keys(loclist).length,
@@ -285,7 +309,9 @@
         return {
 
             InitMap : InitilizeMap,
-            InitEvents : InitializeEvents
+            InitEvents : InitializeEvents,
+            ObrasLoaded: obrasLoaded,
+            LoadObraSelected: LoadObraSelected
 
 
         };
@@ -300,5 +326,6 @@ $(document).ready(function(){
         $('#map').css('height',$( window ).height()*0.6);
     });
     CivicApp.ObrasSocial.InitEvents();
+
 });
 

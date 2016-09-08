@@ -7,6 +7,7 @@ use CivicApp\Models\Barrio;
 use CivicApp\Models\Cpc;
 use CivicApp\Models\MapItemType;
 use CivicApp\Models\Status;
+use CivicApp\Models\PostType;
 
 class CatalogSeeder extends Seeder
 {
@@ -81,7 +82,7 @@ class CatalogSeeder extends Seeder
         ]);
     }
 
-    private function categories()
+    private function Categories()
     {
 
         Category::create([
@@ -92,4 +93,6 @@ class CatalogSeeder extends Seeder
             'category' => 'Espacios Verdes',
         ]);
     }
+
+
 }

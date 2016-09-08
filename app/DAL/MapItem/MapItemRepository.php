@@ -57,6 +57,45 @@ class MapItemRepository extends Repository implements IMapItemRepository {
                     $query->where('type',Constants::typeObra);
                 })->get();
 
+
+
+            $obrasEntities = $this->mapper->map(Models\MapItem::class, Entities\MapItem\MapItem::class, $obras->all());
+
+            Logger::endMethod($method);
+
+            return $obrasEntities;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo);
+            throw new RepositoryException(trans('mapitemserrorcodes.0103'),0103);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('mapitemserrorcodes.0103'),0103);
+        }
+
+    }
+
+    /**
+     * Return all Obras Presupuesto Participativo
+     * @return mixed
+     * @throws RepositoryException
+     */
+    public function GetObraCompleteInfo()
+    {
+        $method = "GetAllObras";
+        try {
+
+            Logger::startMethod($method);
+
+            $obras = $this->model->with('mapItemType','category','status','barrio','cpc'
+                ,'location', 'posts.')
+                ->whereHas('mapItemType',function($query){
+                    $query->where('type',Constants::typeObra);
+                })->get();
+
             $obrasEntities = $this->mapper->map(Models\MapItem::class, Entities\MapItem\MapItem::class, $obras->all());
 
             Logger::endMethod($method);

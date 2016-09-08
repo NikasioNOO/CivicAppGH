@@ -110,6 +110,14 @@
         <div class="form-horizontal col-sm-12">
             <div class="form-inline col-sm-6 custom-form-inline" >
                 <div class="form-group form-group-sm col-sm-12 custom-form-group " >
+                    <label for="nro_expediente" class="col-sm-4 control-label">Nro Expediente</label>
+                    <div class="col-sm-8">
+                        <input name="nro_expediente" id="nro_expediente" class="form-control input-sm fullWidth" maxlength="50" type="text"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-inline col-sm-6 custom-form-inline" >
+                <div class="form-group form-group-sm col-sm-12 custom-form-group " >
                     <label for="status" class="col-sm-4 control-label">Estado</label>
                     <div class="col-sm-8">
                         <select id="status" name="status" class="form-control input-sm fullWidth">
@@ -122,6 +130,7 @@
                 </div>
 
             </div>
+
 
         </div>
         <div class="form-horizontal col-sm-12">

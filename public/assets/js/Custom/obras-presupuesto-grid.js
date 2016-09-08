@@ -37,14 +37,15 @@
                      render: $.fn.dataTable.render.number( '.', ',', 2, '$' )
                     },
                     {data:"status.status"},
-                    {data:"address"}
+                    {data:"address"},
+                    {data:"nro_expediente"}
                 ],
                 columnDefs :[
                     {
                         render:function(data, type, row ){
-                            return '<a class="linkAction" onclick="CivicApp.ObrasGrid.EditRow(this)">Editar</a> | <a class="linkAction" onclick="CivicApp.ObrasGrid.DelteRow(this)">Eliminar</a>';
+                            return '<a class="linkAction" onclick="CivicApp.ObrasGrid.EditRow(this)">Editar</a>-<a class="linkAction" onclick="CivicApp.ObrasGrid.DelteRow(this)">Eliminar</a>';
                         },
-                        targets:8
+                        targets:9
                     }
 
                 ]

@@ -240,5 +240,7 @@
     <orderEntry type="library" name="jQuery-2.0.0" level="application" />
     <orderEntry type="library" name="bootstrap.js" level="application" />
     <orderEntry type="library" name="DataTables" level="project" />
+    <orderEntry type="library" name="masonry.pkgd" level="application" />
+    <orderEntry type="library" name="isotope.pkgd" level="application" />
   </component>
 </module>

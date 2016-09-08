@@ -159,7 +159,12 @@
                         {
                             Utilities.ShowMessage('Algunas obras no se han podido grabar , revise por favor.', 'Validar Obras');
                         }
+                        else
+                        {
+                            CivicApp.ObrasGrid.ReloadGrid();
+                        }
                         BindBulkInputs();
+
 
                     }
                     else

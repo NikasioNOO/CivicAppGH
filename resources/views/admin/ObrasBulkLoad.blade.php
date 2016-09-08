@@ -9,12 +9,12 @@
             <div class="control-label col-sm-3">Categoría</div>
         </div>
         <div class="col-sm-6">
-            <div class="control-label col-sm-4">Título</div>
-            <div class="control-label col-sm-4">Direccion</div>
+            <div class="control-label col-sm-3">Título</div>
+            <div class="control-label col-sm-3">Direccion</div>
             <div class="control-label col-sm-2">Presupuesto</div>
+            <div class="control-label col-sm-2">Nro Exp</div>
             <div class="control-label col-sm-2">Estado</div>
         </div>
-
 
     </div>
 
@@ -39,8 +39,8 @@
             <div class="col-sm-3"><input {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} id="beCategory_{{$i}}" class="form-control input-sm fullWidth {{ $obras[$i]['isValidCategory'] ? '':'invalid'}}" type="text" name="beCategory[{{$i}}]" value="{{$obras[$i]['categoria']}}"  data-validfield="{{$obras[$i]['isValidCategory']}}" data-listvalues="{{ $categories }}"/></div>
         </div>
         <div class="col-sm-6">
-            <div class=" col-sm-4"><input {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} id="beTitle_{{$i}}" class="form-control input-sm fullWidth {{ $obras[$i]['isValidTitle'] ? '':'invalid'}}" type="text" name="beTitle[{{$i}}]" value="{{$obras[$i]['titulo']}}"  data-validfield="{{$obras[$i]['isValidTitle']}}"/></div>
-            <div class=" col-sm-4 ">
+            <div class=" col-sm-3"><input {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} id="beTitle_{{$i}}" class="form-control input-sm fullWidth {{ $obras[$i]['isValidTitle'] ? '':'invalid'}}" type="text" name="beTitle[{{$i}}]" value="{{$obras[$i]['titulo']}}"  data-validfield="{{$obras[$i]['isValidTitle']}}"/></div>
+            <div class=" col-sm-3 ">
                 <div class="input-group">
                     <input readonly id="beAddress_{{$i}}" class="form-control input-sm fullWidth {{ $obras[$i]['isValidAddress'] ? '':'invalid'}}" type="text" name="beAddress[{{$i}}]" value="{{$obras[$i]['ubicacion']}}"  data-validfield="{{$obras[$i]['isValidAddress']}}"/>
                     @if($obras[$i]['created'] != 1 )
@@ -53,10 +53,12 @@
                 </div>
             </div>
             <div class="col-sm-2"><input {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} id="beBudget_{{$i}}" style="text-align: right" class="form-control input-sm fullWidth  {{ $obras[$i]['isValidBudget'] ? '':'invalid'}}" type="number" name="beBudget[{{$i}}]" value="{{$obras[$i]['presupuesto']}}"  data-validfield="{{$obras[$i]['isValidBudget']}}"/></div>
+            <div class=" col-sm-2"><input {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} id="beNroExpediente_{{$i}}" class="form-control input-sm fullWidth " type="text" name="beNroExpediente[{{$i}}]" value="{{$obras[$i]['nro_expediente']}}"  data-validfield="1"/></div>
             <div class=" col-sm-2">
                 <select id="beStatus_{{$i}}" {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} class="form-control input-sm fullWidth {{ $obras[$i]['isValidStatus'] ? '':'invalid'}}" name="beStatus[{{$i}}]" value="{{$obras[$i]['estado']}}"  data-validfield="{{$obras[$i]['isValidStatus']}}">
+                    <option {{ $obras[$i]['isValidStatus'] == 0 ?' selected ':'' }} value="-1"></option>
                     @foreach( $statuses as $status )
-                        <option {{ $obras[$i]['isValidStatus'] && $status->status == $obras[$i]['estado'] ?' selected ':'' }} value="{{$status->status}}">{{ $status->status }}</option>
+                        <option {{ $obras[$i]['isValidStatus'] == 1 && $status->status == $obras[$i]['estado'] ?' selected ':'' }} value="{{$status->status}}">{{ $status->status }}</option>
                     @endforeach
                 </select>
             </div>

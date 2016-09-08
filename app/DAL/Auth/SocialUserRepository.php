@@ -14,6 +14,7 @@ use CivicApp\Models\Auth as AuthModels;
 use CivicApp\Utilities\Mapper ;
 use CivicApp\Entities\Base\BaseEntity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use CivicApp\Utilities\Logger;
 
@@ -87,6 +88,42 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
         return $dbUser;
 
 
+
+    }
+
+
+    /**
+     * Validate if a userId exists
+     * @param $userId
+     *
+     * @return bool
+     * @throws RepositoryException
+     */
+    public function UserExists($userId)
+    {
+        $method = 'ExistUser';
+
+        try
+        {
+            Logger::startMethod($method);
+            $user = AuthModels\Social_User::find($userId);
+            if(!is_null($user))
+                return true;
+            else
+                return false;
+
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0003'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0003'));
+        }
 
     }
 

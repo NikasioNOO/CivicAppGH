@@ -21,5 +21,6 @@ return [
 
     '0001' => 'El usuario debe tener al menos un role',
     '0002' => 'Los roles asignados no existen en la bd',
+    '0003' => 'Error al buscar el usuario'
 
 ];

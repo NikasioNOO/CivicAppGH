@@ -156,7 +156,7 @@ class ExampleTest extends TestCase
 
     }
 
-    public function testPaginateObras()
+    private function testPaginateObras()
     {
         $Provider = new \CivicApp\Providers\MapperProvider($this->app);
         $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
@@ -213,7 +213,52 @@ class ExampleTest extends TestCase
 
     }
 
-    public function testCreateObra(){
+
+    public function testCreatePost()
+    {
+        $Provider = new \CivicApp\Providers\MapperProvider($this->app);
+        $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
+        $Provider->register();
+        $AppProvider->register();
+
+        $postEntity = $this->app->make(CivicApp\Entities\Post\Post::class);
+        $postEntity->mapItem->id =9;
+        $postEntity->comment ='Hola primer post';
+        $postEntity->status->id = 1;
+        $postEntity->user->id = 1;
+        /** @var CivicApp\BLL\Post\PostHandler $postHandler */
+        $postHandler = $this->app->make(CivicApp\BLL\Post\PostHandler::class);
+
+        /*$rest = $postHandler->SavePost($postEntity);
+
+        $postMarker = $this->app->make(CivicApp\Entities\Post\PostMarker::class);
+        $postMarker->is_positive = true;
+        $postHandler->SavePostMarker($postMarker,1,1);/*
+        $postMarker = $this->app->make(CivicApp\Entities\Post\PostMarker::class);
+        $postMarker->is_positive = true;
+        $postHandler->SavePostMarker($postMarker,1,1);
+        $postMarker = $this->app->make(CivicApp\Entities\Post\PostMarker::class);
+        $postMarker->is_positive = false;
+        $postHandler->SavePostMarker($postMarker,1,1);*/
+
+
+
+/*
+        $postComplaint = $this->app->make(\CivicApp\Entities\Post\PostComplaint::class);
+        $postComplaint->comment = 'El estado no es verdad';
+
+        $postHandler->SavePostComplaint($postComplaint,1,1);
+*/
+        $posts = $postHandler->GetAllPostByObra(9);
+
+     /*   $test1 = $posts[0]->UserMarkPost(1);
+        $test2 = $posts[0]->UserMarkPost(2);*/
+
+      //  dd($posts);
+
+    }
+
+    private function testCreateObra(){
 
         $Provider = new \CivicApp\Providers\MapperProvider($this->app);
         $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);
@@ -222,7 +267,7 @@ class ExampleTest extends TestCase
 
 
 
-        $obraEntity = new \CivicApp\Entities\MapItem\MapItem();
+        $obraEntity = $this->app->make(\CivicApp\Entities\MapItem\MapItem::class);
 
         $obraEntity->year= 2016;
         $obraEntity->description = 'obra 1';
@@ -241,12 +286,14 @@ class ExampleTest extends TestCase
         $obraEntity->location = new \CivicApp\Entities\Common\GeoPoint();
         $obraEntity->location->location = '-31.42161608,-64.15921783';
 
+
+
         /** @var \CivicApp\DAL\MapItem\MapItemRepository $mapItemRepo */
         $mapItemRepo = $this->app->make(\CivicApp\DAL\MapItem\MapItemRepository::class);
 
         $rest = $mapItemRepo->SaveObra($obraEntity);
 
-        $newObra = $mapItemRepo->find($rest);
+        $newObra = $mapItemRepo->findById($rest);
 
         var_dump($newObra);
 
@@ -261,7 +308,7 @@ class ExampleTest extends TestCase
 
         $rest = $mapItemRepo->UpdateObra($newObraEntity);
 
-        $newObra = $mapItemRepo->find($rest);
+        $newObra = $mapItemRepo->findById($rest);
 
 
         var_dump($newObra);
@@ -269,7 +316,7 @@ class ExampleTest extends TestCase
 
     }
 
-    public function testCatalogs()
+    private function testCatalogs()
     {
         $Provider = new \CivicApp\Providers\MapperProvider($this->app);
         $AppProvider = new \CivicApp\Providers\AppServiceProvider($this->app);

@@ -130,9 +130,14 @@ abstract class Repository implements IRepository, ICriteria {
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = ['*']) {
+    protected function find($id, $columns = ['*']) {
         $this->applyCriteria();
         return $this->model->find($id, $columns);
+    }
+
+    public function findById($id, $columns = ['*']) {
+
+        return $this->mapper->map($this->model(), $this->entity() , $this->model->find($id, $columns));
     }
 
     public function findOrFail($id)

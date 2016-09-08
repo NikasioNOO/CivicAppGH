@@ -82,7 +82,6 @@ class UserRepository extends Repository implements IUserRepository
         return $roleModel->id;
 
 
-
     }
 
     /***

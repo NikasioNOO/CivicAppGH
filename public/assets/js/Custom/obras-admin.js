@@ -18,10 +18,26 @@
         var badgetInput = $('#badget');
         var statusSelect = $('#status');
         var idObra = $('#idObra');
+        var nroExpedienteInput = $('#nro_expediente');
 
 
         function Obra()
         {
+            this.Clean = function()
+            {
+                this.id = 0;
+                this.budget = '';
+                this.barrio = '';
+                this.category = '';
+                this.cpc = '';
+                this.address='';
+                this.location = {id:0,location:''};
+                this.status = '';
+                this.description = '';
+                this.year = '';
+                this.nro_expediente ='';
+
+            };
             Object.defineProperty(this, 'id', {
                 get: function() {
                     var id = idObra.val();
@@ -165,6 +181,17 @@
                 enumerable:true
             });
 
+            Object.defineProperty(this, 'nro_expediente', {
+                get: function() {
+
+                    return nroExpedienteInput.val();
+                },
+                set: function(value) {
+                    nroExpedienteInput.val(value);
+                },
+                enumerable:true
+            });
+
             Object.defineProperty(this, 'budget', {
                 get: function() {
 
@@ -195,17 +222,7 @@
 
         var CleanObra = function()
         {
-            obra.id = 0;
-            obra.budget = '';
-            obra.barrio = '';
-            obra.category = '';
-            obra.cpc = '';
-            obra.address='';
-            obra.location = {id:0,location:''};
-            obra.status = '';
-            obra.description = '';
-            obra.year = '';
-
+            obra.Clean();
             map.HideIndividualMarker();
 
         };
@@ -457,6 +474,7 @@
             obra.status = editObra.status;
             obra.description = editObra.description;
             obra.year = editObra.year;
+            obra.nro_expediente = editObra.nro_expediente;
 
         };
 

@@ -4,11 +4,11 @@ namespace CivicApp\Http\Controllers;
 
 
 use CivicApp\BLL\Catalog\CatalogHandler;
-use CivicApp\BLL\ObraHandler\ObraHandler;
+use CivicApp\BLL\Obra\ObraHandler;
 use CivicApp\Entities\MapItem\Barrio;
 use CivicApp\Entities\MapItem\Category;
 use CivicApp\Entities\MapItem\Cpc;
-use CivicApp\Models\GeoPoint;
+use CivicApp\Entities\Common\GeoPoint;
 use CivicApp\Models\Status;
 use CivicApp\Utilities\IMapper;
 use CivicApp\Utilities\Logger;
@@ -326,6 +326,7 @@ class ObrasAdminController extends Controller
                         'estado' => $request->beStatus[$index],
                         'ubicacion' =>  $request->beAddress[$index],
                         'location' => $request->beLocation[$index],
+                        'nro_expediente' => $request->beNroExpediente[$index],
                         'created' => $request->beCreated[$index]
                     ]);
 
@@ -347,6 +348,7 @@ class ObrasAdminController extends Controller
                             $newObra->barrio->name = $request->beBarrio[$index];
                             $newObra->category->category = $request->beCategory[$index];
                             $newObra->status->status = $request->beStatus[$index];
+                            $newObra->nro_expediente = $request->beNroExpediente[$index];
                             if(!is_null($request->beLocation[$index]) &&
                                 trim($request->beLocation[$index])!='') {
                                 $newObra->location= \App::make(GeoPoint::class);
@@ -354,6 +356,8 @@ class ObrasAdminController extends Controller
                             }
 
                             $obra['created']=$this->obraHandler->BulkCreateObra($newObra) ? 1 :2 ;
+                            if(($obra['created'])==2)
+                                $withError = true;
 
                         }
                         else

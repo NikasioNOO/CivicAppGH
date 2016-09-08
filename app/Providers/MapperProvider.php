@@ -2,6 +2,7 @@
 
 namespace CivicApp\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use CivicApp\Utilities\Enums;
@@ -43,8 +44,165 @@ class MapperProvider extends ServiceProvider
 
             $this->CreateMapItemArrayMapper($mapper);
 
+            $this->CreatePhotoMapper($mapper);
+            $this->CreatePostComplaint($mapper);
+            $this->CreatePostMarker($mapper);
+            $this->CreatePostType($mapper);
+            $this->CreatePostMapper($mapper);
+
+
+
             return $mapper;
         });
+    }
+
+
+
+    public function CreatePhotoMapper(IMapper $mapper)
+    {
+        $mapper->addMap(Entities\Post\Photo::class, Models\Photo::class, Enums\MapperConfig::toModel);
+        $mapper->addMap(Models\Photo::class, Entities\Post\Photo::class, Enums\MapperConfig::toEntity);
+    }
+
+    public function CreatePostComplaint(IMapper $mapper)
+    {
+        $mapper->addMap(Entities\Post\PostComplaint::class, Models\PostComplaint::class, Enums\MapperConfig::toModel);
+       /* $mapper->addCustomMap(Entities\Post\PostComplaint::class, Models\PostComplaint::class,
+            function(Entities\Post\PostComplaint $entityPostComplaint, Models\PostComplaint $modelPostComplaint) {
+                $mapper = App::make(IMapper::class);
+                if(!is_null($entityPostComplaint->user))
+                    $modelPostComplaint->user()->associate($mapper->map(Entities\Auth\SocialUser::class, Models\Auth\Social_User::class, $entityPostComplaint->user));
+                return $modelPostComplaint;
+            });*/
+        $mapper->addMap(Models\PostComplaint::class, Entities\Post\PostComplaint::class, Enums\MapperConfig::toEntity);
+        /*$mapper->addCustomMap( Models\PostComplaint::class, Entities\Post\PostComplaint::class,
+            function( Models\PostComplaint $modelPostComplaint , Entities\Post\PostComplaint $entityPostComplaint) {
+                $mapper = App::make(IMapper::class);
+
+                if(isset($entityPostComplaint->user))
+                    $modelPostComplaint->user = $mapper->map(Models\Auth\Social_User::class, Entities\Auth\SocialUser::class,  $entityPostComplaint->user);
+
+                return $modelPostComplaint;
+            });*/
+    }
+
+    public function CreatePostMarker(IMapper $mapper)
+    {
+        $mapper->addMap(Entities\Post\PostMarker::class, Models\PostMarker::class, Enums\MapperConfig::toModel);
+        $mapper->addCustomMap(Entities\Post\PostMarker::class, Models\PostMarker::class,
+            function(Entities\Post\PostMarker $entityPostMarker, Models\PostMarker $modelPostMarker) {
+
+                if(!is_null($entityPostMarker->user_id))
+                    $modelPostMarker->user()->associate($entityPostMarker->user_id);
+                return $modelPostMarker;
+            });
+
+        $mapper->addMap(Models\PostMarker::class, Entities\Post\PostMarker::class, Enums\MapperConfig::toEntity);
+        $mapper->addCustomMap( Models\PostMarker::class, Entities\Post\PostMarker::class,
+                function( Models\PostMarker $modelPostMarker , Entities\Post\PostMarker $entityPostMarker) {
+                    //$mapper = App::make(IMapper::class);
+
+                    if(isset($modelPostMarker->user))
+                        $entityPostMarker->user_id = $modelPostMarker->user->id;
+                        //$entityPostMarker->user = $mapper->map(Models\Auth\Social_User::class, Entities\Auth\SocialUser::class,  $modelPostMarker->user);
+
+                    return $entityPostMarker;
+                });
+    }
+
+    public function CreatePostType(IMapper $mapper)
+    {
+        $mapper->addMap(Entities\Post\PostType::class, Models\PostType::class, Enums\MapperConfig::toModel);
+        $mapper->addMap(Models\PostType::class, Entities\Post\PostType::class, Enums\MapperConfig::toEntity);
+    }
+
+    public function CreatePostMapper(IMapper $mapper)
+    {
+        $mapper->addMap(Entities\Post\Post::class, Models\Post::class, Enums\MapperConfig::toModel);
+        $mapper->addCustomMap(Entities\Post\Post::class, Models\Post::class,
+            function(Entities\Post\Post $entityPost, Models\Post $modelPost){
+                $mapper = App::make(IMapper::class);
+                if(!is_null($entityPost->mapItem))
+                    $modelPost->mapItem()->associate($mapper->map(Entities\MapItem\MapItem::class, Models\MapItem::class, $entityPost->mapItem));
+
+                if(!is_null($entityPost->status))
+                    $modelPost->status()->associate($mapper->map(Entities\MapItem\Status::class, Models\Status::class, $entityPost->status));
+
+                if(!is_null($entityPost->postType))
+                    $modelPost->postType()->associate($mapper->map(Entities\Post\PostType::class, Models\PostType::class, $entityPost->postType));
+
+                if(!is_null($entityPost->user))
+                    $modelPost->user()->associate($mapper->map(Entities\Auth\SocialUser::class, Models\Auth\Social_User::class, $entityPost->user));
+
+
+                if(!is_null($entityPost->photos))
+                    foreach($entityPost->photos as $photo)
+                    {
+                        /** @var Models\Photo $photoModel */
+                        $photoModel = $mapper->map(Entities\Post\Photo::class, Models\Photo::class, $photo);
+                        if($photoModel->id > 0)
+                            $photoModel->post()->associate($modelPost);
+                        else
+                            $modelPost->photos()->save($photoModel);
+                    }
+
+                if(!is_null($entityPost->postMarkers))
+                    foreach($entityPost->postMarkers as $postMarker)
+                    {
+                        /** @var Models\PostMarker $postMarkerModel */
+                        $postMarkerModel = $mapper->map(Entities\Post\PostMarker::class, Models\PostMarker::class, $postMarker);
+                        $postMarkerModel->post()->associate($modelPost);
+                        //$modelPost->postMarkers()->save($postMarkerModel);
+                    }
+                if(!is_null($entityPost->postComplaints))
+                    foreach($entityPost->postComplaints as $postComplaint)
+                    {
+                        /** @var Models\PostComplaint $postComplaintModel */
+                        $postComplaintModel = $mapper->map(Entities\Post\PostComplaint::class, Models\PostComplaint::class, postComplaint);
+                        $postComplaintModel->post()->associate($modelPost);
+                        //$modelPost->postMarkers()->save($postComplaintModel);
+                    }
+
+
+                return $modelPost;
+            });
+
+        $mapper->addMap(Models\Post::class, Entities\Post\Post::class, Enums\MapperConfig::toEntity);
+        $mapper->addCustomMap( Models\Post::class, Entities\Post\Post::class,
+            function( Models\Post $modelPost , Entities\Post\Post $entityPost){
+                $mapper = App::make(IMapper::class);
+                if(isset($modelPost->status))
+                    $entityPost->status = $mapper->map(Models\Status::class, Entities\MapItem\Status::class,  $modelPost->status);
+                if(isset($modelPost->postType))
+                    $entityPost->postType = $mapper->map(Models\PostType::class, Entities\Post\PostType::class,  $modelPost->postType);
+
+                if(isset($modelPost->user)) {
+                    $entityPost->user = $mapper->map(Models\Auth\Social_User::class, Entities\Auth\SocialUser::class,
+                        $modelPost->user);
+                    $entityPost->user->remember_token= null;
+                }
+
+                if(isset($modelPost->created_at) && !is_null($modelPost->created_at))
+                    $entityPost->created_at = $modelPost->created_at->day.'/'.$modelPost->created_at->month.'/'.
+                        $modelPost->created_at->year.'  '.$modelPost->created_at->hour.':'.
+                        $modelPost->created_at->minute.':'.$modelPost->created_at->second;
+
+
+                $entityPost->positiveCount= $modelPost->positiveCount;
+
+                $entityPost->negativeCount= $modelPost->negativeCount;
+
+                $entityPost->photos =  $entityPost->photos->merge($mapper->map( Models\Photo::class,Entities\Post\Photo::class, $modelPost->photos->all()));
+
+                $entityPost->postMarkers= $entityPost->postMarkers->merge($mapper->map( Models\PostMarker::class,Entities\Post\PostMarker::class, $modelPost->postMarkers->all()));
+
+                $entityPost->postComplaints = $entityPost->postComplaints->merge($mapper->map( Models\PostComplaint::class,Entities\Post\PostComplaint::class, $modelPost->postComplaints->all()));
+
+
+
+                return $entityPost;
+            });
+
     }
 
     public function CreateSimpleCatalogMapper(IMapper $mapper)
@@ -253,7 +411,7 @@ class MapperProvider extends ServiceProvider
 
                 $entityRoles = $this->map( Models\Auth\Role::class,Entities\Auth\Role::class, $modelUser->roles->all());
 
-                $entityUser->roles->merge($entityRoles);
+                $entityUser->roles = $entityUser->roles->merge($entityRoles);
 
 
                 return $entityUser;

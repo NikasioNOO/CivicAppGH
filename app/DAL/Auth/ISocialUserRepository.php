@@ -8,11 +8,21 @@
 
 namespace CivicApp\DAL\Auth;
 
+use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Entities\Auth as AuthEntities;
 use CivicApp\DAL\Repository;
 
 interface ISocialUserRepository extends Repository\IRepository, Repository\ICriteria
 {
     function CreateOrUpdateUser(AuthEntities\SocialUser $user);
+
+    /**
+     * Validate if a userId exists
+     * @param $userId
+     *
+     * @return bool
+     * @throws RepositoryException
+     */
+    function UserExists($userId);
 
 }

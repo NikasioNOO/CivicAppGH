@@ -2,7 +2,8 @@
 
 namespace CivicApp\Http\Controllers;
 
-use CivicApp\BLL\ObraHandler\ObraHandler;
+use CivicApp\BLL\Obra\ObraHandler;
+use CivicApp\BLL\Post\PostHandler;
 use CivicApp\Utilities\Logger;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,13 @@ class ObraPPController extends Controller
 {
 
     private $obraHandler;
+    private $postHandler;
 
 
-    public function __construct(ObraHandler $handler)
+    public function __construct(ObraHandler $obraHandlerParam, PostHandler $postHandlerParam)
     {
-        $this->obraHandler = $handler;
+        $this->obraHandler = $obraHandlerParam;
+        $this->postHandler = $postHandlerParam;
 
     }
 
@@ -75,6 +78,36 @@ class ObraPPController extends Controller
             'data'   => $obras,
             'message' => ''
         ]);
+
+    }
+
+    public function GetPosts($id)
+    {
+        $message = null;
+        $method='GetPosts';
+        try {
+
+            Logger::startMethod($method);
+
+            $obras = $this->postHandler->GetAllPostByObra($id);
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'OK',
+                'data'   => $obras,
+                'message' => $message
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            return  response()->json([
+                'status'  => 'ERROR',
+                'message' => 'Se ha producido un error al obtener todas las obras del presupuesto particiipativo.'.$ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
 
     }
 

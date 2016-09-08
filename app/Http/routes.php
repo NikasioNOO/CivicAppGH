@@ -16,6 +16,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::resource('Catalogo', 'CatalogoController', ['only' => ['show']]);
     Route::resource('ObraPP', 'ObraPPController', ['only' => ['index','show']]);
     Route::get('/ObraPP/Año/{year}/Categoria/{categoryId}/Barrio/{barrioId}', 'ObraPPController@Search');
+    Route::get('/ObraPP/Posts/{id}', 'ObraPPController@GetPosts');
 
 });
 Route::group(['middleware' => ['web']], function () {

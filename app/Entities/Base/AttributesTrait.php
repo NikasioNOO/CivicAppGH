@@ -36,7 +36,7 @@ trait AttributesTrait {
             $this->$propertyName = $var_value;
         }
         else
-            throw new IlegalProperyEntityException("Property Setter Ilegal for ".$var_name);
+            throw new IlegalProperyEntityException("Ilegal Property Setter  for ".$var_name);
 
 
     }
@@ -58,7 +58,7 @@ trait AttributesTrait {
             return $this->$propertyName;
         }
 
-        throw new IlegalProperyEntityException("Property Getter Ilegal for ".$var_name);
+        throw new IlegalProperyEntityException("Ilegal Property Getter  for ".$var_name);
 
     }
 

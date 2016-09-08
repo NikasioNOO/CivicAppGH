@@ -4,10 +4,16 @@ namespace CivicApp\Models;
 
 use CivicApp\Models\Auth\Social_User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Post extends Model
 {
     protected $table='posts';
+
+    protected $appends = ['positive_count','negative_count'];
+
+    protected $visible = ['positive_count','negative_count'];
+
 
     public function mapItem()
     {
@@ -35,7 +41,7 @@ class Post extends Model
         return $this->hasMany(Photo::class);
     }
 
-    public function posMarkers()
+    public function postMarkers()
     {
         return $this->hasMany(PostMarker::class);
     }
@@ -45,6 +51,38 @@ class Post extends Model
     {
         return $this->hasMany(PostComplaint::class);
     }
+
+    public function positiveCount()
+    {
+        return $this->hasOne(PostMarker::class)
+            ->selectRaw('post_id, count(*) as aggregate')
+            ->where('is_positive','=',1)
+            ->groupBy('post_id');
+    }
+
+    public function getPositiveCountAttribute()
+    {
+        if ( ! $this->relationLoaded('positiveCount') )
+            $this->load('positiveCount');
+
+        $related = $this->getRelation('positiveCount');
+
+        // then return the count directly
+        return ($related) ? (int) $related->aggregate : 0;
+    }
+
+    public function getNegativeCountAttribute()
+    {
+        if ( ! $this->relationLoaded('positiveCount') )
+            $this->load('positiveCount');
+
+        $related = $this->getRelation('positiveCount');
+
+        // then return the count directly
+        return ($related) ? (int) ($this->post_markers_count - $related->aggregate ): 0;
+    }
+
+
 
 
 

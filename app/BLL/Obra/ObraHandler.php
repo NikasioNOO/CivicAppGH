@@ -6,7 +6,7 @@
  * Time: 09:21 PM
  */
 
-namespace CivicApp\BLL\ObraHandler;
+namespace CivicApp\BLL\Obra;
 
 
 use CivicApp\DAL\Catalog\ICatalogRepository;
@@ -15,6 +15,7 @@ use CivicApp\DAL\MapItem\Criterias\CategoryCriteria;
 use CivicApp\DAL\MapItem\Criterias\ObrasCriteria;
 use CivicApp\DAL\MapItem\Criterias\YearCriteria;
 use CivicApp\DAL\MapItem\IMapItemRepository;
+use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Utilities\Logger;
 use CivicApp\Entities\MapItem\MapItemType;
@@ -203,8 +204,9 @@ class ObraHandler {
             $isValid = false;
         }
 
+        $barrio = $this->catalogRepo->FindBarrio($obra["barrio"]);
         if($obra->has('barrio')&& isset($obra["barrio"]) && !is_null($obra["barrio"]) &&  trim($obra["barrio"]) != ''
-            && !is_null($this->catalogRepo->FindBarrio($obra["barrio"])))
+            && !is_null($barrio))
             $obra->put('isValidBarrio', 1);
         else {
             $isValid = false;
@@ -226,7 +228,9 @@ class ObraHandler {
             $obra->put('isValidTitle', 0);
         }
 
-        if($obra->has('presupuesto')&& isset($obra["presupuesto"]) && !is_null($obra["presupuesto"]) &&  trim($obra["presupuesto"]) != ''
+        if(!$obra->has('presupuesto') || !isset($obra["presupuesto"]) || is_null($obra["presupuesto"]) ||  trim($obra["presupuesto"]) == '' )
+            $obra->put('isValidBudget', 1);
+        else if($obra->has('presupuesto')&& isset($obra["presupuesto"]) && !is_null($obra["presupuesto"]) &&  trim($obra["presupuesto"]) != ''
             && is_numeric($obra["presupuesto"]))
             $obra->put('isValidBudget', 1);
         else {
@@ -245,8 +249,16 @@ class ObraHandler {
 
         if($obra->has('ubicacion')&& isset($obra["ubicacion"]))
             if(is_null($obra["ubicacion"]) ||  trim($obra["ubicacion"]) == '') {
-                $obra->put('isValidAddress', 1);
-                $obra->put('location', null);
+                if(!is_null($barrio) && !is_null($barrio->location) && !is_null($barrio->location->location)) {
+                    $obra->put('isValidAddress', 1);
+                    $obra->put('location', null);
+                }
+                else
+                {
+                    $obra->put('isValidAddress', 0);
+                    $obra->put('location', null);
+                    $isValid = false;
+                }
             }
             else
             {
@@ -269,15 +281,41 @@ class ObraHandler {
                 }
             }
         else {
-            $obra->put('isValidCategory', 0);
-            $obra->put('location', null);
-            $isValid = false;
+            if(!is_null($barrio) && !is_null($barrio->location) && !is_null($barrio->location->location)) {
+                $obra->put('isValidAddress', 1);
+                $obra->put('location', null);
+            }
+            else {
+                $obra->put('isValidAddress', 0);
+                $obra->put('location', null);
+                $isValid = false;
+            }
         }
 
         $obra->put('isValid',$isValid);
 
         return $obra;
 
+    }
+
+
+    public function GetObra($id)
+    {
+        $method = 'GetObra';
+        try{
+            Logger::startMethod($method);
+
+            return $this->mapItemRepository->GetMapItem($id);
+        }
+        catch(RepositoryException $ex)
+        {
+            throw $ex;
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method,$ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw $ex;
+        }
     }
 
 

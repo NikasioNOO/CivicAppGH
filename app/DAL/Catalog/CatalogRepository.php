@@ -324,6 +324,12 @@ class CatalogRepository implements  ICatalogRepository {
     }
 
 
+    /**
+     * @param $barrio
+     *
+     * @return Entities\MapItem\Barrio
+     * @throws RepositoryException
+     */
     function FindBarrio($barrio)
     {
         $method = 'FindBarrio';
@@ -399,6 +405,39 @@ class CatalogRepository implements  ICatalogRepository {
         {
             Logger::logError($method, $ex->getMessage());
             throw new RepositoryException(trans('catalogerrorcodes.0411'),0411);
+        }
+    }
+
+
+    /**
+     *
+     * @param $id
+     *
+     * @return Entities\MapItem\Category
+     * @throws RepositoryException
+     */
+    public function GetPostType($id)
+    {
+        $method = 'GetPostType';
+        Logger::startMethod($method);
+        try
+        {
+            $postType =  Models\PostType::find($id);
+            if(is_null($postType))
+                return null;
+            else
+                return $this->mapper->map(Models\PostType::class, Entities\Post\PostType::class, $postType);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('catalogerrorcodes.0412'));
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('catalogerrorcodes.0412'));
         }
     }
 

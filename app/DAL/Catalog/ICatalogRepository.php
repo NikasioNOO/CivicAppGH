@@ -43,6 +43,8 @@ interface ICatalogRepository {
 
     function FindStatus($status);
 
+    function GetPostType($id);
+
     function GetCategory($id);
 
     function GetBarrio($id);

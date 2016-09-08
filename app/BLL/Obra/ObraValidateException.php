@@ -6,7 +6,7 @@
  * Time: 09:22 PM
  */
 
-namespace CivicApp\BLL\ObraHandler;
+namespace CivicApp\BLL\Obra;
 
 
 class ObraValidateException extends \Exception {

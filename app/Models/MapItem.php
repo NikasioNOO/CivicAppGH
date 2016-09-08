@@ -10,7 +10,7 @@ class MapItem extends Model
 
     protected $guarded=[''];
 
-    protected  $fillable =['year','description','address','budget'];
+    protected  $fillable =['year','description','address','budget', 'nro_expediente'];
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

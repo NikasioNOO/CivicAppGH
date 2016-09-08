@@ -4,6 +4,8 @@ namespace CivicApp\Providers;
 
 use CivicApp\DAL\Auth\ISocialUserRepository;
 use CivicApp\DAL\Auth\SocialUserRepository;
+use CivicApp\DAL\Post\IPostRepository;
+use CivicApp\DAL\Post\PostRepository;
 use Illuminate\Support\ServiceProvider;
 use CivicApp\DAL\Auth\IUserRepository;
 use CivicApp\DAL\Auth\UserRepository;
@@ -37,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind( ISocialUserRepository::class , SocialUserRepository::class);
         $this->app->bind( IMapItemRepository::class, MapItemRepository::class);
         $this->app->bind( ICatalogRepository::class, CatalogRepository::class);
+        $this->app->bind( IPostRepository::class, PostRepository::class);
     }
 }

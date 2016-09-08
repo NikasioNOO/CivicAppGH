@@ -55,7 +55,7 @@ interface IRepository {
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = ['*']);
+    function findById($id, $columns = ['*']);
 
     /**
      * @param $field

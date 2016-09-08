@@ -27,6 +27,7 @@ return [
     '0409' => 'Error al buscar el barrio',
     '0410' => 'Error al buscar el cpc',
     '0411' => 'Error al buscar el estado',
+    '0412' => 'Error al buscar el tipo de Post',
 
 
     '0450' => 'Parámetro Inválido',

@@ -69,16 +69,15 @@
         <span class="point">3.</span>SUBÍ UNA FOTO.
     </div>
 
-
-
-
-
+    @include('obraDetail')
 
 @endsection
 @push('cssCustom')
 
     {!! Html::style('assets/css/Custom/custom-select.css') !!}
     {!! Html::style('assets/css/Custom/infowindows-map.css') !!}
+    {!! Html::style('assets/css/Custom/modal-obra-detail.css') !!}
+    {!! Html::style('https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.css') !!}
 
 @endpush
 @push('scripts')
@@ -92,7 +91,10 @@
     {!! Html::script('assets/js/markerclusterer.js') !!}
     {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
     {!! Html::script('assets/js/Custom/obras-social.js') !!}
+    {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') !!}
+
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
 </script>
+
 @endpush

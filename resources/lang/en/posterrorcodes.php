@@ -36,6 +36,7 @@ return [
     '0304' => 'El usuario ya ha realizado una marcación al post',
     '0305' => 'El usuario es nulo o no existe',
     '0306' => 'El post es nulo o no existe',
+    '0307' => 'Foto subida inválida'
 
 
 

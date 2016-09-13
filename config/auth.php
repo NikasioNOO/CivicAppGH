@@ -13,8 +13,8 @@ return [
     |
     */
     'defaults' => [
-        'guard' => 'webadmin',
-        'passwords' => 'users',
+        'guard' => 'websocial',
+        'passwords' => 'social',
     ],
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return [
         ],
         'api' => [
             'driver' => 'token',
-            'provider' => 'users',
+            'provider' => 'social',
         ],
         'websocial' => [
             'driver' => 'session',

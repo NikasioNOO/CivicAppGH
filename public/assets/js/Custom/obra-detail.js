@@ -7,6 +7,8 @@
     this.CivicApp.ObrasSocial.ObraDetail = this.CivicApp.ObrasSocial.ObraDetail ||  new function() {
 
         var allCommentsDiv = $('#allCommentsPanel');
+        var photosUploadPreviewDiv = $('#photosUploadPreview');
+      //  var photosUploadFiles = []
 
         function ObraDetail() {
             var obraId =0;
@@ -149,7 +151,151 @@
 
         }
 
+        function Comment()
+        {
+            var commentTxt = $('#commentTxt');
+            var statusSelect = $('#statusComment');
+            var photosUploadFiles = [];
+
+            Object.defineProperty(this, 'comment', {
+                get: function() {
+                    return commentTxt.val();
+                },
+                set: function(value) {
+
+                    commentTxt.val(value);
+                },
+                enumerable:true
+            });
+
+
+            Object.defineProperty(this, 'status', {
+                get: function() {
+
+                    var id= statusSelect.val();
+                    var text=statusSelect.text();
+                    return id ? { id:id }: {id:0,status:text} ;
+                },
+                set: function(value) {
+                    statusSelect.val(value.id);
+                },
+                enumerable:true
+            });
+
+            Object.defineProperty(this, 'photos', {
+                get: function() {
+                    return photosUploadFiles;
+                },
+
+                enumerable:false
+            });
+
+            this.AddPhoto = function(file)
+            {
+                photosUploadFiles.push(file);
+            };
+
+            this.RemovePhoto = function (filename)
+            {
+                Utilities.findAndRemoveList(photosUploadFiles,'name',filename  );
+            };
+
+            this.CleanComment = function()
+            {
+                this.comment = '';
+                this.status = '';
+                photosUploadFiles = [];
+            }
+
+        }
+
         var obra = new ObraDetail();
+        var comment = new Comment();
+        var fileNameUploading = '';
+        var InitEvents = function()
+        {
+            $('#photosUploadFile').on('change',function(){
+                //var file = this.files[0];
+                var filesUpload = this.files;
+                for(var i=0; i <filesUpload.length; i++) {
+                    var imageFile = filesUpload[i].type;
+                    var match = ["image/jpeg", "image/png", "image/jpg"];
+
+                    if (!((imageFile == match[0]) || (imageFile == match[1]) || (imageFile == match[2]))) {
+                        Utilities.ShowMessage('Debe elegir archivos de imagen , gracias');
+                        return false;
+                    }
+                    else {
+                        comment.AddPhoto(filesUpload[i]);
+                        fileNameUploading = filesUpload[i].name;
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            var previewDiv =
+                                '<div class="col-sm-1 thumbnail previewImg" > \
+                                    <img class="img-responsive" src="'+e.target.result+'" alt="..."> \
+                                    <a data-filename="'+fileNameUploading+'" onclick="CivicApp.ObrasSocial.ObraDetail.RemovePhotoUpload(this);" >Quitar</a> \
+                                 </div>';
+
+                            photosUploadPreviewDiv.append(previewDiv);
+
+                        };
+
+                        reader.readAsDataURL(this.files[i]);
+                    }
+                }
+            });
+
+            $('#btnComment').on('click',function(){
+
+                var formData = new FormData();
+
+                formData.append('comment',JSON.stringify(comment));
+                formData.append('obraId',obra.id);
+                for(var i=0; i< comment.photos.length;i++)
+                {
+                    formData.append('photos[]',comment.photos[i]);
+                }
+
+
+                $.ajax({
+                    url: "/social/SendPost", // Url to which the request is send
+                    type: "POST",             // Type of request to be send, called as method
+                    data: formData, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+                    contentType: false,       // The content type used when sending data to the server.
+                    cache: false,             // To unable request pages to be cached
+                    processData:false,        // To send DOMDocument or non processed data file it is set to false
+                    success: function(data)   // A function to be called if request succeeds
+                    {
+                        if(data.status == 'Ok')
+                        {
+                            if(data.post)
+                                allCommentsDiv.prepend(BuildComment(JSON.parse(data.post)));
+                            photosUploadPreviewDiv.html('');
+                            comment.CleanComment();
+                        }
+                        else
+                        {
+                                Utilities.ShowError(data.message);
+                        }
+
+                    },
+                    error:function( jqXHR, textStatus,  errorThrown )
+                    {
+                        Utilities.ShowError('Ocurrió un error al intentar guardar la Obra del presupuesto participativo'+errorThrown);
+                    }
+                });
+
+
+            });
+        };
+
+        var RemovePhotoUpload = function(photolink){
+            var link = $(photolink);
+            var filename = link.data('filename');
+            comment.RemovePhoto(filename);
+            link.parent().remove();
+        };
 
         var SetObra = function(id, title, year, cpc, barrio, category, budget, status, nroExpediente )
         {
@@ -165,7 +311,7 @@
             obra.nroExpediente = nroExpediente;
 
             allCommentsDiv.html('')
-
+            photosUploadPreviewDiv.html('');
 
             $.get('/ObraPP/Posts/'+obra.id,function(result){
                 debugger;
@@ -246,9 +392,17 @@
 
 
         return {
-            SetObra : SetObra
+            SetObra : SetObra,
+            InitEvents: InitEvents,
+            RemovePhotoUpload: RemovePhotoUpload
         }
 
 
     };
 })();
+
+$(document).ready(function(){
+
+    CivicApp.ObrasSocial.ObraDetail.InitEvents();
+
+});

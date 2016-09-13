@@ -25,4 +25,7 @@ interface ISocialUserRepository extends Repository\IRepository, Repository\ICrit
      */
     function UserExists($userId);
 
+
+    function GetUserLogued();
+
 }

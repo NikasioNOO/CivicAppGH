@@ -31,7 +31,8 @@ class Post extends BaseEntity {
     protected $_negativeCount;
     protected $_created_at;
     private $user_id;
-    public function __construct(MapItem $mapItem,  Status $status, PostType $postType, SocialUser $user)
+    public function __construct(MapItem $mapItem,  Status $status, PostType $postType
+        , SocialUser $user, Collection $photosParam, Collection $postMarkersParam, Collection $postComplaintsParam)
     {
         $this->_id = 0;
         $this->getters=['id','comment','mapItem','status','postType','user',
@@ -43,9 +44,9 @@ class Post extends BaseEntity {
         $this->_mapItem = $mapItem;
         $this->_status = $status;
         $this->_user = $user;
-        $this->_photos = new Collection([]);
-        $this->_postMarkers = new Collection([]);
-        $this->_postComplaints = new Collection([]);
+        $this->_photos = $photosParam;
+        $this->_postMarkers = $postMarkersParam;
+        $this->_postComplaints = $postComplaintsParam;
     }
 
     public function UserMarkPost($userId)

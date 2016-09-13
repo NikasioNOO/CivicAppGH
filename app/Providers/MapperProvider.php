@@ -3,7 +3,7 @@
 namespace CivicApp\Providers;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
+use App;
 use Illuminate\Support\ServiceProvider;
 use CivicApp\Utilities\Enums;
 use CivicApp\Utilities\Mapper;
@@ -49,6 +49,8 @@ class MapperProvider extends ServiceProvider
             $this->CreatePostMarker($mapper);
             $this->CreatePostType($mapper);
             $this->CreatePostMapper($mapper);
+
+            $this->CreatePostArrayMapper($mapper);
 
 
 
@@ -142,8 +144,11 @@ class MapperProvider extends ServiceProvider
                         $photoModel = $mapper->map(Entities\Post\Photo::class, Models\Photo::class, $photo);
                         if($photoModel->id > 0)
                             $photoModel->post()->associate($modelPost);
-                        else
-                            $modelPost->photos()->save($photoModel);
+                        else {
+                        //    $photoModel->save();
+                            $photoModel->post()->associate($modelPost);
+                            //$modelPost->photos()->save($photoModel);
+                        }
                     }
 
                 if(!is_null($entityPost->postMarkers))
@@ -266,41 +271,55 @@ class MapperProvider extends ServiceProvider
 
     public function CreateMapItemArrayMapper(IMapper $mapper)
     {
-        $mapper->addCustomMapArray(Entities\MapItem\MapItem::class,function($array,Entities\MapItem\MapItem $entityMapItem )
+        $mapper->addCustomMapArray(Entities\MapItem\MapItem::class,
+            function ($array, Entities\MapItem\MapItem $entityMapItem) {
+                /** @var IMapper $mapper */
+                $mapper = App::make(IMapper::class);
+                if (isset( $array['cpc'] ) && ! is_null($array['cpc'])) {
+                    $entityMapItem->cpc = $mapper->mapArray(Entities\MapItem\Cpc::class, $array['cpc']);
+                }
+
+                if (isset( $array['barrio'] ) && ! is_null($array['barrio'])) {
+                    $entityMapItem->barrio = $mapper->mapArray(Entities\MapItem\Barrio::class, $array['barrio']);
+                }
+
+                if (isset( $array['category'] ) && ! is_null($array['category'])) {
+                    $entityMapItem->category = $mapper->mapArray(Entities\MapItem\Category::class, $array['category']);
+                }
+
+                if (isset( $array['status'] ) && ! is_null($array['status'])) {
+                    $entityMapItem->status = $mapper->mapArray(Entities\MapItem\Status::class, $array['status']);
+                }
+
+                if (isset( $array['mapItemType'] ) && ! is_null($array['mapItemType'])) {
+                    $entityMapItem->mapItemType = $mapper->mapArray(Entities\MapItem\MapItemType::class,
+                        $array['mapItemType']);
+                }
+
+                if (isset( $array['location'] ) && ! is_null($array['location'])) {
+                    $entityMapItem->location = $mapper->mapArray(Entities\Common\GeoPoint::class, $array['location']);
+                }
+
+                return $entityMapItem;
+
+            });
+    }
+
+    public function CreatePostArrayMapper(IMapper $mapper)
+    {
+        $mapper->addCustomMapArray(Entities\Post\Post::class,function($array,Entities\Post\Post $entityPost )
         {
             /** @var IMapper $mapper */
             $mapper = App::make(IMapper::class);
-            if(isset($array['cpc']) && !is_null($array['cpc']))
-            {
-                $entityMapItem->cpc = $mapper->mapArray(Entities\MapItem\Cpc::class, $array['cpc']);
-            }
 
-            if(isset($array['barrio']) && !is_null($array['barrio']))
-            {
-                $entityMapItem->barrio = $mapper->mapArray(Entities\MapItem\Barrio::class, $array['barrio']);
-            }
-
-            if(isset($array['category']) && !is_null($array['category']))
-            {
-                $entityMapItem->category = $mapper->mapArray(Entities\MapItem\Category::class, $array['category']);
-            }
 
             if(isset($array['status']) && !is_null($array['status']))
             {
-                $entityMapItem->status = $mapper->mapArray(Entities\MapItem\Status::class, $array['status']);
+                $entityPost->status = $mapper->mapArray(Entities\MapItem\Status::class, $array['status']);
             }
 
-            if(isset($array['mapItemType']) && !is_null($array['mapItemType']))
-            {
-                $entityMapItem->mapItemType = $mapper->mapArray(Entities\MapItem\MapItemType::class, $array['mapItemType']);
-            }
 
-            if(isset($array['location']) && !is_null($array['location']))
-            {
-                $entityMapItem->location = $mapper->mapArray(Entities\Common\GeoPoint::class, $array['location']);
-            }
-
-            return $entityMapItem;
+            return $entityPost;
 
         });
 

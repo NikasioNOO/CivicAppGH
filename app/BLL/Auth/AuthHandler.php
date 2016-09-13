@@ -106,6 +106,12 @@ class AuthHandler {
         return $this->socialUserRepository->UserExists($userId);
     }
 
+    function GetUserLogued()
+    {
+        Logger::startMethod('UserExists');
+        return $this->socialUserRepository->GetUserLogued();
+    }
+
 
 
 }

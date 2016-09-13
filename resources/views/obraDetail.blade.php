@@ -136,20 +136,21 @@
                 <div id="panelUserComment">
                     <div class="row comment">
                         <div class="col-md-12">
-                                    <textarea class="form-control textComment" placeholder="Dejá tu comentario">
-
-                                    </textarea>
+                                    <textarea id="commentTxt" class="form-control textComment" placeholder="Dejá tu comentario"></textarea>
                         </div>
                     </div>
                     <div class="row photos-panel">
                         <div class="col-sm-2">
 
-                            <a class="btn custom-bottom btn-sm"><sapn class="fa fa-camera"></sapn> Subir Foto</a>
+                            <div class="btn custom-bottom btn-sm file-upload-custom-btn" >
+                                <input type="file" class="file-upload-custom" id="photosUploadFile" multiple="true" >
+                                <sapn class="fa fa-camera"></sapn> Subir Foto
+                            </div>
 
                         </div>
                         <div class="col-sm-10">
-                            <div class="row" style="margin-top: 2px">
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
+                            <div class="row photos-panel" id="photosUploadPreview" style="margin-top: 2px">
+                                <div class="col-sm-1 thumbnail previewImg" >
                                     <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
                                     <a>Quitar</a>
                                 </div>
@@ -189,7 +190,7 @@
                         </div>
                         <div class="col-sm-3">
                                  <span>
-                                    <button class="btn custom-bottom btn-sm">
+                                    <button class="btn custom-bottom btn-sm" id="btnComment">
                                         COMENTAR
                                     </button>
                                 </span>

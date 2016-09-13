@@ -33,10 +33,10 @@ class Authenticate
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $mode)
     {
 
-        if(!Auth::check())
+        if(!Auth::guard($mode)->check())
         {
             if($request->ajax())
             {
@@ -49,7 +49,7 @@ class Authenticate
             }
         }
 
-        if ($this->auth->guest() || !$this->auth->user()) {
+        if ($this->auth->guest() || !Auth::guard($mode)->user()) {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {

@@ -9,6 +9,7 @@
 namespace CivicApp\DAL\Auth;
 
 use CivicApp\DAL\Repository\Repository;
+use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Entities\Auth as AuthEntities;
 use CivicApp\Models\Auth as AuthModels;
 use CivicApp\Utilities\Mapper ;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use CivicApp\Utilities\Logger;
+use Illuminate\Support\Facades\Auth;
 
 
 class SocialUserRepository extends Repository implements ISocialUserRepository
@@ -118,6 +120,35 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
         {
             Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
             throw new RepositoryException(trans('autherrorcodes.0003'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0003'));
+        }
+
+    }
+
+
+
+    public function GetUserLogued()
+    {
+        $method = 'GetUserLogued';
+
+        try{
+            Logger::startMethod($method);
+
+            $user = Auth::guard('websocial')->user();
+
+            Logger::endMethod($method);
+            return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class, $user);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0004'));
+
         }
         catch(\Exception $ex)
         {

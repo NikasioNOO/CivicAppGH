@@ -18,6 +18,8 @@ use CivicApp\DAL\MapItem\IMapItemRepository;
 use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Entities;
 use CivicApp\Utilities\Logger;
+use File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PostHandler {
 
@@ -136,6 +138,76 @@ class PostHandler {
 
         Logger::endMethod($method);
         return $id;
+
+    }
+
+
+    /**
+     * @param UploadedFile $file
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function StorePhoto(UploadedFile $file)
+    {
+        $method = 'StorePhoto';
+
+        Logger::startMethod($method);
+
+        try {
+            if ($file->isValid()) {
+                $originalName = $file->getClientOriginalName();
+                $extension    = $file->getClientOriginalExtension();
+                $filename     = substr($originalName, 0, strlen($originalName) - strlen($extension) - 1);
+                $filename     = $this->sanitize($filename);
+                $filename     = $this->createUniqueFilename($filename, $extension);
+
+                $file->move(env('PHOTOS_PATH'), $filename);
+                Logger::endMethod($method);
+
+                return env('PHOTOS_PATH') . $filename;
+
+            } else {
+                throw new PostValidationException($file->getErrorMessage());
+            }
+
+        }catch (\Exception $ex)
+        {
+            Logger::logError($method,trans('posterrorcodes.0307').'Error'.$ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw $ex;
+        }
+
+    }
+
+    private function createUniqueFilename( $filename, $extension )
+    {
+        $dir = env('PHOTOS_PATH');
+        $newFileName = $filename;
+        $image_path = $dir . $newFileName . '.' . $extension;
+        while( File::exists( $image_path ))
+        {
+            $imageToken = substr(sha1(mt_rand()), 0, 5);
+            $newFileName = $filename.'_'.$imageToken.'.'.$extension;
+            $image_path = $dir . $newFileName . '.' . $extension;
+        }
+
+        return $newFileName . '.' . $extension;
+    }
+
+    private function sanitize($string, $force_lowercase = true, $anal = false)
+    {
+        $strip = ["~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
+            "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
+            "â€”", "â€“", ",", "<", ".", ">", "/", "?"];
+        $clean = trim(str_replace($strip, "", strip_tags($string)));
+        $clean = preg_replace('/\s+/', "-", $clean);
+        $clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean ;
+
+        return ($force_lowercase) ?
+            (function_exists('mb_strtolower')) ?
+                mb_strtolower($clean, 'UTF-8') :
+                strtolower($clean) :
+            $clean;
 
     }
 

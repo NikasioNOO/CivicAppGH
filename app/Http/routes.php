@@ -41,6 +41,12 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('/Logout',['as'=>'logout', 'uses' =>'Auth\AuthController@getLogout']);
     Route::get('/LogoutSocial',['as'=>'logoutSocial', 'uses' =>'Auth\AuthController@getLogoutSocial']);
+
+    Route::group(['prefix'=> 'social','middleware' => 'auth:websocial'],function() {
+        Route::post('/SendPost', ['as' => 'social.sendpost', 'uses'=> 'ObrasSocialController@postSendPost']);
+    });
+
+
     Route::group(['prefix'=> 'admin','middleware' => 'auth:webadmin'],function()
     {
         Route::get('/',['as'=>'admin.home', 'uses'=>'AdminController@getAdminHome']);

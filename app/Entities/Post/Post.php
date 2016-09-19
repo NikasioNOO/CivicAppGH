@@ -42,7 +42,7 @@ class Post extends BaseEntity {
         $this->_postType = $postType;
         $this->_postType->id = 1;  // Generico
         $this->_mapItem = $mapItem;
-        $this->_status = $status;
+      //  $this->_status = $status;
         $this->_user = $user;
         $this->_photos = $photosParam;
         $this->_postMarkers = $postMarkersParam;

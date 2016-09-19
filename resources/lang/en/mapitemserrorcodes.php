@@ -24,6 +24,7 @@ return [
     '0102' => 'Error al intentar actualizar la obra, no se encuentra la obra o la locación en la BD.',
     '0103' => 'Error al recuperar las obras',
     '0104' => 'Error al recuperar la obra',
+    '0105' => 'Error al actualizar el estado de la obra',
 
     '0200' => ':catalog de la Obra no existe',
     '0201' => 'La Obra del presupuesto participativo no existe en la base de datos',

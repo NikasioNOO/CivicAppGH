@@ -20,6 +20,7 @@ use CivicApp\Entities;
 use CivicApp\Utilities\Logger;
 use File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use DB;
 
 class PostHandler {
 
@@ -68,11 +69,29 @@ class PostHandler {
         $method = 'SavePost';
 
         Logger::startMethod($method);
-        $this->ValidatePost($post);
-        $id = $this->postRepository->SavePost($post);
-        Logger::endMethod($method);
-        return $id;
+        try {
+            DB::beginTransaction();
+            $statusChange = false;
+            $obraDB = $this->ValidatePost($post);
 
+            $postSaved = $this->postRepository->SavePost($post);
+
+            if ( ! is_null($post->status) && $obraDB->status->id != $post->status->id) {
+                $statusChange = true;
+               $this->obraHandler->UpdateStatusObra($post->mapItem->id,$post->status->id);
+            }
+
+            DB::commit();
+            Logger::endMethod($method);
+
+            return ['statusChange'=>$statusChange, 'post'=>$postSaved];
+
+        }catch (\Exception $ex)
+        {
+            DB::rollBack();
+            throw $ex;
+
+        }
 
     }
 
@@ -87,10 +106,11 @@ class PostHandler {
         if(empty(trim($post->comment)))
             throw new PostValidationException(trans('posterrorcodes.0302'));
 
-        if(is_null($post->mapItem) || is_null($this->obraHandler->GetObra($post->mapItem->id)))
+        $obraDB = $this->obraHandler->GetObra($post->mapItem->id);
+        if(is_null($post->mapItem) || is_null($obraDB))
             throw new PostValidationException(trans('posterrorcodes.0301',['id'=>$post->mapItem->id]),300);
 
-        if(is_null($post->status) || is_null($this->catalogRepository->GetStatus($post->status->id)))
+        if(!is_null($post->status) &&  is_null($this->catalogRepository->GetStatus($post->status->id)))
             throw new PostValidationException(trans('posterrorcodes.0303',['catalog'=>'El Estado']));
 
         if(!is_null($post->postType) && is_null($this->catalogRepository->GetPostType($post->postType->id)))
@@ -100,6 +120,7 @@ class PostHandler {
             throw new PostValidationException(trans('posterrorcodes.0303',['catalog'=>'El usuario']));
 
         Logger::endMethod($method);
+        return $obraDB;
 
     }
 

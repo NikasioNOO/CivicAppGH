@@ -15,18 +15,20 @@ use CivicApp\Entities;
 
 interface IMapItemRepository extends IRepository, ICriteria {
 
-    public function UpdateObra(Entities\MapItem\MapItem $obra );
+    function UpdateObra(Entities\MapItem\MapItem $obra );
 
-    public function SaveObra( $obra );
+    function SaveObra( $obra );
 
-    public function DeleteObra( $id );
+    function DeleteObra( $id );
 
-    public  function GetAllObras();
+    function GetAllObras();
 
-    public function GetAllObrasJson();
+    function GetAllObrasJson();
 
-    public function SearchCriteria();
+    function SearchCriteria();
 
-    public function GetMapItem($id);
+    function GetMapItem($id);
+
+    function UpdateStatusObra($obraId, $statusId);
 
 }

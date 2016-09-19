@@ -13,6 +13,7 @@ use CivicApp\DAL\Repository\Repository;
 use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Models;
 use CivicApp\Entities;
+use CivicApp\Models\Photo;
 use CivicApp\Utilities\Logger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
@@ -82,22 +83,34 @@ class PostRepository extends Repository implements IPostRepository {
         $method = 'SavePost';
         Logger::startMethod($method);
         try {
-            DB::beginTransaction();
+         //   DB::beginTransaction();
             /** @var Models\Post $post */
             $post = $this->mapper->map($this->entity(), $this->model(), $post);
 
 
-            $post->save();
 
-            DB::commit();
+            if($post->id==0 && isset($post->photos) && $post->photos->count()> 0)
+            {
+                $post->save();
+                /** @var Photo $photo */
+                foreach($post->photos as $photo)
+                {
+                    $photo->post()->associate($post->id);
+                    $photo->save();
+                }
+            }
+            else
+                $post->save();
+
+        //    DB::commit();
 
             Logger::endMethod($method);
 
-            return $post->id;
+            return $this->mapper->map($this->model(),$this->entity(),$post);
         }
         catch(QueryException $ex)
         {
-            DB::rollBack();
+          //  DB::rollBack();
             Logger::logError($method, $ex->errorInfo.'.STACKTRACE:'.$ex->getTraceAsString());
 
             throw new RepositoryException(trans('posterrorcodes.0100'),0100);
@@ -105,7 +118,7 @@ class PostRepository extends Repository implements IPostRepository {
         }
         catch(Exception $ex)
         {
-            DB::rollBack();
+            //DB::rollBack();
             Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
 
             throw new RepositoryException(trans('posterrorcodes.0100'),0100);

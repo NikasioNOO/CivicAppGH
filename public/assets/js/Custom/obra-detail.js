@@ -8,8 +8,18 @@
 
         var allCommentsDiv = $('#allCommentsPanel');
         var photosUploadPreviewDiv = $('#photosUploadPreview');
-      //  var photosUploadFiles = []
+        var carouselItemsContentDiv = $('#carouselItemsContent');
+        var carouselPhotosObraDiv = $('#carouselPhotosObra');
+        var countPhotos = 0;
+        var imgWhitoutPhoto = '<div id="imgWithoutPhoto" class="item active" > \
+                                    <img class="img-responsive img-rounded" src="'+ENV_WITHOUT_PHOTO_IMG +'" alt="..."> \
+                                    <div class="carousel-caption"> \
+                                    Subí tu foto para reportar el estado \
+                                    </div> \
+                                </div>';
 
+      //  var photosUploadFiles = []
+        var flagImgRemoved = false;
         function ObraDetail() {
             var obraId =0;
             var idHdn = $('#obraDetailId');
@@ -23,6 +33,8 @@
             var categoryLbl = $('#obraDetailStatus');
             var budgetLbl = $('#obraDetailBudget');
             var commentsCountSpan = $('#commentsCount');
+
+
 
 
             Object.defineProperty(this, 'id', {
@@ -173,8 +185,8 @@
                 get: function() {
 
                     var id= statusSelect.val();
-                    var text=statusSelect.text();
-                    return id ? { id:id }: {id:0,status:text} ;
+                    var text=statusSelect.find('option:selected').text();
+                    return id ? { id:id,status:text }: {id:0} ;
                 },
                 set: function(value) {
                     statusSelect.val(value.id);
@@ -269,9 +281,27 @@
                     {
                         if(data.status == 'Ok')
                         {
+                            var newPost = JSON.parse(data.post);
+                            if(data.statusChange) {
+                                $('#searchObrasBtn').trigger('click');
+                                obra.status = newPost.status.status;
+                            }
+
+                            obra.commentsCount = parseInt(obra.commentsCount) + 1;
+
                             if(data.post)
-                                allCommentsDiv.prepend(BuildComment(JSON.parse(data.post)));
+                                allCommentsDiv.prepend(BuildComment(newPost));
                             photosUploadPreviewDiv.html('');
+
+                            if(countPhotos != 0 && !flagImgRemoved ) {
+                                carouselPhotosObraDiv.find('#imgWithoutPhoto').remove();
+                                flagImgRemoved = true;
+                                carouselPhotosObraDiv.find('.item').first().addClass('active');
+                            }
+
+                            ResizeImg();
+
+
                             comment.CleanComment();
                         }
                         else
@@ -310,14 +340,22 @@
             obra.status = status;
             obra.nroExpediente = nroExpediente;
 
-            allCommentsDiv.html('')
+            allCommentsDiv.html('');
             photosUploadPreviewDiv.html('');
+            if(flagImgRemoved)
+            {
+                carouselItemsContentDiv.append(imgWhitoutPhoto);
+                flagImgRemoved = false;
+            }
+            carouselItemsContentDiv.find('.item').not('#imgWithoutPhoto').remove();
+            countPhotos = 0;
+
 
             $.get('/ObraPP/Posts/'+obra.id,function(result){
                 debugger;
                 if(result.status='OK')
                 {
-                    obra.commentsCount= result.data.length;
+                    obra.commentsCount= result.data ? result.data.length : 0;
                     if(result.data && result.data.length > 0)
                     {
                         for(var i =0 ; i < result.data.length; i++)
@@ -325,7 +363,21 @@
                             allCommentsDiv.append(BuildComment(result.data[i]))
 
                         }
+
+                        if(countPhotos != 0 ) {
+                            carouselPhotosObraDiv.find('#imgWithoutPhoto').remove();
+                            flagImgRemoved = true;
+                          //  carouselItemsContentDiv.append(imgWhitoutPhoto.html());
+                        }
+
                     }
+                    else if(flagImgRemoved)
+                        carouselItemsContentDiv.append(imgWhitoutPhoto);
+
+                    carouselPhotosObraDiv.find('.item').first().addClass('active');
+
+                    ResizeImg();
+                    //carouselPhotosObraDiv.carousel();
                 }
                 else
                 {
@@ -337,17 +389,37 @@
 
         };
 
+        var ResizeImg = function()
+        {
+            var winHeight = $( window ).height();
+            var height = winHeight*0.4;
+            $('#ObraDetail .modal-dialog').height(winHeight*0.8);
+            $('#ObraDetail .carousel-inner img').height(height);
+            $('.gridthumbnail').height(height);
+        };
+
         var BuildComment = function(post)
         {
             var photos='';
 
+
             if(post.photos && post.photos.length>0)
-            for(var i=0; i< post.photos.length;i++) {
-                photos = photos + ' \
-                        <div class="col-sm-1 thumbnail" > \
-                            <img class="img-responsive" src="' + post.photos[i].path + '" alt="..."> \
-                        </div> ';
-            }
+                for(var i=0; i< post.photos.length;i++) {
+                    photos = photos + ' \
+                            <div class="col-sm-1 thumbnail" > \
+                                <img class="img-responsive" src="' + post.photos[i].path + '" alt="..."> \
+                            </div> ';
+
+                    carouselItemsContentDiv.append(
+                    '<div class="item " > \
+                            <img class="img-responsive img-rounded" src="'+ post.photos[i].path +'" alt="..."> \
+                     </div> ');
+                    countPhotos++;
+                }
+
+            var htmlStatus = '';
+            if(post && post.status && post.status.status)
+                htmlStatus = '<label class="control-label label-small ">Cambio de estado: <b> '+post.status.status+' </b></label>';
 
             var htmlComment =
                 '<div id="commentPosted_"'+post.id+' class="panel panel-default panel-user-comment "> \
@@ -372,7 +444,7 @@
                             </div>\
                             <div class="row" > \
                                 <div class="col-sm-6"> \
-                                    <label class="control-label label-small ">Cambio de estado: <b> '+post.status.status+' </b></label> \
+                                    '+htmlStatus+' \
                                 </div> \
                                 <div class="col-sm-6"> \
                                     <div class="form-inline pull-right vote-action"> \

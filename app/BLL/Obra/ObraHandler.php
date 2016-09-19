@@ -318,6 +318,11 @@ class ObraHandler {
         }
     }
 
-
+    function UpdateStatusObra($obraId, $statusId)
+    {
+        $method = 'UpdateStatusObra';
+        Logger::startMethod($method);
+        $this->mapItemRepository->UpdateStatusObra($obraId,$statusId);
+    }
 
 }

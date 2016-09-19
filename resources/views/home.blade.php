@@ -86,12 +86,13 @@
 
     var ENV_MAPICONS_PATH = "{{ env('MAPICONS_PATH')  }}";
     var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
-
+    var ENV_WITHOUT_PHOTO_IMG = "{{ env('WITHOUT_PHOTO_IMG')  }}";
+ /*  'https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') */
 </script>
     {!! Html::script('assets/js/markerclusterer.js') !!}
     {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
     {!! Html::script('assets/js/Custom/obras-social.js') !!}
-    {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') !!}
+
 
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">

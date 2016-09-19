@@ -46,7 +46,12 @@ class ObrasSocialController extends Controller
             {
                 $comment = json_decode( $request->comment);
                 $post->comment = $comment->comment;
-                $post->status->id = $comment->status->id;
+                if(isset($comment->status) && !is_null($comment->status)
+                 && $comment->status->id > 0) {
+                    $post->status = App::make(Entities\MapItem\Status::class);
+                    $post->status->id     = $comment->status->id;
+                    $post->status->status = $comment->status->status;
+                }
                 //$post = $this->mapper->mapArray(Post::class,json_decode( $request->comment));
                 $post->user = $authHandler->GetUserLogued();
 
@@ -85,13 +90,15 @@ class ObrasSocialController extends Controller
 
             }
 
-            $post->id = $this->postHandler->SavePost($post);
+            $result = $this->postHandler->SavePost($post);
+            $post = $result['post'];
             $post->positiveCount = 0;
             $post->negativeCount = 0;
 
             return response()->json([
                 'status' => 'Ok',
-                'post' => json_encode($post)
+                'post' => json_encode($post),
+                'statusChange' => $result['statusChange']
 
             ]);
 

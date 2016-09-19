@@ -146,7 +146,8 @@ class MapperProvider extends ServiceProvider
                             $photoModel->post()->associate($modelPost);
                         else {
                         //    $photoModel->save();
-                            $photoModel->post()->associate($modelPost);
+                            $modelPost->photos->push($photoModel);
+                            //$photoModel->post->push->associate($modelPost);
                             //$modelPost->photos()->save($photoModel);
                         }
                     }

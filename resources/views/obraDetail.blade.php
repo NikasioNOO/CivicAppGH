@@ -9,43 +9,47 @@
                 <input type="hidden" id="obraDetailId">
                 <div class="row obraPhotosPanel">
                     <div class="col-sm-8">
-                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <div id="carouselPhotosObra" class="carousel slide" data-ride="carousel">
                             <!-- Indicators -->
-                            <ol class="carousel-indicators">
+                            <!--<ol class="carousel-indicators">
                                 <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
                                 <li data-target="#carousel-example-generic" data-slide-to="1"></li>
                                 <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-                            </ol>
+                            </ol>-->
 
                             <!-- Wrapper for slides -->
-                            <div class="carousel-inner " role="listbox">
+                            <div id="carouselItemsContent" class="carousel-inner " role="listbox" >
+                               <div class="item active" id="imgWithoutPhoto">
+                                    <img class="img-responsive img-rounded" src="{{ asset(env('WITHOUT_PHOTO_IMG')) }}" alt="...">
+                                    <div class="carousel-caption">
+                                        Subí una foto para reportar el estado.
+                                    </div>
+                                </div>
+                                <!--<div class="item ">
+                                    <img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="...">
+
+                                </div>
+                                <div class="item">
+                                    <a href="#" data-toggle="modal" data-slide-to="1"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque2.png') }}" alt="..."></a>
+                                    <div class="carousel-caption">
+
+                                    </div>
+                                </div>
                                 <div class="item active">
-                                    <a href="#lightbox" data-toggle="modal" data-slide-to="0"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque2.png') }}" alt="..."></a>
+                                    <a href="#" data-toggle="modal" data-slide-to="3"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="..."></a>
                                     <div class="carousel-caption">
 
                                     </div>
-                                </div>
-                                <div class="item">
-                                    <a href="#lightbox" data-toggle="modal" data-slide-to="1"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="..."></a>
-                                    <div class="carousel-caption">
-
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <a href="#lightbox" data-toggle="modal" data-slide-to="2"><img class="img-responsive img-rounded" src="{{ asset('assets/images/parque1.png') }}" alt="..."></a>
-                                    <div class="carousel-caption">
-
-                                    </div>
-                                </div>
+                                </div>-->
 
                             </div>
 
                             <!-- Controls -->
-                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                            <a class="left carousel-control" href="#carouselPhotosObra" role="button" data-slide="prev">
                                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
                             </a>
-                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                            <a class="right carousel-control" href="#carouselPhotosObra" role="button" data-slide="next">
                                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -150,30 +154,7 @@
                         </div>
                         <div class="col-sm-10">
                             <div class="row photos-panel" id="photosUploadPreview" style="margin-top: 2px">
-                                <div class="col-sm-1 thumbnail previewImg" >
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
-                                <div class="col-sm-1 thumbnail" style="padding: 0; margin: 0">
-                                    <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    <a>Quitar</a>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -198,150 +179,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <p class="subtitle fancy"><label><span id="commentsCount">3</span> Comentarios </label></p>
+                    <p class="subtitle fancy"><label><span id="commentsCount">0</span> Comentarios </label></p>
                 </div>
                 <div id="allCommentsPanel">
-                    <div class="panel panel-default panel-user-comment ">
-                        <div class="panel-title  ">
-                            <div class="avatar-wrapper img-circle ">
-                                <img src="https://graph.facebook.com/v2.6/10206882125828581/picture?type=normal"  class="img-responsive avatar-width" alt="Avatar">
-                            </div>
-                            <label >Nicolás Daniel Ortiz Olmos</label>
-                            <label >01/05/2016 12:34:21</label>
-                            <div class="pull-right">
-                                <span class="glyphicon glyphicon-thumbs-up"></span><span style="margin-left: 5px" class="badge">4</span>
-                                <span class="glyphicon glyphicon-thumbs-down"></span><span style="margin-left: 5px" class="badge">2</span>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="container-fluid">
-                                <div class="row comment">
-                                    <div class="col-md-12 well">Se estan iniciando las instalaciones de bancos en las plazas </div>
-                                </div>
-                                <div class="row" >
-                                    <div class="col-sm-6">
-                                        <label class="control-label label-small ">Cambio de estado: <b> En Ejecucion </b></label>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-inline pull-right vote-action">
-                                            <a ><span class="glyphicon glyphicon-thumbs-up" ></span>Me gusta</a>
-                                            <a ><span class="glyphicon glyphicon-thumbs-down" ></span>No me gusta</a>
-                                            <a ><span class="fa fa-hand-stop-o" ></span>Denunciar comentario</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default panel-user-comment ">
-                        <div class="panel-title  ">
-                            <div class="avatar-wrapper img-circle ">
-                                <img src="https://graph.facebook.com/v2.6/10206882125828581/picture?type=normal"  class="img-responsive avatar-width" alt="Avatar">
-                            </div>
-                            <label >Nicolás Daniel Ortiz Olmos</label>
-                            <label >01/05/2016 12:34:21</label>
-                            <div class="pull-right">
-                                <span class="glyphicon glyphicon-thumbs-up"></span><span style="margin-left: 5px" class="badge">4</span>
-                                <span class="glyphicon glyphicon-thumbs-down"></span><span style="margin-left: 5px" class="badge">2</span>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="container-fluid">
-                                <div class="row comment">
-                                    <div class="col-md-12 well">Se estan iniciando las instalaciones de bancos en las plazas </div>
-                                </div>
-                                <div class="row photos-panel">
-                                    <a href="{{ asset('assets/images/parque2.png') }}" data-toggle="lightbox"><div class="col-sm-1 thumbnail" >
-                                            <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                        </div></a>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-                                    <div class="col-sm-1 thumbnail" >
-                                        <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                                    </div>
-
-                                </div>
-                                <div class="row" >
-                                    <div class="col-sm-6">
-                                        <label class="control-label label-small ">Estado de la Obra: <b> En Ejecucion </b></label>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-inline pull-right vote-action">
-                                            <a ><span class="glyphicon glyphicon-thumbs-up" ></span>Me gusta</a>
-                                            <a ><span class="glyphicon glyphicon-thumbs-down" ></span>No me gusta</a>
-                                            <a ><span class="fa fa-hand-stop-o" ></span>Denunciar comentario</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">

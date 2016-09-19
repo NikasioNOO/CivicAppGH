@@ -115,6 +115,35 @@ class MapItemRepository extends Repository implements IMapItemRepository {
 
     }
 
+    public function UpdateStatusObra($obraId, $statusId)
+    {
+        $method = "UpdateStatusObra";
+        try {
+
+            Logger::startMethod($method);
+            /** @var Models\MapItem $obra */
+            $obra = $MapItemDB =  Models\MapItem::find($obraId);
+            $obra->status()->associate($statusId);
+
+            $obra->save();
+
+
+            Logger::endMethod($method);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo.$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('mapitemserrorcodes.0105'),0105);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('mapitemserrorcodes.0105'),0105);
+        }
+
+    }
+
     /**
      * Return all Obras Presupuesto Participativo
      * @return String

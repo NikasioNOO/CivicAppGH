@@ -38,6 +38,19 @@
     margin: 10px 0 ;
 }
 
+.modal-obraDetail .obraPhotosPanel .gridthumbnail  {
+    overflow-y: scroll;
+}
+
+.modal-obraDetail .obraPhotosPanel .gridthumbnail .col-sm-6  {
+    padding: 0;
+}
+
+.modal-obraDetail .obraPhotosPanel .gridthumbnail .thumbnail  {
+    margin: 0;
+    cursor: pointer;
+}
+
 .modal-obraDetail .obraInfoPanel .labelValue {
     font-size: larger;
     font-weight:normal;

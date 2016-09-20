@@ -10,6 +10,7 @@
         var photosUploadPreviewDiv = $('#photosUploadPreview');
         var carouselItemsContentDiv = $('#carouselItemsContent');
         var carouselPhotosObraDiv = $('#carouselPhotosObra');
+        var imgthumbnailPanelDiv = $('#imgThumbnailPanel');
         var countPhotos = 0;
         var imgWhitoutPhoto = '<div id="imgWithoutPhoto" class="item active" > \
                                     <img class="img-responsive img-rounded" src="'+ENV_WITHOUT_PHOTO_IMG +'" alt="..."> \
@@ -342,9 +343,10 @@
 
             allCommentsDiv.html('');
             photosUploadPreviewDiv.html('');
+            imgthumbnailPanelDiv.html('');
             if(flagImgRemoved)
             {
-                carouselItemsContentDiv.append(imgWhitoutPhoto);
+                carouselItemsContentDiv.prepend(imgWhitoutPhoto);
                 flagImgRemoved = false;
             }
             carouselItemsContentDiv.find('.item').not('#imgWithoutPhoto').remove();
@@ -372,7 +374,7 @@
 
                     }
                     else if(flagImgRemoved)
-                        carouselItemsContentDiv.append(imgWhitoutPhoto);
+                        carouselItemsContentDiv.prepend(imgWhitoutPhoto);
 
                     carouselPhotosObraDiv.find('.item').first().addClass('active');
 
@@ -414,6 +416,13 @@
                     '<div class="item " > \
                             <img class="img-responsive img-rounded" src="'+ post.photos[i].path +'" alt="..."> \
                      </div> ');
+
+                    imgthumbnailPanelDiv.append(' \
+                    <div class="col-sm-6" >  \
+                        <div class="thumbnail" data-target="#carouselPhotosObra" data-slide-to="'+ countPhotos +'">  \
+                            <img class="img-responsive" src="'+post.photos[i].path +'" alt="...">  \
+                        </div> \
+                    </div> ');
                     countPhotos++;
                 }
 

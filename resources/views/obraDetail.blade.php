@@ -55,47 +55,8 @@
                             </a>
                         </div>
                     </div>
-                    <div id="ImgPanel" class="col-sm-4 gridthumbnail" style="overflow-y: scroll" >
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding: 0;">
-                            <div class="thumbnail">
-                                <img class="img-responsive" src="{{ asset('assets/images/parque2.png') }}" alt="...">
-                            </div>
-                        </div>
+                    <div id="imgThumbnailPanel" class="col-sm-4 gridthumbnail"  >
+
 
                     </div>
                 </div>

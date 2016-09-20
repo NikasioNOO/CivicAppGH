@@ -169,6 +169,10 @@ return [
 
         'Maatwebsite\Excel\ExcelServiceProvider',
 
+        Intervention\Image\ImageServiceProvider::class,
+
+
+
     ],
 
     /*
@@ -242,6 +246,8 @@ return [
         'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
 
         'Excel' => 'Maatwebsite\Excel\Facades\Excel',
+
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

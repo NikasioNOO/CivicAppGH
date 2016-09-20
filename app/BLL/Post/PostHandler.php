@@ -21,6 +21,7 @@ use CivicApp\Utilities\Logger;
 use File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use DB;
+use Image;
 
 class PostHandler {
 
@@ -183,7 +184,13 @@ class PostHandler {
                 $filename     = $this->sanitize($filename);
                 $filename     = $this->createUniqueFilename($filename, $extension);
 
-                $file->move(env('PHOTOS_PATH'), $filename);
+                $img = Image::make($file);
+                $img->resize(800,null,function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+                $img->save(env('PHOTOS_PATH'). $filename);
+                //$file->move(env('PHOTOS_PATH'), $filename);
                 Logger::endMethod($method);
 
                 return env('PHOTOS_PATH') . $filename;
@@ -209,7 +216,7 @@ class PostHandler {
         {
             $imageToken = substr(sha1(mt_rand()), 0, 5);
             $newFileName = $filename.'_'.$imageToken.'.'.$extension;
-            $image_path = $dir . $newFileName . '.' . $extension;
+            $image_path = $dir . $newFileName;
         }
 
         return $newFileName . '.' . $extension;

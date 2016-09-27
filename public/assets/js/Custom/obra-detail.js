@@ -11,6 +11,8 @@
         var carouselItemsContentDiv = $('#carouselItemsContent');
         var carouselPhotosObraDiv = $('#carouselPhotosObra');
         var imgthumbnailPanelDiv = $('#imgThumbnailPanel');
+        var modalComplaint = $('#ComplaintModal');
+        var complaintComment =  $('#complaintComment');
         var countPhotos = 0;
         var imgWhitoutPhoto = '<div id="imgWithoutPhoto" class="item active" > \
                                     <img class="img-responsive img-rounded" src="'+ENV_WITHOUT_PHOTO_IMG +'" alt="..."> \
@@ -235,7 +237,7 @@
                     var match = ["image/jpeg", "image/png", "image/jpg"];
 
                     if (!((imageFile == match[0]) || (imageFile == match[1]) || (imageFile == match[2]))) {
-                        Utilities.ShowMessage('Debe elegir archivos de imagen , gracias');
+                        Utilities.ShowMessage('Debe elegir archivos de imagen de tipo jpeg, png, jpg , gracias');
                         return false;
                     }
                     else {
@@ -313,12 +315,25 @@
                     },
                     error:function( jqXHR, textStatus,  errorThrown )
                     {
-                        Utilities.ShowError('Ocurrió un error al intentar guardar la Obra del presupuesto participativo'+errorThrown);
+                        if(jqXHR.status && jqXHR.status == 401 )
+                            Utilities.ShowError('Es necesario haber iniciado sesión para realizar la acción');
+                        else
+                            Utilities.ShowError('Ocurrió un error al intentar guardar la Obra del presupuesto participativo'+errorThrown);
                     }
                 });
 
 
             });
+
+            $("#SendComplaint").on('click',function(){
+                var comment = complaintComment.val();
+                ComplaintPost( modalComplaint.data('post'),comment);
+                modalComplaint.modal('hide');
+            });
+
+            modalComplaint.on( 'hidden.bs.modal' , function() {
+                $( 'body' ).addClass( 'modal-open' );
+            } );
         };
 
         var RemovePhotoUpload = function(photolink){
@@ -400,6 +415,14 @@
             $('.gridthumbnail').height(height);
         };
 
+        var BindCloseImageBttn = function()
+        {
+            setTimeout(function(){$('div[id^=ekkoLightbox-]').on( 'hidden.bs.modal' , function() {
+                $( 'body' ).addClass( 'modal-open' );
+                } );
+            },300);
+        };
+
         var BuildComment = function(post)
         {
             var photos='';
@@ -414,13 +437,17 @@
 
                     carouselItemsContentDiv.append(
                     '<div class="item " > \
+                        <a href="'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
                             <img class="img-responsive img-rounded" src="'+ post.photos[i].path +'" alt="..."> \
+                        </a>    \
                      </div> ');
 
                     imgthumbnailPanelDiv.append(' \
                     <div class="col-sm-6" >  \
                         <div class="thumbnail" data-target="#carouselPhotosObra" data-slide-to="'+ countPhotos +'">  \
-                            <img class="img-responsive" src="'+post.photos[i].path +'" alt="...">  \
+                            <a href="'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
+                                <img class="img-responsive" src="'+post.photos[i].path +'" alt="...">  \
+                            </a> \
                         </div> \
                     </div> ');
                     countPhotos++;
@@ -457,9 +484,9 @@
                                 </div> \
                                 <div class="col-sm-6"> \
                                     <div class="form-inline pull-right vote-action"> \
-                                        <a id="markPositive_'+post.id+'"><span class="glyphicon glyphicon-thumbs-up" ></span>Me gusta</a> \
-                                        <a id="markNegative_'+post.id+'"><span class="glyphicon glyphicon-thumbs-down" ></span>No me gusta</a> \
-                                        <a id="complaint_'+post.id+'"><span class="fa fa-hand-stop-o" ></span>Denunciar comentario</a> \
+                                        <a id="markPositive_'+post.id+'" onclick="CivicApp.ObrasSocial.ObraDetail.MarkPost(this,true)"><span class="glyphicon glyphicon-thumbs-up" ></span>Me gusta</a> \
+                                        <a id="markNegative_'+post.id+'" onclick="CivicApp.ObrasSocial.ObraDetail.MarkPost(this,false)"><span class="glyphicon glyphicon-thumbs-down" ></span>No me gusta</a> \
+                                        <a id="complaint_'+post.id+'" onclick="CivicApp.ObrasSocial.ObraDetail.OpenComplaintDialog(this)"><span class="fa fa-hand-stop-o" ></span>Denunciar comentario</a> \
                                     </div> \
                                 </div> \
                             </div> \
@@ -471,16 +498,95 @@
         };
 
 
+        var MarkPost = function(markLink,marker)  {
+
+            var postId = markLink.id.split('_')[1];
+
+            $.post('/social/MarkPost', {"postId":postId,"marker":marker ? 1 :0 },
+            function(data)
+            {
+                if(data.status=="Ok")
+                {
+                    var markerCount = marker == true ? $('#positiveCountMarkers_'+postId) : $('#negativeCountMarkers_'+postId) ;
+                    markerCount.text(parseInt(markerCount.text())+1)
+                }
+                else
+                {
+                    if(data.message)
+                    {
+                        Utilities.ShowMessage(data.message);
+                    }
+                    else
+                        Utilities.ShowError('Ocurrió un error al intentar markar positivamente el comentario');
+                }
+
+            }).fail(function(err)
+            {
+                if(err && err.status && err.status == 401)
+                    Utilities.ShowError('Es necesario haber iniciado sesión para realizar la acción');
+                else
+                    Utilities.ShowError('Ocurrió un error al intentar markar positivamente el comentario');
+            })
+
+        };
+
+
+        var OpenComplaintDialog = function(link)
+        {
+            var postId = link.id.split('_')[1];
+            complaintComment.val('');
+            modalComplaint.modal('show');
+
+            modalComplaint.data('post',postId);
+
+
+        };
+
+        var ComplaintPost = function(postId,comment)  {
+
+
+            $.post('/social/SendPostComplaint', {"postId":postId,"comment":comment  },
+                function(data)
+                {
+                    if(data.status!="Ok")
+                    {
+                        if(data.message)
+                        {
+                            Utilities.ShowMessage(data.message);
+                        }
+                        else
+                            Utilities.ShowError('Ocurrió un error al intentar denunciar el comentario');
+                    }
+
+                }).fail(function(err)
+                {
+                    if(err && err.status && err.status == 401)
+                        Utilities.ShowError('Es necesario haber iniciado sesión para realizar la acción');
+                    else
+                        Utilities.ShowError('Ocurrió un error al intentar denunciar el comentario');
+                })
+
+        };
+
+
 
         return {
             SetObra : SetObra,
             InitEvents: InitEvents,
-            RemovePhotoUpload: RemovePhotoUpload
+            RemovePhotoUpload: RemovePhotoUpload,
+            BindCloseImageBttn: BindCloseImageBttn,
+            MarkPost: MarkPost,
+            OpenComplaintDialog: OpenComplaintDialog
         }
 
 
     };
 })();
+
+$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+    event.preventDefault();
+    $(this).ekkoLightbox();
+});
 
 $(document).ready(function(){
 

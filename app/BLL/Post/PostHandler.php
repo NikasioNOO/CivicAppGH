@@ -137,8 +137,9 @@ class PostHandler {
         if( is_null($postId) || is_null($this->postRepository->findById($postId)))
             throw new PostValidationException(trans('posterrorcodes.0306'));
 
-      /*  if(!is_null($this->postRepository->GetPostMarker($userId,$postId)))
-            throw new PostValidationException(trans('posterrorcodes.0304'));*/
+        $markers = $this->postRepository->GetPostMarker($userId,$postId);
+       if(!is_null($markers) && count($markers) > 0)
+            throw new PostValidationException(trans('posterrorcodes.0304'));
 
         $id = $this->postRepository->SavePostMarker($postMarker,$userId,$postId);
 

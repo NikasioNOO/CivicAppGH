@@ -52,11 +52,15 @@ class MapItemRepository extends Repository implements IMapItemRepository {
 
             Logger::startMethod($method);
 
-            $obras = $this->model->with('mapItemType','category','status','barrio','cpc','location')
+            /*$obras = $this->model->with('mapItemType','category','status','barrio','cpc','location')
+                ->whereHas('mapItemType',function($query){
+                    $query->where('type',Constants::typeObra);
+                })->get();*/
+
+            $obras = $this->model->with('mapItemType','category','status','barrio','cpc','location','postComplaintsCounts')
                 ->whereHas('mapItemType',function($query){
                     $query->where('type',Constants::typeObra);
                 })->get();
-
 
 
             $obrasEntities = $this->mapper->map(Models\MapItem::class, Entities\MapItem\MapItem::class, $obras->all());

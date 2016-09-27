@@ -1,4 +1,4 @@
-<div class="modal fade custom-modal modal-obraDetail " data-backdrop="static" id="ObraDetail" tabindex="-1" role="dialog" aria-labelledby="ObraDetail">
+<div class="modal fade custom-modal modal-obraDetail "  id="ObraDetail" tabindex="-1" role="dialog" aria-labelledby="ObraDetail">
     <div class="modal-dialog modal-lg"  role="document">
         <div class="modal-content cus-modal-images">
             <div class="modal-header">
@@ -149,6 +149,25 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ComplaintModal" tabindex="-1" role="dialog" aria-labelledby="ComplaintModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Denuncia el comentario</h4>
+            </div>
+            <div class="modal-body">
+                <textarea id="complaintComment" placeholder="Agrega un comentario a tu denuncia" class="form-control textComment" rows="4" ></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn custom-bottom btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn custom-bottom btn-sm" id="SendComplaint">Denunciar</button>
+            </div>
         </div>
     </div>
 </div>

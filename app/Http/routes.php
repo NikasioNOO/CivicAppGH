@@ -44,6 +44,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::group(['prefix'=> 'social','middleware' => 'auth:websocial'],function() {
         Route::post('/SendPost', ['as' => 'social.sendpost', 'uses'=> 'ObrasSocialController@postSendPost']);
+        Route::post('/MarkPost', ['as' => 'social.markpost', 'uses'=> 'ObrasSocialController@postMarkPost']);
+        Route::post('/SendPostComplaint', ['as' => 'social.sendcomplaint', 'uses'=> 'ObrasSocialController@postSendComplaint']);
     });
 
 

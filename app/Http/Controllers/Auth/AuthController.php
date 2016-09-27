@@ -3,6 +3,7 @@
 namespace CivicApp\Http\Controllers\Auth;
 
 use App;
+use Auth;
 use CivicApp\BLL\Auth\AuthHandler;
 use CivicApp\Entities\Auth\AppUser;
 use CivicApp\Entities\Auth\Role as RoleEnt;
@@ -11,7 +12,6 @@ use CivicApp\Models\Auth\Role;
 use CivicApp\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mockery\CountValidator\Exception;
 use Psy\Util\Json;
@@ -206,11 +206,19 @@ class AuthController extends Controller
 
     public function getLogin()
     {
+        if(Auth::guard('webadmin')->check())
+            return redirect()->route('admin.home');
+        if(Auth::guard('websocial')->check())
+            return redirect()->route('public.home');
+
         return view('auth.LoginApp');
     }
 
     public function postLogin(Request $request)
     {
+        if(Auth::guard('webadmin')->check())
+            return redirect()->route('admin.home');
+
         $email      = $request->input('email');
         $password   = $request->input('password');
         $remember   = $request->input('remember');
@@ -221,15 +229,9 @@ class AuthController extends Controller
             'password'  => $password
         ], $remember == 1 ? true : false))
         {
-            if( Auth::user()->hasRole('Admin'))
-            {
-                return redirect()->route('admin.home');
-            }
-            else
-            {
 
-                return redirect()->route('public.home');
-            }
+                return redirect()->route('admin.home');
+
 
 
 
@@ -237,7 +239,7 @@ class AuthController extends Controller
         else
         {
             return redirect()->back()
-                ->with('message','Incorrect email or password')
+                ->with('message','Email o Password Incorrecto')
                 ->with('status', 'danger')
                 ->withInput();
         }
@@ -246,7 +248,7 @@ class AuthController extends Controller
 
     public function getLogout()
     {
-        Auth::logout();
+        Auth::guard('webadmin')->logout();
 
         return redirect()->route('authApp.login')
             ->with('status', 'success')

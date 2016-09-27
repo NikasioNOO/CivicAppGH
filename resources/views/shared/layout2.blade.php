@@ -60,7 +60,7 @@
                         <li><a href="/">INICIO</a></li>
                         <li><a href="#">ACERCA DE</a></li>
                         <li><a href="#">PREGUNTAS FRECUENTES</a></li>
-                        @can('admin-role')
+                        @if(  Auth::guard("webadmin")->check() && Auth::guard("webadmin")->user()->hasRole('Admin'))
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ADMINISTRACION<span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -73,7 +73,7 @@
                                 <li><a href="#">One more separated link</a></li>
                             </ul>
                         </li>
-                        @endcan
+                        @endif
                         @if(  Auth::guard("webadmin")->check())
                             <li style=""><a href="/Logout" >CERRAR SESION</a></li>
                         @elseif(Auth::guard("websocial")->check())

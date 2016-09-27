@@ -1,9 +1,8 @@
 @extends('shared.layout2')
 
 @section('head')
-    {!! Html::style('assets/css/Custom/singin.css') !!}
-    <script type='text/javascript'>var centreGot = false;</script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.css" />
 
 @stop
 @section('content')
@@ -93,6 +92,7 @@
     {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
     {!! Html::script('assets/js/Custom/obras-social.js') !!}
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.js"></script>
 
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">

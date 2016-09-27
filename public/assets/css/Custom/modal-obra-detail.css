@@ -206,3 +206,47 @@
     margin-right: 5px;
     cursor: pointer;
 }
+
+.ekko-lightbox.modal .modal-content
+{
+    background: transparent;
+}
+
+.ekko-lightbox.modal .modal-header
+{
+    padding: 5px;
+}
+
+.ekko-lightbox.modal .modal-body
+{
+    padding: 5px;
+}
+
+.ekko-lightbox.modal .modal-header .close
+{
+    opacity: .8;
+}
+
+.ui-widget-overlay.ui-front
+{
+    background: gray;
+    opacity: 0.3;
+}
+
+#ComplaintModal .modal-dialog
+{
+    width: 40%;
+
+}
+
+#ComplaintModal .modal-header
+{
+    background-color: #00aeef;
+    color: #ffffff;
+    padding: 10px;
+}
+
+#ComplaintModal textarea
+{
+    resize: none;
+}

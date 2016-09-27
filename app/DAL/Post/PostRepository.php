@@ -137,7 +137,7 @@ class PostRepository extends Repository implements IPostRepository {
             if(is_null($postMarker) || $postMarker->count() ==0)
                 return null;
             else
-                $this->mapper->map(Models\PostMarker::class,Entities\Post\PostMarker::class,$postMarker);
+                return $this->mapper->map(Models\PostMarker::class,Entities\Post\PostMarker::class,$postMarker->all());
         }
         catch(QueryException $ex)
         {

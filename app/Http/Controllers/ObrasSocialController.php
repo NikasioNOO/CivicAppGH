@@ -20,12 +20,14 @@ class ObrasSocialController extends Controller
 
 
     private $postHandler ;
+    private $authHandler;
     private $mapper;
 
-    public function __construct (PostHandler $postHandlerParam, IMapper $mapperparam)
+    public function __construct (PostHandler $postHandlerParam, AuthHandler $authHandlerParam, IMapper $mapperparam)
     {
         $this->postHandler = $postHandlerParam;
-        $this->mapper = $mapperparam;
+        $this->mapper      = $mapperparam;
+        $this->authHandler = $authHandlerParam;
     }
 
     public  function getIndex()
@@ -34,7 +36,7 @@ class ObrasSocialController extends Controller
     }
 
 
-    public function postSendPost(Request $request, AuthHandler $authHandler, Post $post)
+    public function postSendPost(Request $request, Post $post)
     {
         $method = 'postSendPost';
         $msg = '';
@@ -53,7 +55,7 @@ class ObrasSocialController extends Controller
                     $post->status->status = $comment->status->status;
                 }
                 //$post = $this->mapper->mapArray(Post::class,json_decode( $request->comment));
-                $post->user = $authHandler->GetUserLogued();
+                $post->user = $this->authHandler->GetUserLogued();
 
             }
             else
@@ -95,6 +97,7 @@ class ObrasSocialController extends Controller
             $post->positiveCount = 0;
             $post->negativeCount = 0;
 
+            Logger::endMethod($method);
             return response()->json([
                 'status' => 'Ok',
                 'post' => json_encode($post),
@@ -115,9 +118,88 @@ class ObrasSocialController extends Controller
 
 
 
-        Logger::endMethod($method);
+
 
 
     }
 
+
+
+    public function postMarkPost(Request $request,  Entities\Post\PostMarker $postMarker)
+    {
+        $method = 'postMarkPost';
+
+        Logger::startMethod($method);
+
+        try{
+            if($request->has('postId') && $request->has('marker'))
+            {
+
+                $postMarker->is_positive = $request->marker == 1 ? true :false;
+
+                $user = $this->authHandler->GetUserLogued();
+
+                $this->postHandler->SavePostMarker($postMarker,$user->id,$request->postId);
+            }
+            else
+                throw new \Exception('no se ha recibido una marca válida');
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'Ok'
+            ]);
+
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method,$ex->getMessage().'STACKTRACE'.$ex->getTraceAsString());
+            return response()->json([
+                'status' => 'Error',
+                'message' =>  $ex->getMessage()
+            ]);
+
+        }
+
+
+    }
+
+    public function postSendComplaint(Request $request,  Entities\Post\PostComplaint $postComplaint)
+    {
+        $method = 'postSendComplaint';
+
+        Logger::startMethod($method);
+
+        try{
+            if($request->has('postId') && $request->has('comment'))
+            {
+
+                $postComplaint->comment = $request->comment;
+
+                $user = $this->authHandler->GetUserLogued();
+
+                $this->postHandler->SavePostComplaint($postComplaint,$user->id,$request->postId);
+            }
+            else
+                throw new \Exception('no se ha denuncia válida');
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'Ok'
+            ]);
+
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method,$ex->getMessage().'STACKTRACE'.$ex->getTraceAsString());
+            return response()->json([
+                'status' => 'Error',
+                'message' =>  $ex->getMessage()
+            ]);
+
+        }
+
+
+    }
 }

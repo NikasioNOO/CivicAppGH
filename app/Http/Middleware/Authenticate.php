@@ -49,11 +49,14 @@ class Authenticate
             }
         }
 
-        if ($this->auth->guest() || !Auth::guard($mode)->user()) {
+        if (Auth::guard($mode)->guest() || !Auth::guard($mode)->user()) {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect()->guest('auth/login');
+                if($mode=='webadmin')
+                    return redirect()->guest('/AdminLogin');
+                else
+                    return redirect()->guest('/');
             }
         }
 

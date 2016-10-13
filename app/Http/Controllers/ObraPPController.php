@@ -81,7 +81,7 @@ class ObraPPController extends Controller
 
     }
 
-    public function GetPosts($id)
+    public function GetPosts($id, $orderBy='created_at', $orderType='desc')
     {
         $message = null;
         $method='GetPosts';

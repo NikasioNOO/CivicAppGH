@@ -57,10 +57,10 @@ class MapItemRepository extends Repository implements IMapItemRepository {
                     $query->where('type',Constants::typeObra);
                 })->get();*/
 
-            $obras = $this->model->with('mapItemType','category','status','barrio','cpc','location','postComplaintsCounts')
+            $obras = $this->model->with('mapItemType','category','status','barrio','cpc','location','postComplaintsCount')
                 ->whereHas('mapItemType',function($query){
                     $query->where('type',Constants::typeObra);
-                })->get();
+                })->withCount('posts')->get();
 
 
             $obrasEntities = $this->mapper->map(Models\MapItem::class, Entities\MapItem\MapItem::class, $obras->all());
@@ -89,13 +89,13 @@ class MapItemRepository extends Repository implements IMapItemRepository {
      */
     public function GetObraCompleteInfo()
     {
-        $method = "GetAllObras";
+        $method = "GetObraCompleteInfo";
         try {
 
             Logger::startMethod($method);
 
             $obras = $this->model->with('mapItemType','category','status','barrio','cpc'
-                ,'location', 'posts.')
+                ,'location', 'posts')
                 ->whereHas('mapItemType',function($query){
                     $query->where('type',Constants::typeObra);
                 })->get();

@@ -370,7 +370,7 @@
 
             $.get('/ObraPP/Posts/'+obra.id,function(result){
                 debugger;
-                if(result.status='OK')
+                if(result.status=='OK')
                 {
                     obra.commentsCount= result.data ? result.data.length : 0;
                     if(result.data && result.data.length > 0)
@@ -458,7 +458,7 @@
                 htmlStatus = '<label class="control-label label-small ">Cambio de estado: <b> '+post.status.status+' </b></label>';
 
             var htmlComment =
-                '<div id="commentPosted_"'+post.id+' class="panel panel-default panel-user-comment "> \
+                '<div id="commentPosted_'+post.id+'" class="panel panel-default panel-user-comment "> \
                     <div class="panel-title  ">  \
                         <div class="avatar-wrapper img-circle "> \
                             <img src="'+  post.user.avatar + '"  class="img-responsive avatar-width" alt="Avatar"> \

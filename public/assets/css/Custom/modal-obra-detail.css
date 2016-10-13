@@ -85,29 +85,34 @@
     margin: 0 10px;
 }
 
-.modal-obraDetail .row.comment
+/*.modal-obraDetail*/
+.row.comment
 {
     margin: 0;
     padding: 10px 30px 10px 30px;
 }
 
-.modal-obraDetail .textComment
+/*.modal-obraDetail*/
+.textComment
 {
     border: solid gray;
     resize: none;
 }
 
-.modal-obraDetail .row.photos-panel {
+/*.modal-obraDetail*/
+.row.photos-panel {
    margin: 0;
     padding: 0 30px;
 }
 
-.modal-obraDetail .row.photos-panel .thumbnail{
+/*.modal-obraDetail*/
+.row.photos-panel .thumbnail{
     margin: 0;
     padding: 0;
 }
 
-.modal-obraDetail .row.photos-panel .thumbnail a{
+/*.modal-obraDetail*/
+.row.photos-panel .thumbnail a{
     font-size: xx-small;
     text-decoration: underline;
     cursor: pointer;
@@ -116,29 +121,34 @@
 
 
 
-.modal-obraDetail .row.commentFotter
+/*.modal-obraDetail*/
+.row.commentFotter
 {
     margin: 0;
     padding: 10px 30px;
 
 }
-.modal-obraDetail .row.commentFotter .custom-select
+/*.modal-obraDetail*/
+.row.commentFotter .custom-select
 {
     width: auto;
 }
-.modal-obraDetail .row.commentFotter button
+/*.modal-obraDetail*/
+.row.commentFotter button
 {
     float: right;
 }
 
-.modal-obraDetail .file-upload-custom-btn
+/*.modal-obraDetail*/
+.file-upload-custom-btn
 {
     position: relative;
     overflow: hidden;
     margin: 10px;
 }
 
-.modal-obraDetail .file-upload-custom
+/*.modal-obraDetail*/
+.file-upload-custom
 {
     position: absolute;
     top: 0;
@@ -151,7 +161,8 @@
     filter: alpha(opacity=0);
 }
 
-.modal-obraDetail .photos-panel .previewImg
+/*.modal-obraDetail*/
+.photos-panel .previewImg
 {
     padding: 0; margin: 0
 }

@@ -22,6 +22,7 @@ use File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use DB;
 use Image;
+use Storage;
 
 class PostHandler {
 
@@ -41,7 +42,7 @@ class PostHandler {
         $this->authHandler = $authH;
     }
 
-    public function GetAllPostByObra($obraId)
+    public function GetAllPostByObra($obraId, $orderBy='created_at', $orderType='desc')
     {
         $method = 'GetAllPostByObra';
         try{
@@ -53,7 +54,31 @@ class PostHandler {
 
             Logger::endMethod($method);
 
-            return $this->postRepository->GetPostsByObraId($obraId);
+            return $this->postRepository->GetPostsByObraId($obraId, $orderBy, $orderType);
+
+        }
+        catch(PostValidationException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw $ex;
+        }
+
+
+    }
+
+    public function GetAllPostCompleteByObra($obraId, $orderBy='created_at', $orderType='desc')
+    {
+        $method = 'GetAllPostByObra';
+        try{
+            Logger::startMethod($method);
+
+
+            if(is_null($this->obraHandler->GetObra($obraId)))
+                throw new PostValidationException(trans('posterrorcodes.0301',['id'=>$obraId]),300);
+
+            Logger::endMethod($method);
+
+            return $this->postRepository->GetPostsCompleteByObraId($obraId, $orderBy, $orderType);
 
         }
         catch(PostValidationException $ex)
@@ -95,6 +120,48 @@ class PostHandler {
         }
 
     }
+
+    public function DeletePost($postId)
+    {
+        $method = 'DeletePost';
+
+        Logger::startMethod($method);
+        try {
+            DB::beginTransaction();
+
+            $post  = $this->postRepository->findById($postId);
+
+            if(is_null($post))
+                throw new PostValidationException(trans('posterrorcodes.0309'));
+
+            $photos = $this->postRepository->GetPhotosByPostId($postId);
+            $this->postRepository->DeletePost($postId);
+
+            $deleteflag = true;
+            if(!is_null($photos) && count($photos) > 0) {
+                foreach ($photos as $photo) {
+                    if ( ! $this->DeletePhysicalPhoto($photo->path)) {
+                        $deleteflag = false;
+                    }
+
+                }
+            }
+
+            DB::commit();
+            Logger::endMethod($method);
+            return $deleteflag;
+
+
+        }catch (\Exception $ex)
+        {
+            DB::rollBack();
+            throw $ex;
+
+        }
+
+    }
+
+
 
     private function ValidatePost(Entities\Post\Post $post)
     {
@@ -206,6 +273,67 @@ class PostHandler {
             throw $ex;
         }
 
+    }
+
+    public function DeletePhoto($photo)
+    {
+        $method = 'DeletePhoto';
+
+        Logger::startMethod($method);
+
+        try {
+
+            if(is_null($photo) || is_null($photo['path']) || is_null($photo['id']))
+                throw new \Exception(trans('posterrorcodes.0310').'Error');
+
+            else {
+
+                $this->postRepository->DeletePhoto($photo['id']);
+              return  $this->DeletePhysicalPhoto($photo['path']);
+            }
+
+
+        }
+        catch (\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'Error'.$ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw $ex;
+        }
+
+    }
+
+    public function GetPhotosByMapItemId($mapItemId)
+    {
+        Logger::startMethod('GetPhotosByMapItemId');
+        return $this->postRepository->GetPhotosByMapItemId($mapItemId);
+    }
+
+    public function DeletePhysicalPhoto($filePath)
+    {
+        $method = 'DeletePhysicalPhoto';
+
+        Logger::startMethod($method);
+
+        try {
+
+            $file = File::get($filePath);
+
+            if(is_null($file))
+            {
+                throw new \Exception(trans('posterrorcodes.0308').'Error');
+            }
+            else {
+                File::delete($filePath);
+            }
+
+            return true;
+
+        }
+        catch (\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'Error'.$ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            return false;
+        }
     }
 
     private function createUniqueFilename( $filename, $extension )

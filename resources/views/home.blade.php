@@ -87,6 +87,8 @@
     var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
     var ENV_WITHOUT_PHOTO_IMG = "{{ env('WITHOUT_PHOTO_IMG')  }}";
  /*  'https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') */
+    //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
+
 </script>
     {!! Html::script('assets/js/markerclusterer.js') !!}
     {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
@@ -95,7 +97,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.js"></script>
 
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
+        src="https://maps.googleapis.com/maps/api/js?key={{env("GMAP_APIKEY")}}&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
 </script>
 
 @endpush

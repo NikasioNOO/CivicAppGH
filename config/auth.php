@@ -13,8 +13,8 @@ return [
     |
     */
     'defaults' => [
-        'guard' => 'websocial',
-        'passwords' => 'social',
+        'guard' => 'webadmin',
+        'passwords' => 'users',
     ],
     /*
     |--------------------------------------------------------------------------

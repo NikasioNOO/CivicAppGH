@@ -19,11 +19,19 @@
         var statusSelect = $('#status');
         var idObra = $('#idObra');
         var nroExpedienteInput = $('#nro_expediente');
+        var commentsCount = $('#commentsCount');
+        var complaintsModal = $('#ComplaintsModal');
+        var complaintsListDiv = $('#complaintsList');
+
+        var obraCommentsDiv = $('#obraComments');
+        var noCommentsMsgDiv = $('#noCommentsMsg');
+        var obraCommentPanelDiv = $('#obraCommentsPanel');
+
 
 
         function Obra()
         {
-            this.Clean = function()
+            /*this.Clean = function()
             {
                 this.id = 0;
                 this.budget = '';
@@ -37,7 +45,7 @@
                 this.year = '';
                 this.nro_expediente ='';
 
-            };
+            };*/
             Object.defineProperty(this, 'id', {
                 get: function() {
                     var id = idObra.val();
@@ -215,6 +223,18 @@
                 enumerable:true
             });
 
+            Object.defineProperty(this, 'commentsCount', {
+                get: function() {
+
+                    var count= commentsCount.text();
+                    return parseInt(count);
+                },
+                set: function(value) {
+                    commentsCount.text(value);
+                },
+                enumerable:false
+            });
+
         }
 
 
@@ -222,8 +242,26 @@
 
         var CleanObra = function()
         {
-            obra.Clean();
+            //obra.Clean();
+            obra.id = 0;
+            obra.budget = '';
+            obra.barrio = '';
+            obra.category = '';
+            obra.cpc = '';
+            obra.address='';
+            obra.location = {id:0,location:''};
+            obra.status = '';
+            obra.description = '';
+            obra.year = '';
+            obra.nro_expediente='';
+            obra.commentsCount = 0;
             map.HideIndividualMarker();
+
+            obraCommentsDiv.html('');
+            obraCommentPanelDiv.hide();
+            //noCommentsMsgDiv.show();
+
+            CivicApp.ObrasGrid.CleanRowEdited();
 
         };
 
@@ -303,7 +341,7 @@
                             Utilities.ShowError(data.message);
                         }
 
-                        ;
+
 
                     },
                     error:function( jqXHR, textStatus,  errorThrown )
@@ -408,6 +446,8 @@
         var SaveObra = function()
         {
             Utilities.block();
+
+
             $.post('/admin/SaveObra',{"obra":obra},
                 function(data)
                 {
@@ -476,6 +516,208 @@
             obra.year = editObra.year;
             obra.nro_expediente = editObra.nro_expediente;
 
+            obraCommentsDiv.html('');
+            noCommentsMsgDiv.hide();
+
+            obraCommentPanelDiv.show();
+
+            $.post('/admin/GetPosts/',{"obraId":obra.id},function(result){
+
+                debugger;
+                if(result.status=='OK')
+                {
+                    obra.commentsCount =result.data ? result.data.length : 0;
+                    if(result.data && result.data.length > 0)
+                    {
+                        for(var i =0 ; i < result.data.length; i++)
+                        {
+                            obraCommentsDiv.append(BuildComment(result.data[i]))
+
+                        }
+
+                    }
+                    else
+                        noCommentsMsgDiv.show();
+
+
+                }
+                else
+                {
+                    Utilities.ShowError('Se ha producido un error al obtener los comentarios');
+                }
+            }).fail(function(err){
+                Utilities.ShowError('Se ha producido un error al obtener los comentarios');
+            });
+
+        };
+
+        var BuildComment = function(post)
+        {
+            var photos='';
+
+
+            if(post.photos && post.photos.length>0)
+                for(var i=0; i< post.photos.length;i++) {
+                    photos = photos + ' \
+                            <div class="col-sm-1 thumbnail" > \
+                                <a  href="'+ window.location.origin+'/'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" >\
+                                    <img class="img-responsive" src="' +window.location.origin+'/'+ post.photos[i].path + '" alt="..."> \
+                                    <a data-filename="'+post.photos[i].path+'" data-photoid="'+post.photos[i].id+'" onclick="CivicApp.Obra.RemovePhoto(this);" >Eliminar</a> \
+                                </a>\
+                            </div> ';
+
+                   // countPhotos++;
+                }
+
+            var htmlStatus = '';
+            if(post && post.status && post.status.status)
+                htmlStatus = '<label class="control-label label-small ">Cambio de estado: <b> '+post.status.status+' </b></label>';
+
+            var htmlComment =
+                "<div id='commentPosted_"+post.id+"' class='panel panel-default panel-user-comment ' data-postcomplaintscount='"+post.post_complaints_count+"'> \
+                    <div class='panel-title  '>  \
+                        <div class='avatar-wrapper img-circle '> \
+                            <img src='"+  post.user.avatar + "'  class='img-responsive avatar-width' alt='Avatar'> \
+                        </div> \
+                        <label >"+ post.user.username+"</label> \
+                        <label >"+ post.created_at+"</label> \
+                        <div class='pull-right'> \
+                            <span class='glyphicon glyphicon-thumbs-up'></span><span style='margin-left: 5px' class='badge' id='positiveCountMarkers_"+post.id+"' >"+post.positiveCount+"</span> \
+                            <span class='glyphicon glyphicon-thumbs-down'></span><span style='margin-left: 5px' class='badge' id='negativeCountMarkers_"+post.id+"'>"+post.negativeCount+"</span> \
+                            <span class='glyphicon fa fa-hand-stop-o'></span><span style='margin-left: 5px' class='badge' id='complaints_"+post.id+"'>"+post.post_complaints_count+"</span> \
+                        </div> \
+                    </div> \
+                    <div class='panel-body'> \
+                        <div class='container-fluid'> \
+                            <div class='row comment'> \
+                                <div class='col-md-12 well'>"+ post.comment+" </div> \
+                            </div> \
+                            <div class='row photos-panel'> \
+                               "+ photos +" \
+                            </div>\
+                            <div class='row' > \
+                                <div class='col-sm-6'> \
+                                    "+htmlStatus+" \
+                                </div> \
+                                <div class='col-sm-6'> \
+                                    <div class='form-inline pull-right vote-action'> \
+                                        <a id='viewPostComplaints_"+post.id+"' data-postcomplaints='"+ JSON.stringify(post.postComplaints) +"' onclick='CivicApp.Obra.ShowComplaintView(this)'><span style='margin-right: 3px' class='glyphicon glyphicon-list-alt' ></span>Ver Denuncias</a> \
+                                        <a id='complaint_"+post.id+"' onclick='CivicApp.Obra.ShowComplaintView(this)'><span  style='margin-right: 3px' class='fa fa-user-times' ></span>Marcar usuario como Spamer</a> \
+                                        <a id='postDelete_"+post.id+"' data-postid='"+post.id+"'  onclick='CivicApp.Obra.DeletePostConfirm(this);'><span  style='margin-right: 3px' class='glyphicon glyphicon-trash' ></span>Eliminar</a> \
+                                    </div> \
+                                </div> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div>";
+
+            return htmlComment;
+        };
+
+        var ShowComplaintView = function(link)
+        {
+          //  var postId = link.id.split('_')[1];
+            var linkControl = $(link);
+            complaintsListDiv.html('');
+            var complaints = linkControl.data('postcomplaints');
+            if(complaints && complaints.length > 0)
+                for(var i=0;i < complaints.length; i++)
+                {
+                    complaintsListDiv.append(BuildComplaintHtml(complaints[i]));
+                }
+
+            complaintsModal.modal('show');
+
+
+        };
+
+        var BuildComplaintHtml = function(complaint)
+        {
+           return  '<div id="commentPosted_'+complaint.id+'" class="panel panel-default panel-user-comment " > \
+                    <div class="panel-title  ">  \
+                        <div class="avatar-wrapper img-circle "> \
+                            <img src="'+  complaint.user.avatar + '"  class="img-responsive avatar-width" alt="Avatar"> \
+                        </div> \
+                        <label >'+ complaint.user.username+'</label> \
+                        <label >'+ complaint.created_at+'</label> \
+                    </div> \
+                    <div class="panel-body"> \
+                        <div class="container-fluid"> \
+                            <div class="row comment"> \
+                                <div class="col-md-12 well">'+ complaint.comment+' </div> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div>';
+
+        };
+
+        var RemovePhoto = function(link)
+        {
+            var linkvalues = $(link);
+
+            var id = linkvalues.data('photoid');
+
+            var path = linkvalues.data('filename');
+
+
+            $.post('/admin/RemovePhoto/',{"photo":{"id": id ,"path":path}},function(result){
+
+                debugger;
+                if(result.status=='OK')
+                {
+                    linkvalues.parent().remove();
+
+                }
+                else if(result.message)
+                {
+                    Utilities.ShowError(result.message);
+                }
+                else
+                {
+                    Utilities.ShowError('Se ha producido un error al eliminar la photo');
+                }
+            }).fail(function(err){
+                Utilities.ShowError('Se ha producido un error al eliminar la photo');
+            });
+        };
+
+        var DeletePostConfirm = function(link)
+        {
+            var linkvalues = $(link);
+
+            var id = linkvalues.data('postid');
+
+           Utilities.ConfirmDialog('¿Esta seguro que desea eliminar el Post seleccionado?',CivicApp.Obra.DeletePost, id);
+
+
+        };
+
+        var DeletePost = function(id)
+        {
+            $.post('/admin/DeletePost/',{"postId":id} ,function(result){
+
+                if(result.status=='OK')
+                {
+                    var postRemoved = $('#commentPosted_'+id);
+                    var countComplaint = parseInt(postRemoved.data('postcomplaintscount'));
+                    CivicApp.ObrasGrid.UpdatePostComplaintsCountEdited(-countComplaint);
+                    postRemoved.remove();
+                    obra.commentsCount = --obra.commentsCount;
+
+                }
+                else if(result.message)
+                {
+                    Utilities.ShowError(result.message);
+                }
+                else
+                {
+                    Utilities.ShowError('Se ha producido un error al eliminar la photo');
+                }
+            }).fail(function(err){
+
+                Utilities.ShowError('Se ha producido un error al eliminar el post'+(err.message && err.message? err.message : ''));
+            });
         };
 
         var SaveBarrioLocation = function()
@@ -593,7 +835,11 @@
             Obra : obra,
             LoadObra : LoadObra,
             FocusForm: FocusForm,
-            DeleteObra: DeleteObra
+            DeleteObra: DeleteObra,
+            RemovePhoto:RemovePhoto,
+            DeletePost:DeletePost,
+            DeletePostConfirm:DeletePostConfirm,
+            ShowComplaintView:ShowComplaintView
 
 
         };
@@ -602,6 +848,10 @@
 
 })();
 
+$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+    event.preventDefault();
+    $(this).ekkoLightbox();
+});
 
 $(document).ready(function(){
     debugger;

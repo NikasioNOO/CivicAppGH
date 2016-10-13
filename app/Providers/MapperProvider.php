@@ -69,23 +69,32 @@ class MapperProvider extends ServiceProvider
     public function CreatePostComplaint(IMapper $mapper)
     {
         $mapper->addMap(Entities\Post\PostComplaint::class, Models\PostComplaint::class, Enums\MapperConfig::toModel);
-       /* $mapper->addCustomMap(Entities\Post\PostComplaint::class, Models\PostComplaint::class,
+        $mapper->addCustomMap(Entities\Post\PostComplaint::class, Models\PostComplaint::class,
             function(Entities\Post\PostComplaint $entityPostComplaint, Models\PostComplaint $modelPostComplaint) {
                 $mapper = App::make(IMapper::class);
+
                 if(!is_null($entityPostComplaint->user))
                     $modelPostComplaint->user()->associate($mapper->map(Entities\Auth\SocialUser::class, Models\Auth\Social_User::class, $entityPostComplaint->user));
                 return $modelPostComplaint;
-            });*/
+            });
         $mapper->addMap(Models\PostComplaint::class, Entities\Post\PostComplaint::class, Enums\MapperConfig::toEntity);
-        /*$mapper->addCustomMap( Models\PostComplaint::class, Entities\Post\PostComplaint::class,
+        $mapper->addCustomMap( Models\PostComplaint::class, Entities\Post\PostComplaint::class,
             function( Models\PostComplaint $modelPostComplaint , Entities\Post\PostComplaint $entityPostComplaint) {
                 $mapper = App::make(IMapper::class);
 
-                if(isset($entityPostComplaint->user))
-                    $modelPostComplaint->user = $mapper->map(Models\Auth\Social_User::class, Entities\Auth\SocialUser::class,  $entityPostComplaint->user);
+                if(isset($modelPostComplaint->user)) {
+                    $entityPostComplaint->user = $mapper->map(Models\Auth\Social_User::class, Entities\Auth\SocialUser::class,
+                        $modelPostComplaint->user);
+                    $entityPostComplaint->user->remember_token= null;
+                }
 
-                return $modelPostComplaint;
-            });*/
+                if(isset($modelPostComplaint->created_at) && !is_null($modelPostComplaint->created_at))
+                    $entityPostComplaint->created_at = $modelPostComplaint->created_at->day.'/'.$modelPostComplaint->created_at->month.'/'.
+                        $modelPostComplaint->created_at->year.'  '.$modelPostComplaint->created_at->hour.':'.
+                        $modelPostComplaint->created_at->minute.':'.$modelPostComplaint->created_at->second;
+
+                return $entityPostComplaint;
+            });
     }
 
     public function CreatePostMarker(IMapper $mapper)
@@ -198,11 +207,12 @@ class MapperProvider extends ServiceProvider
 
                 $entityPost->negativeCount= $modelPost->negativeCount;
 
+
                 $entityPost->photos =  $entityPost->photos->merge($mapper->map( Models\Photo::class,Entities\Post\Photo::class, $modelPost->photos->all()));
 
-                $entityPost->postMarkers= $entityPost->postMarkers->merge($mapper->map( Models\PostMarker::class,Entities\Post\PostMarker::class, $modelPost->postMarkers->all()));
+             //   $entityPost->postMarkers= $entityPost->postMarkers->merge($mapper->map( Models\PostMarker::class,Entities\Post\PostMarker::class, $modelPost->postMarkers->all()));
 
-                $entityPost->postComplaints = $entityPost->postComplaints->merge($mapper->map( Models\PostComplaint::class,Entities\Post\PostComplaint::class, $modelPost->postComplaints->all()));
+             //   $entityPost->postComplaints = $entityPost->postComplaints->merge($mapper->map( Models\PostComplaint::class,Entities\Post\PostComplaint::class, $modelPost->postComplaints->all()));
 
 
 
@@ -363,6 +373,11 @@ class MapperProvider extends ServiceProvider
                     $entityMapItem->mapItemType = $mapper->map(Models\MapItemType::class, Entities\MapItem\MapItemType::class,  $modelMapItem->mapItemType);
                 if(isset($modelMapItem->location))
                     $entityMapItem->location = $mapper->map( Models\GeoPoint::class,Entities\Common\GeoPoint::class, $modelMapItem->location);
+
+                $entityMapItem->postComplaintsCount = $modelMapItem->postComplaintsCount;
+                if(isset($modelMapItem->posts_count) && !is_null($modelMapItem->posts_count))
+                    $entityMapItem->posts_count = $modelMapItem->posts_count;
+
                 return $entityMapItem;
             });
     }

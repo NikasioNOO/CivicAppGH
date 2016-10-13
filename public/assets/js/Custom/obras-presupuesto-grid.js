@@ -2,7 +2,8 @@
 (function(){
     this.CivicApp = this.CivicApp || {};
     this.CivicApp.ObrasGrid = this.CivicApp.ObrasGrid || new function(){
-        var grid = null
+        var grid = null;
+        var rowEdited= null;
         var InitGrid = function() {
             grid = $('#obrasGrid').DataTable({
                // serverSide:true,
@@ -38,14 +39,16 @@
                     },
                     {data:"status.status"},
                     {data:"address"},
-                    {data:"nro_expediente"}
+                    {data:"nro_expediente"},
+                    {data:"postComplaintsCount"},
+                    {data:"posts_count"}
                 ],
                 columnDefs :[
                     {
                         render:function(data, type, row ){
                             return '<a class="linkAction" onclick="CivicApp.ObrasGrid.EditRow(this)">Editar</a>-<a class="linkAction" onclick="CivicApp.ObrasGrid.DelteRow(this)">Eliminar</a>';
                         },
-                        targets:9
+                        targets:11
                     }
 
                 ]
@@ -63,15 +66,27 @@
 
         var EditRow = function(cell)
         {
-            debugger;
-
-            var obra = grid.row( cell.parentNode.parentNode ).data();
+            rowEdited = cell.parentNode.parentNode;
+            var obra = grid.row( rowEdited ).data();
 
             CivicApp.Obra.LoadObra(obra);
 
             CivicApp.Obra.FocusForm();
 
 
+        };
+
+        var CleanRowEdited = function()
+        {
+            rowEdited = null;
+        };
+        var UpdatePostComplaintsCountEdited = function(count)
+        {
+            if(rowEdited != null) {
+                var obra = grid.row(rowEdited).data();
+                obra.postComplaintsCount = parseInt(obra.postComplaintsCount) + count;
+                grid.row(rowEdited).data(obra).draw();
+            }
         };
 
         var DelteRow = function(cell)
@@ -130,7 +145,9 @@
             InitGrid : InitGrid,
             ReloadGrid: ReloadGrid,
             EditRow : EditRow,
-            DelteRow: DelteRow
+            DelteRow: DelteRow,
+            UpdatePostComplaintsCountEdited:UpdatePostComplaintsCountEdited,
+            CleanRowEdited:CleanRowEdited
 
 
         };

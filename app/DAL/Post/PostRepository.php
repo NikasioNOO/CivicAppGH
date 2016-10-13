@@ -18,7 +18,7 @@ use CivicApp\Utilities\Logger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Exception;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 class PostRepository extends Repository implements IPostRepository {
 
@@ -38,21 +38,25 @@ class PostRepository extends Repository implements IPostRepository {
         return Entities\Post\Post::class;
     }
 
-    private  $obraId ;
-    public function GetPostsByObraId($obraId)
+    private  $mapItemId ;
+
+    public function GetPostsByObraId($obraId,$ordeBy='created_at',$orderType='desc')
     {
         $method = "GetPostsByObraId";
         try {
-            $this->obraId = $obraId;
+            $this->$mapItemId = $obraId;
             Logger::startMethod($method);
 
 
 
-            $posts =  Models\Post::with('status','postType','user','photos','postMarkers','postComplaints','positiveCount')
+            $posts =  Models\Post::with('status','postType','user','photos',
+                //'postMarkers','postComplaints',
+                'positiveCount')
                 ->whereHas('mapItem',function($query){
-                    $query->where('id',$this->obraId);
+                    $query->where('id',$this->$mapItemId);
                 })->withCount('postMarkers')
-                ->orderBy('created_at','desc')
+                ->withCount('postComplaints')
+                ->orderBy($ordeBy,$orderType)
                 ->get();
 
 
@@ -72,8 +76,53 @@ class PostRepository extends Repository implements IPostRepository {
             Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
             throw new RepositoryException(trans('mapitemserrorcodes.0102'),0102);
         }
-
     }
+
+    public function GetPostsCompleteByObraId($obraId,$ordeBy='created_at',$orderType='desc')
+    {
+        $method = "GetPostsCompleteByObraId";
+        try {
+            $this->mapItemId = $obraId;
+            Logger::startMethod($method);
+
+
+
+            $posts =  Models\Post::with('status','postType','user','photos','postComplaints'
+                ,'positiveCount','postComplaints.user')
+                ->whereHas('mapItem',function($query){
+                    $query->where('id',$this->mapItemId);
+                })->withCount('postMarkers')
+                ->withCount('postComplaints')
+                ->orderBy($ordeBy,$orderType)
+                ->get();
+
+
+            $postsEntities = $this->mapper->map(Models\Post::class, Entities\Post\Post::class, $posts->all());
+            if(!is_null($posts) && $posts->count() > 0) {
+                for ($i = 0; $i< $posts->count(); $i++)
+                {
+                    $postsEntities[$i]->postComplaints = $postsEntities[$i]->postComplaints->merge($this->mapper->map(Models\PostComplaint::class,
+                        Entities\Post\PostComplaint::class, $posts[$i]->postComplaints->all()));
+                }
+            }
+
+            Logger::endMethod($method);
+
+            return $postsEntities;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo.'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('posterrorcodes.0102'),0102);
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('mapitemserrorcodes.0102'),0102);
+        }
+    }
+
+
 
     /**
      * @param Entities\Post\Post $post
@@ -260,4 +309,138 @@ class PostRepository extends Repository implements IPostRepository {
 
     }
 
+    public function DeletePhoto( $id )
+    {
+        $method = 'DeletePhoto';
+        Logger::startMethod($method);
+        try {
+
+            $photo = Photo::find($id);
+
+            $photo->delete();
+
+            Logger::endMethod($method);
+
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('posterrorcodes.0106'));
+
+        }
+        catch(Exception $ex)
+        {
+
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('posterrorcodes.0106'));
+
+        }
+
+    }
+
+
+
+
+    public function DeletePost( $id )
+    {
+        $method = 'DeletePhoto';
+        Logger::startMethod($method);
+        try {
+
+            $post = $this->model->find($id);
+
+            $post->delete();
+
+            Logger::endMethod($method);
+
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('posterrorcodes.0106'));
+
+        }
+        catch(Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+
+            throw new RepositoryException(trans('posterrorcodes.0106'));
+
+        }
+
+    }
+
+
+    public function GetPhotosByPostId($postId)
+    {
+        $method = 'GetPhotosByPostId';
+        try{
+            Logger::startMethod($method);
+            $photos = Photo::where('post_id',$postId)->get();
+
+            if(is_null($photos) || $photos->count() ==0)
+                return null;
+            else
+                return $this->mapper->map(Models\Photo::class,Entities\Post\Photo::class,$photos->all());
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo.'.STACKTRACE:'.$ex->getTraceAsString());
+
+
+            throw new RepositoryException(trans('posterrorcodes.0107'));
+        }
+        catch(Exception $ex)
+        {
+
+            Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+
+            throw new RepositoryException(trans('posterrorcodes.0107'));
+
+        }
+    }
+
+
+    /**
+     * @param $mapItemId
+     *
+     * @return null
+     * @throws RepositoryException
+     */
+    public function GetPhotosByMapItemId($mapItemId)
+    {
+        $method = 'GetPhotosByMapItemId';
+        try{
+            Logger::startMethod($method);
+            $this->mapItemId = $mapItemId;
+            $photos = Photo::with('post')->whereHas('post',function($query){
+                $query->where('map_item_id',$this->mapItemId);
+            })->get();
+
+            if(is_null($photos) || $photos->count() ==0)
+                return null;
+            else
+                return $this->mapper->map(Models\Photo::class,Entities\Post\Photo::class,$photos->all());
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->errorInfo.'.STACKTRACE:'.$ex->getTraceAsString());
+
+
+            throw new RepositoryException(trans('posterrorcodes.0108'));
+        }
+        catch(Exception $ex)
+        {
+
+            Logger::logError($method, $ex->getMessage().'.STACKTRACE:'.$ex->getTraceAsString());
+
+            throw new RepositoryException(trans('posterrorcodes.0108'));
+
+        }
+    }
 }

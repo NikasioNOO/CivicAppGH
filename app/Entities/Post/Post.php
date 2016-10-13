@@ -29,6 +29,7 @@ class Post extends BaseEntity {
     protected $_post_markers_count;
     protected $_positiveCount;
     protected $_negativeCount;
+    protected $_post_complaints_count;
     protected $_created_at;
     private $user_id;
     public function __construct(MapItem $mapItem,  Status $status, PostType $postType
@@ -36,9 +37,9 @@ class Post extends BaseEntity {
     {
         $this->_id = 0;
         $this->getters=['id','comment','mapItem','status','postType','user',
-            'photos','postMarkers','postComplaints','post_markers_count','positiveCount','negativeCount','created_at'];
+            'photos','postMarkers','postComplaints','post_markers_count','positiveCount','negativeCount','created_at','post_complaints_count'];
         $this->setters=['id','comment','mapItem','status','postType','user',
-            'photos','postMarkers','postComplaints','post_markers_count','positiveCount','negativeCount','created_at'];
+            'photos','postMarkers','postComplaints','post_markers_count','positiveCount','negativeCount','created_at','post_complaints_count'];
         $this->_postType = $postType;
         $this->_postType->id = 1;  // Generico
         $this->_mapItem = $mapItem;

@@ -745,5 +745,47 @@ Utilities.CreateLocationObj = function(location)
     var loc = location.split(',');
 
     return {lat: parseFloat(loc[0]), lng: parseFloat(loc[1])};
-}
+};
+
+
+Utilities.ConfirmDialog = function(msg, callback,callbackparam)
+{
+    var html = '<div>  \
+                   <p>'+msg+'</p> \
+                </div>';
+
+    $(html).dialog(
+        {
+            resizable:false,
+            modal: false,
+            title: 'Confirma',
+            width:500,
+            closeOnEscape:true,
+            show: { effect: "blind", duration: 200 },
+            hide: { effect: "blind", duration: 200 },
+            dialogClass: 'dialog-style no-close',
+            buttons:[
+                { text:'Aceptar',
+                    click : function()
+                    {
+                        if(callbackparam)
+                            callback(callbackparam);
+                        else
+                            callback();
+                        $(this).dialog('destroy');
+                        $(this).remove();
+                        return;
+                    }, class :'btn btn-sm btn-primary'},
+                { text:'Cancelar',
+                    click : function()
+                    {
+                        $(this).dialog('destroy');
+                        $(this).remove();
+                        return;
+                    }, class :'btn btn-sm btn-primary'}
+            ]
+
+        }
+    );
+};
 

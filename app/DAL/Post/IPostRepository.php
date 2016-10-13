@@ -16,7 +16,7 @@ use CivicApp\Models;
 
 interface IPostRepository extends  IRepository, ICriteria {
 
-    function GetPostsByObraId($obraId);
+    function GetPostsByObraId($obraId, $ordeBy='created_at',$orderType='desc');
 
     function SavePost(Entities\Post\Post $post );
 
@@ -27,5 +27,15 @@ interface IPostRepository extends  IRepository, ICriteria {
     function GetPostMarker($userId, $postId);
 
     function SearchCriteria();
+
+    function GetPostsCompleteByObraId($obraId,$ordeBy='created_at',$orderType='desc');
+
+    function DeletePhoto( $id );
+
+    function DeletePost( $id ) ;
+
+    function GetPhotosByPostId($postId);
+
+    function GetPhotosByMapItemId($mapItemId);
 
 }

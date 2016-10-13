@@ -1,0 +1,11 @@
+#obraCommentsPanel .panel-heading .panel-title
+{
+    display: inline;
+}
+
+.no-comments
+{
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+}

@@ -210,6 +210,20 @@
     </div>
 </div>
 
+<div id="obraCommentsPanel" class="panel panel-primary panel-obraComments " style="display: none">
+    <div class="panel-heading">
+        <h1 class="panel-title">Comentarios de la Obra</h1>
+        <div class="pull-right"><span id="commentsCount">0</span> Comentarios </div>
+    </div>
+    <div class="panel-body"  >
+        <div id="noCommentsMsg" class="no-comments">No hay comentarios</div>
+        <div id="obraComments">
+
+        </div>
+    </div>
+</div>
+
+
 <!-- Modal -->
 <div class="modal fade custom-modal " id="popUpLocation" tabindex="-1" role="dialog" aria-labelledby="popUpLocation">
     <div class="modal-dialog modal-lg" role="document">
@@ -279,7 +293,32 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="ComplaintsModal" tabindex="-1" role="dialog" aria-labelledby="ComplaintsModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Denuncias del Post</h4>
+            </div>
+            <div class="modal-body">
+                <div id="complaintsList">
 
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn custom-bottom btn-sm" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('cssCustom')
+
+{!! Html::style('https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.css') !!}
+
+@endpush
 
 @push('scripts')
 
@@ -288,6 +327,7 @@
     var ENV_MAPICONS_PATH = "{{ env('MAPICONS_PATH')  }}";
     var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
 
+    //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.Obra.InitMap">
 </script>
 
 {!! Html::script('assets/js/Custom/gmaphelper.js') !!}
@@ -296,9 +336,9 @@
 {!! Html::script('assets/js/Custom/obras-admin.js') !!}
 {!! Html::script('assets/js/Custom/obras-importFile.js') !!}
 
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.js"></script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.Obra.InitMap">
+        src="https://maps.googleapis.com/maps/api/js?key={{env("GMAP_APIKEY")}}&libraries=places&callback=CivicApp.Obra.InitMap">
 </script>
 
 @endpush

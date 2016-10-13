@@ -27,6 +27,8 @@
                         <th>Estado</th>
                         <th>Ubicaci&oacute;n</th>
                         <th>NroExp</th>
+                        <th>Denuncias</th>
+                        <th>Posts</th>
                         <th>Opcion</th>
                     </tr>
                 </thead>

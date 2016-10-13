@@ -9,12 +9,14 @@
 namespace CivicApp\BLL\Obra;
 
 
+use CivicApp\BLL\Post\PostHandler;
 use CivicApp\DAL\Catalog\ICatalogRepository;
 use CivicApp\DAL\MapItem\Criterias\BarrioCriteria;
 use CivicApp\DAL\MapItem\Criterias\CategoryCriteria;
 use CivicApp\DAL\MapItem\Criterias\ObrasCriteria;
 use CivicApp\DAL\MapItem\Criterias\YearCriteria;
 use CivicApp\DAL\MapItem\IMapItemRepository;
+use CivicApp\DAL\Post\IPostRepository;
 use CivicApp\DAL\Repository\RepositoryException;
 use CivicApp\Entities\MapItem\MapItem;
 use CivicApp\Utilities\Logger;
@@ -32,6 +34,7 @@ class ObraHandler {
     {
         $this->mapItemRepository = $mapItemRepo;
         $this->catalogRepo = $catalogRepo;
+
 
     }
 
@@ -92,7 +95,7 @@ class ObraHandler {
 
     }
 
-    public function DeleteObra($id)
+    public function DeleteObra($id, PostHandler $postHandler)
     {
         $method = 'DeleteObra';
         Logger::startMethod($method);
@@ -100,10 +103,22 @@ class ObraHandler {
         if( is_null($this->mapItemRepository->GetMapItem($id)))
             throw new ObraValidateException(trans('mapitemserrorcodes.0201'),0201);
 
-        $this->mapItemRepository->DeleteObra($id);
+        $photos = $postHandler->GetPhotosByMapItemId($id);
 
+        $this->mapItemRepository->DeleteObra($id);
+        $deleteflag = true;
+
+        if(!is_null($photos) && $photos->count() > 0) {
+            foreach ($photos as $photo) {
+
+                if(!$postHandler->DeletePhysicalPhoto($photo->path))
+                    $deleteflag = false;
+            }
+        }
 
         Logger::endMethod($method);
+
+        return$deleteflag;
     }
 
     public  function  GetAllObras()

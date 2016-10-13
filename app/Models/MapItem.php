@@ -52,12 +52,12 @@ class MapItem extends Model
         return $this->hasMany(Post::class,'map_item_id');
     }
 
-    public function postComplaintsCounts()
+    public function postComplaintsCount()
     {
 
         $test = $this->hasOne(Post::class)
                     ->join('post_complaints','posts.id','=', 'post_complaints.post_id')
-                    ->selectRaw('map_item_id, count(*) as aggregate')
+                    ->selectRaw('map_item_id, count(*) as countComplaints')
                     ->groupBy('map_item_id');
 
 
@@ -71,15 +71,15 @@ class MapItem extends Model
 
     }
 
-    public function getpostComplaintsCountsAttribute()
+    public function getpostComplaintsCountAttribute()
     {
-        if ( ! $this->relationLoaded('postComplaintsCounts') )
-            $this->load('postComplaintsCounts');
+        if ( ! $this->relationLoaded('postComplaintsCount') )
+            $this->load('postComplaintsCount');
 
-        $related = $this->getRelation('postComplaintsCounts');
+        $related = $this->getRelation('postComplaintsCount');
 
         // then return the count directly
-        return ($related) ? (int) $related->aggregate : 0;
+        return ($related) ? (int) $related->countComplaints : 0;
     }
 
 

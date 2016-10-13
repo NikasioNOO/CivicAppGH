@@ -5,6 +5,7 @@ namespace CivicApp\Http\Controllers;
 
 use CivicApp\BLL\Catalog\CatalogHandler;
 use CivicApp\BLL\Obra\ObraHandler;
+use CivicApp\BLL\Post\PostHandler;
 use CivicApp\Entities\MapItem\Barrio;
 use CivicApp\Entities\MapItem\Category;
 use CivicApp\Entities\MapItem\Cpc;
@@ -25,11 +26,13 @@ class ObrasAdminController extends Controller
 
     private $obraHandler;
     private $catalogHandler;
+    private $postHandler;
 
-    public function __construct(ObraHandler $handler, CatalogHandler $catHandler)
+    public function __construct(ObraHandler $handler, CatalogHandler $catHandler, PostHandler $postHandlerParam)
     {
         $this->obraHandler = $handler;
         $this->catalogHandler = $catHandler;
+        $this->postHandler = $postHandlerParam;
     }
 
     //
@@ -117,8 +120,8 @@ class ObrasAdminController extends Controller
                 ]);
             }
 
-
-            $validator = Validator::make($request->obra, $this::$rulesSaveObra, $this::$messagesSaveObra);
+            $obra = $request->obra;
+            $validator = Validator::make($obra, $this::$rulesSaveObra, $this::$messagesSaveObra);
             if ($validator->fails()) {
                 $returnHTML = view('includes.errors')->withErrors($validator)->render();
                 return response()->json([
@@ -128,15 +131,20 @@ class ObrasAdminController extends Controller
                 ]);
             }
 
-            $obraEntity = $mapper->mapArray(MapItem::class,$request->obra);
+            $obraEntity = $mapper->mapArray(MapItem::class,$obra);
 
             $id = $this->obraHandler->SaveObra($obraEntity);
 
             $obraEntity->id = $id;
 
+            if($obra->id == 0)
+                $msg = 'Se ha creado la obra correctamente.';
+            else
+                $msg = 'La obra se ha guardado correctamente.';
+
 
             $returnHTML = view('includes.status')->with('status', 'success')
-                ->with('message', 'Se ha creado la obra satisfactoriamente.')->render();
+                ->with('message', $msg)->render();
             Logger::endMethod($method);
 
             return response()->json([
@@ -398,6 +406,106 @@ class ObrasAdminController extends Controller
             ]);
         }
 
+
+    }
+
+    public function postGetPosts(Request $request)
+    {
+        $message = null;
+        $method='GetPosts';
+        try {
+
+            Logger::startMethod($method);
+
+            if($request->has('obraId')) {
+                $obras = $this->postHandler->GetAllPostCompleteByObra($request->obraId);
+            }
+            else
+                throw new \Exception('Error al recibir parámetros de búsqueda para obtener los post');
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'OK',
+                'data'   => $obras,
+                'message' => $message
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            return  response()->json([
+                'status'  => 'ERROR',
+                'message' => 'Se ha producido un error al obtener todas las obras del presupuesto particiipativo.'.$ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
+
+    }
+
+    public function postDeletePhoto(Request $request)
+    {
+        $method='postDeletePhoto';
+        try {
+
+            Logger::startMethod($method);
+
+            if($request->has('photo') && isset($request->photo['id']) && !is_null($request->photo['id']) &&
+                isset($request->photo['path']) && !is_null($request->photo['path'])) {
+                $obras = $this->postHandler->DeletePhoto($request->photo);
+            }
+            else
+                throw new \Exception('Error al recibir la información de la photo');
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'OK',
+                'data'   => $obras,
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            return  response()->json([
+                'status'  => 'ERROR',
+                'message' => 'Se ha producido un error al intentar eliminar la foto.'.$ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
+
+    }
+
+    public function postDeletePost(Request $request)
+    {
+
+        $method='postDeletePost';
+        try {
+
+            Logger::startMethod($method);
+
+            if($request->has('postId') && $request->postId > 0 ) {
+                $obras = $this->postHandler->DeletePost($request->postId);
+            }
+            else
+                throw new \Exception('Error al recibir parámetros de búsqueda para obtener los post');
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'OK',
+                'data'   => $obras
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            return  response()->json([
+                'status'  => 'ERROR',
+                'message' => 'Se ha producido un error al intentar eliminar el Post.'.$ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
 
     }
 

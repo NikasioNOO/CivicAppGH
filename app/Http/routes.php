@@ -77,6 +77,9 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::post('ImportFromFile',['as'=>'admin.importFromFile','uses' => 'ObrasAdminController@postLoadObrasFromFile']);
         Route::post('SaveObrasFromFile',['as'=>'admin.saveObrasFromFile','uses' => 'ObrasAdminController@postSaveObrasFromFile']);
+        Route::post('GetPosts',['as'=>'admin.getPosts','uses' => 'ObrasAdminController@postGetPosts']);
+        Route::post('RemovePhoto',['as'=>'admin.removePhoto','uses' => 'ObrasAdminController@postDeletePhoto']);
+        Route::post('DeletePost',['as'=>'admin.deletePost','uses' => 'ObrasAdminController@postDeletePost']);
 
     });
 

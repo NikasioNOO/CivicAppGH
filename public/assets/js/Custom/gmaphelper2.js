@@ -36,7 +36,7 @@
                     function(center){
                         selfi.centerMap = center;
                         selfi.map  = new google.maps.Map(document.getElementById(mapCanvas), {
-                            zoom: 12,
+                            zoom: 14,
                             center: center
                         });
 

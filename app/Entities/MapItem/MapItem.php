@@ -26,14 +26,16 @@ class MapItem extends  BaseEntity{
     protected $_mapItemType;
     protected $_location;
     protected $_nro_expediente;
+    protected $_postComplaintsCount;
+    protected $_posts_count;
 
     public function __construct(Cpc $cpc, Barrio $barrio, Category $category, Status $status, MapItemType $mapItemType, GeoPoint $location)
     {
         $this->setters = ['id','year','description','address','budget','cpc','barrio','category','status','mapItemType',
-            'location' , 'nro_expediente'];
+            'location' , 'nro_expediente','postComplaintsCount','posts_count'];
 
         $this->getters = ['id','year','description','address','budget','cpc','barrio','category','status','mapItemType',
-            'location','nro_expediente'];
+            'location','nro_expediente','postComplaintsCount','posts_count'];
 
         $this->_id= 0;
 

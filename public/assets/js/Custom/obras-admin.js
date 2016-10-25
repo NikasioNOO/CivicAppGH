@@ -562,7 +562,7 @@
                             <div class="col-sm-1 thumbnail" > \
                                 <a  href="'+ window.location.origin+'/'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" >\
                                     <img class="img-responsive" src="' +window.location.origin+'/'+ post.photos[i].path + '" alt="..."> \
-                                    <a data-filename="'+post.photos[i].path+'" data-photoid="'+post.photos[i].id+'" onclick="CivicApp.Obra.RemovePhoto(this);" >Eliminar</a> \
+                                    <a data-filename="'+ window.location.origin+'/'+ post.photos[i].path+'" data-photoid="'+post.photos[i].id+'" onclick="CivicApp.Obra.RemovePhoto(this);" >Eliminar</a> \
                                 </a>\
                             </div> ';
 
@@ -579,7 +579,7 @@
                         <div class='avatar-wrapper img-circle '> \
                             <img src='"+  post.user.avatar + "'  class='img-responsive avatar-width' alt='Avatar'> \
                         </div> \
-                        <label >"+ post.user.username+"</label> \
+                        <label class='user-"+post.user.id+" "+ (post.user.is_spamer == 1 ? "user-spamer" : "")+" ' >"+ post.user.username+"</label> \
                         <label >"+ post.created_at+"</label> \
                         <div class='pull-right'> \
                             <span class='glyphicon glyphicon-thumbs-up'></span><span style='margin-left: 5px' class='badge' id='positiveCountMarkers_"+post.id+"' >"+post.positiveCount+"</span> \
@@ -601,8 +601,8 @@
                                 </div> \
                                 <div class='col-sm-6'> \
                                     <div class='form-inline pull-right vote-action'> \
-                                        <a id='viewPostComplaints_"+post.id+"' data-postcomplaints='"+ JSON.stringify(post.postComplaints) +"' onclick='CivicApp.Obra.ShowComplaintView(this)'><span style='margin-right: 3px' class='glyphicon glyphicon-list-alt' ></span>Ver Denuncias</a> \
-                                        <a id='complaint_"+post.id+"' onclick='CivicApp.Obra.ShowComplaintView(this)'><span  style='margin-right: 3px' class='fa fa-user-times' ></span>Marcar usuario como Spamer</a> \
+                                        <a class='"+(post.post_complaints_count == 0 ? "post-linkdisabled" : "")+"' id='viewPostComplaints_"+post.id+"' data-postcomplaints='"+ JSON.stringify(post.postComplaints) +"' onclick='CivicApp.Obra.ShowComplaintView(this)'><span style='margin-right: 3px' class='glyphicon glyphicon-list-alt' ></span>Ver Denuncias</a> \
+                                        <a class='"+(post.user.is_spamer == 1 ? "post-linkdisabled" : "")+"'  id='markspamer_"+post.id+"' data-userid='"+post.user.id+"' data-username='"+post.user.username+"'  onclick='CivicApp.Obra.UserSpamerConfirm(this)'><span  style='margin-right: 3px' class='fa fa-user-times' ></span>Marcar usuario como Spamer</a> \
                                         <a id='postDelete_"+post.id+"' data-postid='"+post.id+"'  onclick='CivicApp.Obra.DeletePostConfirm(this);'><span  style='margin-right: 3px' class='glyphicon glyphicon-trash' ></span>Eliminar</a> \
                                     </div> \
                                 </div> \
@@ -691,6 +691,43 @@
            Utilities.ConfirmDialog('¿Esta seguro que desea eliminar el Post seleccionado?',CivicApp.Obra.DeletePost, id);
 
 
+        };
+
+        var UserSpamerConfirm = function(link)
+        {
+            var linkvalues = $(link);
+
+            var id = linkvalues.data('userid');
+
+            var username = linkvalues.data('username');
+
+            Utilities.ConfirmDialog('¿Esta seguro que desea marcar como spamer el usuario '+username+' ?',CivicApp.Obra.MarkAsSpamer, linkvalues);
+
+        };
+
+        var MarkAsSpamer = function(link)
+        {
+            var userId = link.data('userid');
+
+            $.post('/admin/MarkAsSpamer/',{"userId":userId} ,function(result){
+
+                if(result.status=='OK')
+                {
+                    $('.user-'+userId).addClass('user-spamer');
+                    link.addClass('post-linkdisabled');
+                }
+                else if(result.message)
+                {
+                    Utilities.ShowError(result.message);
+                }
+                else
+                {
+                    Utilities.ShowError('Se ha producido un error al intentar marcar como spamer el usuario');
+                }
+            }).fail(function(err){
+
+                Utilities.ShowError('Se ha producido un error al intentar marcar como spamer el usuario.'+(err.message && err.message? err.message : ''));
+            });
         };
 
         var DeletePost = function(id)
@@ -839,7 +876,9 @@
             RemovePhoto:RemovePhoto,
             DeletePost:DeletePost,
             DeletePostConfirm:DeletePostConfirm,
-            ShowComplaintView:ShowComplaintView
+            ShowComplaintView:ShowComplaintView,
+            MarkAsSpamer:MarkAsSpamer,
+            UserSpamerConfirm:UserSpamerConfirm
 
 
         };

@@ -94,8 +94,15 @@
                     <span><label class="labelValue">COMENTAR</label></span>
                         <span class="socialSharePanel">
                             <label class="labelValue">Compartir:</label>
-                            <span class="fa fa-facebook-f iconSocialShare"></span>
-                            <span class="fa fa-twitter iconSocialShare"></span>
+
+                                <span class="fa fa-facebook-f iconSocialShare fbk_share" data-href="" data-image="http://appcivica.dev:8000/assets/images/favicon.ico" data-title="Article Title" data-desc="Some description for this article" ></span>
+
+
+                             <div class="fb-share-button" data-href="http://appcivica.dev:8000/obraId/37" data-size="samll"  data-layout="button" >
+
+                             </div>
+                            <!--<a href="https://twitter.com/share" class="twitter-share-button" data-text="HOla">Tweet</a>-->
+                            <span class="fa fa-twitter iconSocialShare" id="twitterShareBtn" target="_blank"></span>
                         </span>
                 </div>
                 <div id="panelUserComment">

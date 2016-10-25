@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta property="fb:app_id" content="{{ env('FB_ID') }}" />
+    <meta property="og:url"                content="" />
+    <meta property="og:type"               content="article" />
+    <meta property="og:title"              content="" />
+    <meta property="og:description"        content="" />
+    <meta property="og:image"              content="{{ asset('assets/images/favicon.ico') }}" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Nuestra Córdoba">
     <meta name="author" content="Ortiz Olmos, Nicolás D.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/vnd.microsoft.icon">
     <title>Nuestra C&oacute;rdoba</title>
 
@@ -33,7 +40,7 @@
 
 </head>
 <body>
-
+<div id="fb-root"></div>
 <div class="container-fluid main-container" >
     {!! csrf_field() !!}
     <header>
@@ -80,13 +87,12 @@
                             <li style=""><a href="/LogoutSocial" >CERRAR SESION</a></li>
                         @else
                             <li><a href="#">REGISTRARSE</a></li>
-                            <li><a href="#">INGRESAR</a></li>
+                            <li><a href="#"  data-toggle="modal" data-target="#modalLogin">INGRESAR</a></li>
                         @endif
                         @if(Auth::guard('webadmin')->check())
                             <li class="right user-loggued" >
                                         <span class="label label-blue " style="font-size: smaller">Administrador</span>
                                         <span class="label label-success">{{ Auth::guard('webadmin')->user()->username }}</span>
-
                             </li>
                         @elseif(Auth::guard('websocial')->check())
                             <li class="right user-loggued">
@@ -108,7 +114,7 @@
 
 
     @yield('content')
-
+    @include('login')
 </div>
 {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
 {!! Html::script('assets/jquery-ui/jquery-ui.js') !!}

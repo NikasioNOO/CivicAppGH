@@ -15,11 +15,13 @@
         var complaintComment =  $('#complaintComment');
         var countPhotos = 0;
         var imgWhitoutPhoto = '<div id="imgWithoutPhoto" class="item active" > \
-                                    <img class="img-responsive img-rounded" src="'+ENV_WITHOUT_PHOTO_IMG +'" alt="..."> \
+                                    <img class="img-responsive img-rounded" src="'+window.location.origin+'/'+ENV_WITHOUT_PHOTO_IMG +'" alt="..."> \
                                     <div class="carousel-caption"> \
                                     Subí tu foto para reportar el estado \
                                     </div> \
                                 </div>';
+        var fbShareBtn = $('.fbk_share');
+        var twitterShareBtn =  $('#twitterShareBtn');
 
       //  var photosUploadFiles = []
         var flagImgRemoved = false;
@@ -334,6 +336,23 @@
             modalComplaint.on( 'hidden.bs.modal' , function() {
                 $( 'body' ).addClass( 'modal-open' );
             } );
+
+            var fbShareBtnt = document.querySelector('.fbk_share');
+            fbShareBtnt.addEventListener('click', function(e) {
+                e.preventDefault();
+                var title =  fbShareBtn.data('title'),
+                    desc = fbShareBtn.data('desc'),
+                    url = fbShareBtn.data('href'),
+                    image = fbShareBtn.data('image');
+                postToFeed(title, desc, url, image);
+
+                return false;
+            });
+
+            twitterShareBtn.on('click',function(){
+
+                ShareTwitter();
+            })
         };
 
         var RemovePhotoUpload = function(photolink){
@@ -341,6 +360,14 @@
             var filename = link.data('filename');
             comment.RemovePhoto(filename);
             link.parent().remove();
+        };
+
+        var ShareTwitter = function()
+        {
+            var href = twitterShareBtn.data('href');
+            var text = twitterShareBtn.data('text');
+
+            window.open('http://twitter.com/share?url=' + href + '&text=' + text + '&', 'twitterwindow', 'height=450, width=550, top='+($(window).height()/2 - 225) +', left='+$(window).width()/2 +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
         };
 
         var SetObra = function(id, title, year, cpc, barrio, category, budget, status, nroExpediente )
@@ -367,6 +394,21 @@
             carouselItemsContentDiv.find('.item').not('#imgWithoutPhoto').remove();
             countPhotos = 0;
 
+            $('meta[property="og:title"]').prop('content',obra.title);
+            $('meta[property="og:description"]').prop('content','Obra de tipo '+ obra.category + ' en el barrio ' + obra.barrio);
+            $('meta[property="og:url"]').prop('content',window.location.origin+'/ObraId/'+obra.id);
+
+            var descObra = 'Obra de tipo '+ obra.category + ' en el barrio ' + obra.barrio +' se encuentra en estado '+ obra.status;
+            fbShareBtn.data('href',window.location.origin+'/obraId/'+obra.id);
+            fbShareBtn.data('title',obra.title);
+            fbShareBtn.data('image','https://pbs.twimg.com/profile_images/2397832536/Logo_FB_400x400.jpg');
+            fbShareBtn.data('desc',descObra);
+
+           // $('#twitterShareBtn').prop('href','http://twitter.com/share?url='+window.location.origin+'/obraId/'+obra.id+'&text='+obra.title);
+
+            twitterShareBtn.data('href',window.location.origin+'/obraId/'+obra.id+'&text='+obra.title + '.'+descObra);
+            twitterShareBtn.data('text',obra.title);
+
 
             $.get('/ObraPP/Posts/'+obra.id,function(result){
                 debugger;
@@ -385,13 +427,17 @@
                             carouselPhotosObraDiv.find('#imgWithoutPhoto').remove();
                             flagImgRemoved = true;
                           //  carouselItemsContentDiv.append(imgWhitoutPhoto.html());
+                            $('meta[property="og:image"]').prop('content',carouselPhotosObraDiv.find('.item').first().find('a').prop('href'));
                         }
 
                     }
-                    else if(flagImgRemoved)
+                    else if(flagImgRemoved) {
                         carouselItemsContentDiv.prepend(imgWhitoutPhoto);
+                    }
 
                     carouselPhotosObraDiv.find('.item').first().addClass('active');
+
+
 
                     ResizeImg();
                     //carouselPhotosObraDiv.carousel();
@@ -405,6 +451,13 @@
             });
 
         };
+
+        var postToFeed =function(title, desc, url, image) {
+            var obj = {method: 'feed',link: url, picture: image,name: title,description: desc ,caption:'Obra del presupuesto participativo'};
+            function callback(response) {}
+            FB.ui(obj, callback);
+        };
+
 
         var ResizeImg = function()
         {
@@ -432,21 +485,21 @@
                 for(var i=0; i< post.photos.length;i++) {
                     photos = photos + ' \
                             <div class="col-sm-1 thumbnail" > \
-                                <img class="img-responsive" src="' + post.photos[i].path + '" alt="..."> \
+                                <img class="img-responsive" src="' + window.location.origin+'/'+  post.photos[i].path + '" alt="..."> \
                             </div> ';
 
                     carouselItemsContentDiv.append(
                     '<div class="item " > \
-                        <a href="'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
-                            <img class="img-responsive img-rounded" src="'+ post.photos[i].path +'" alt="..."> \
+                        <a href="'+  window.location.origin+'/'+  post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
+                            <img class="img-responsive img-rounded" src="'+  window.location.origin+'/'+ post.photos[i].path +'" alt="..."> \
                         </a>    \
                      </div> ');
 
                     imgthumbnailPanelDiv.append(' \
                     <div class="col-sm-6" >  \
                         <div class="thumbnail" data-target="#carouselPhotosObra" data-slide-to="'+ countPhotos +'">  \
-                            <a href="'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
-                                <img class="img-responsive" src="'+post.photos[i].path +'" alt="...">  \
+                            <a href="'+  window.location.origin+'/'+ post.photos[i].path +'" data-toggle="lightbox" data-gallery="multiimages" onclick="CivicApp.ObrasSocial.ObraDetail.BindCloseImageBttn()">        \
+                                <img class="img-responsive" src="'+ window.location.origin+'/'+ post.photos[i].path +'" alt="...">  \
                             </a> \
                         </div> \
                     </div> ');

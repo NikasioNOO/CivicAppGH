@@ -30,6 +30,11 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'HomeController@index'
     ]);
 
+    Route::get('/obraId/{obraId}',[
+        'as' => 'publichome.obraId',
+        'uses' => 'HomeController@getHomeWithObra'
+    ]);
+
    /* Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
         Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
     });*/
@@ -80,6 +85,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('GetPosts',['as'=>'admin.getPosts','uses' => 'ObrasAdminController@postGetPosts']);
         Route::post('RemovePhoto',['as'=>'admin.removePhoto','uses' => 'ObrasAdminController@postDeletePhoto']);
         Route::post('DeletePost',['as'=>'admin.deletePost','uses' => 'ObrasAdminController@postDeletePost']);
+        Route::post('MarkAsSpamer',['as'=>'admin.markAsSpamer','uses' => 'ObrasAdminController@postMarkAsSpamer']);
 
     });
 

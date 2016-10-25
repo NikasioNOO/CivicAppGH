@@ -61,4 +61,9 @@ class HomeController extends Controller
         return view('home');
 
     }
+
+    public function getHomeWithObra($obraId)
+    {
+        return view('home')->with('obraId',$obraId);
+    }
 }

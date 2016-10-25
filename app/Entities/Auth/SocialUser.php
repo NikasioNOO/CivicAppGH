@@ -16,6 +16,7 @@ class SocialUser extends User {
     protected $_avatar;
     protected $_provider;
     protected $_provider_id;
+    protected $_is_spamer;
 
     public function  __construct()
     {
@@ -27,7 +28,8 @@ class SocialUser extends User {
                         , 'avatar'
                         , 'provider'
                         , 'provider_id'
-                        ,'remember_token'];
+                        ,'remember_token'
+                        ,'is_spamer'];
         $this->getters = ['id'
                         , 'username'
                         , 'first_name'
@@ -36,7 +38,8 @@ class SocialUser extends User {
                         ,'avatar'
                         ,'provider'
                         ,'provider_id'
-                        ,'remember_token' ];
+                        ,'remember_token'
+                        ,'is_spamer'];
 
     }
 

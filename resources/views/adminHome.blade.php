@@ -1,4 +1,4 @@
-@extends('shared.layout')
+@extends('shared.layout2')
 
 @section('content')
     <div class="container">

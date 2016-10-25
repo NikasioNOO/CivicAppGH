@@ -1,0 +1,41 @@
+.modal-login .modal-title
+{
+    font-size: larger;
+    /* text-align: center; */
+    font-weight: bold;
+    padding: 5px 30px ;
+
+}
+
+.modal-login .modal-header
+{
+    background-color: #00aeef;
+}
+
+.modal-login .modal-body{
+    padding: 0 ;
+}
+
+.modal-login .modal-dialog
+{
+    margin: 0 auto;
+    width: 50%;
+
+}
+
+.facebook{
+    background-color: #4863ae;
+    border-color: #4863ae;
+}
+.facebook:hover{
+    background-color: #2871aa;
+    border-color: #2871aa;
+}
+.twitter{
+    background-color: #46c0fb;
+    border-color: #46c0fb;
+}
+.twitter:hover{
+    background-color: #00c7fb;
+    border-color: #00c7fb;
+}

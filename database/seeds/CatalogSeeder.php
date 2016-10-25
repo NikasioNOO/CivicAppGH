@@ -34,7 +34,7 @@ class CatalogSeeder extends Seeder
         ]);
 
         Status::create([
-            'status' => 'En Ejecución',
+            'status' => 'Ejecución',
         ]);
 
         Status::create([
@@ -42,7 +42,7 @@ class CatalogSeeder extends Seeder
         ]);
 
         Status::create([
-            'status' => 'No Ejecutado',
+            'status' => 'No ejecutado',
         ]);
     }
 

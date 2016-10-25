@@ -5,7 +5,8 @@
 
 
 
-    this.CivicApp = this.CivicApp || {};
+    this.CivicApp = this.CivicApp || { Inicialized:null };
+
     this.CivicApp.ObrasSocial = this.CivicApp.ObrasSocial || new function() {
 
         var selfi = this;
@@ -23,20 +24,36 @@
 
             map = new CivicApp.GmapHelper2.Map();
             var init = map.InitMap('map');
+
+            $.when()
+
             init.then(function() {
+                var deferred = $.Deferred();
                 map.southWest = '-31.471168, -64.278946';
                 map.northEast = '-31.361003, -64.090805';
                 map.CreateAutocompleteSearch('autocompleteMap');
                 //map.AddEventClickAddMarker();
                 debugger;
-                LoadAllObras();
+                LoadAllObras().done(
+                    function(){
+                        deferred.resolve();
+                    });
 
+               return deferred.promise();
+
+            }).done(function()
+            {
+                if(CivicApp && CivicApp.ModalIni && CivicApp.ModalIni.LoadModal  )
+                    CivicApp.ModalIni.LoadModal();
             });
+
+            //CivicApp.Inicialized = init;
 
         };
 
         var LoadObrasMarkers = function(obrasparam)
         {
+
             obrasLoaded = obrasparam;
             var obras = obrasparam;
             var pathIcon = window.location.protocol+'//'+window.location.host+'//' + ENV_MAPICONS_PATH;
@@ -72,11 +89,11 @@
                         if(geoobras[locationKey][categoryStatusKey])
                         {
                             geoobras[locationKey][categoryStatusKey].info = geoobras[locationKey][categoryStatusKey].info +
-                            '<br/><a data-toggle="modal" data-target="#ObraDetail" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+obras[i].description+'</a>';
+                            '<br/><a data-toggle="modal" data-target="#ObraDetail" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+ '('+ obras[i].year +') '+ obras[i].description+'- B° '+obras[i].barrio.name+'</a>';
                         }
                         else
                         {
-                            geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" data-target="#ObraDetail" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+obras[i].description+'</a>',
+                            geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" data-target="#ObraDetail" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" >'+ '('+ obras[i].year +') '+obras[i].description+'- B° '+obras[i].barrio.name+'</a>',
                                 icon :icon,
                                 location :location,
                                 category: obras[i].category.category,
@@ -86,7 +103,7 @@
                     else
                     {
                         geoobras[locationKey] = {};
-                        geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" data-target="#ObraDetail">'+obras[i].description+'</a>',
+                        geoobras[locationKey][categoryStatusKey] = {info : '<a data-toggle="modal" data-obraindex="'+i+'" onclick="CivicApp.ObrasSocial.LoadObraSelected(this)" data-target="#ObraDetail">'+ '('+ obras[i].year +') '+ obras[i].description+'- B° '+obras[i].barrio.name+'</a>',
                             icon :icon,
                             location :location,
                             category: obras[i].category.category,
@@ -107,9 +124,9 @@
                 for(var catKey in geoobras[locKey])
                 {
                     var divInfo = "<div id='iw-container'>" +
-                        "<div class='iw-title'>"+ geoobras[locKey][catKey].category+"</div>" +
+                        "<div class='iw-title'>Categr&iacute;a:"+ geoobras[locKey][catKey].category+"</div>" +
                         "<div class='iw-content'>"+
-                        "<div class='iw-subTitle'>Estado "+ geoobras[locKey][catKey].status+"</div>" +
+                        "<div class='iw-subTitle'>Estado:"+ geoobras[locKey][catKey].status+"</div>" +
                         "<div>"    + geoobras[locKey][catKey].info + "</div>" +
                         "</div>" +
                         '<div class="iw-bottom-gradient"></div>' +
@@ -169,6 +186,7 @@
 
         var LoadAllObras = function()
         {
+            var deferred = $.Deferred();
             $.get('/ObraPP',function(result){
 
                 if(result.status='OK')
@@ -267,15 +285,19 @@
 
                         var markerCluster = new MarkerClusterer(map.map, markers, {maxZoom:17 }); */
                     }
+
+
                 }
                 else
                 {
                     Utilities.ShowError('Se ha producido un error al Obtener las obras del presupuesto participativo.');
                 }
+                deferred.resolve();
             }).fail(function(){
                 Utilities.ShowError('Se ha producido un error al Obtener las obras del presupuesto participativo.');
+                deferred.reject();
             });
-
+            return deferred.promise();
         };
 
         var LoadObraSelected = function(obraSel)
@@ -286,6 +308,23 @@
 
             CivicApp.ObrasSocial.ObraDetail.SetObra(obra.id, obra.description, obra.year, obra.cpc.name, obra.barrio.name,
                 obra.category.category, obra.budget, obra.status.status, obra.nro_expediente ?obra.nro_expediente:''  );
+
+        };
+
+        var LoadModalDetail = function(obraId)
+        {
+            var obra = Utilities.findandGetInList(obrasLoaded,"id",obraId)
+
+            if(obra) {
+                $('#ObraDetail').modal('show');
+                CivicApp.ObrasSocial.ObraDetail.SetObra(obra.id, obra.description, obra.year, obra.cpc.name, obra.barrio.name,
+                    obra.category.category, obra.budget, obra.status.status, obra.nro_expediente ? obra.nro_expediente : '');
+            }
+            else
+            {
+                Utilities.ShowMessage('La Obra con Id '+obraId+' que se hace referencia no se encuentra.','Obra no encontrada');
+            }
+
 
         };
 
@@ -311,7 +350,8 @@
             InitMap : InitilizeMap,
             InitEvents : InitializeEvents,
             ObrasLoaded: obrasLoaded,
-            LoadObraSelected: LoadObraSelected
+            LoadObraSelected: LoadObraSelected,
+            LoadModalDetail:LoadModalDetail
 
 
         };

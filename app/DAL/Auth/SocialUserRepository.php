@@ -43,24 +43,148 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
     }
 
 
-    function CreateOrUpdateUser(AuthEntities\SocialUser $user)
+    function FindUserSpamer(AuthEntities\SocialUser $user)
+    {
+
+        $method='FindUserSpamer';
+        try{
+            Logger::startMethod($method);
+
+            $userDB = AuthModels\Social_User::where('email','=',$user->email)
+                ->where('is_spamer','=',1)->get();
+
+
+            return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$userDB);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0005'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0005'));
+        }
+    }
+
+    function MarkAsSpamer($userId)
+    {
+
+        $method='MarkAsSpamer';
+        try{
+            Logger::startMethod($method);
+
+            $userDB =$this->model->find($userId);
+
+            if(!is_null($userDB)) {
+                $userDB->is_spamer = 1;
+
+                $userDB->save();
+            }
+
+            Logger::endMethod($method);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0008'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0008'));
+        }
+    }
+
+    function FindSocialUserSpamer(AuthEntities\SocialUser $user)
+    {
+
+        $method='FindUserSpamer';
+        try{
+            Logger::startMethod($method);
+
+            $userDB = AuthModels\Social_User::where('provider_id','=',$user->provider_id)
+                ->where('provider','=',$user->provider)
+                ->where('is_spamer','=',1)->get();
+
+            if(!is_null($userDB) && $userDB->count() > 0)
+                return true;
+            else
+                return false;
+       //     return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$userDB);
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0005'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0005'));
+        }
+
+    }
+
+
+    function CreateOrUpdateSocialUser(AuthEntities\SocialUser $user)
     {
         $methodName = 'CreateOrUpdateUser';
-        Logger::startMethod($methodName);
-        $dbUser = $this->findBy('email',$user->email);
-        if(!$dbUser)
+        try {
+            Logger::startMethod($methodName);
+            $dbUser = $this->model->where('provider', '=', $user->provider)->where('provider_id', '=',
+                    $user->provider_id)->first();
+            if ( ! $dbUser) {
+                $dbUser = $this->create($user);
+
+            } else {
+                $dbUser = $this->CheckIfUserNeedUpdate($user, $dbUser);
+
+            }
+
+            Logger::endMethod($methodName);
+
+            return $dbUser->id;
+        }
+        catch(QueryException $ex)
         {
+            Logger::logError($methodName, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0006'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($methodName, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0006'));
+        }
+
+    }
+
+    public function CreateOwnUser(AuthEntities\SocialUser $user)
+    {
+        $methodName = 'CreateOwnUser';
+        try {
+            Logger::startMethod($methodName);
+
             $dbUser = $this->create($user);
 
+            Logger::endMethod($methodName);
+
+            return $dbUser->id;
         }
-        else
+        catch(QueryException $ex)
         {
-           $dbUser  = $this->CheckIfUserNeedUpdate($user,$dbUser);
-
+            Logger::logError($methodName, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0007'));
         }
-
-        Logger::endMethod($methodName);
-        return $dbUser->id;
+        catch(\Exception $ex)
+        {
+            Logger::logError($methodName, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0007'));
+        }
 
     }
 

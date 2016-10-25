@@ -3,6 +3,7 @@
 namespace CivicApp\Http\Controllers;
 
 
+use CivicApp\BLL\Auth\AuthHandler;
 use CivicApp\BLL\Catalog\CatalogHandler;
 use CivicApp\BLL\Obra\ObraHandler;
 use CivicApp\BLL\Post\PostHandler;
@@ -503,6 +504,38 @@ class ObrasAdminController extends Controller
             return  response()->json([
                 'status'  => 'ERROR',
                 'message' => 'Se ha producido un error al intentar eliminar el Post.'.$ex->getMessage(),
+                'ErrorCode' => $ex->getCode()
+            ]);
+        }
+
+    }
+
+    public function postMarkAsSpamer(Request $request, AuthHandler $authHandler)
+    {
+
+        $method='postMarkAsSpamer';
+        try {
+
+            Logger::startMethod($method);
+
+            if($request->has('userId') && $request->userId > 0 ) {
+                $authHandler->MarkAsSpamer($request->userId);
+            }
+            else
+                throw new \Exception('Error al recibir parámetro del Usuario');
+
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status' => 'OK',
+            ]);
+        }
+        catch(\Exception $ex)
+        {
+            return  response()->json([
+                'status'  => 'ERROR',
+                'message' => 'Se ha producido un error al intentar marcar el usuario como spamer.'.$ex->getMessage(),
                 'ErrorCode' => $ex->getCode()
             ]);
         }

@@ -232,9 +232,6 @@ class AuthController extends Controller
 
                 return redirect()->route('admin.home');
 
-
-
-
         }
         else
         {
@@ -277,86 +274,55 @@ class AuthController extends Controller
 
     }
 
+
+    /**
+     * @param $provider
+     *
+     * @return \Illuminate\Http\RedirectResponse|void
+     * @throws BllAuth\AuthValidateException
+     */
     public function getSocialHandle( $provider )
     {
-        $user = Socialite::driver( $provider )->user();
+        try {
 
+            $user = Socialite::driver($provider)->user();
 
-        $socialUser = App::make(AuthEntities\SocialUser::class);
+            $socialUser = App::make(AuthEntities\SocialUser::class);
 
-        $nameSplit = explode(" ", $user->name,2);
-        $socialUser->username = $user->name;
-        $socialUser->first_name = $nameSplit[0];
-        $socialUser->last_name = $nameSplit[1];
-        if($provider == 'twitter')
-            $socialUser->email = $user->id.'@'.'twitter.com';
-        else
-            $socialUser->email = $user->email;
-        $socialUser->avatar = $user->avatar;
-        $socialUser->provider = $provider;
-        $socialUser->provider_id = $user->id;
-
-        //Check is this email present
-
-
-
-        $socialUser = $this->authHandler->CreateOrUpdateSocialUser($socialUser);
-
-        /*$userCheck = User::where('email', '=', $user->email)->first();
-        if(!empty($userCheck))
-        {
-            $socialUser = $userCheck;
-        }
-        else
-        {
-            $sameSocialId = Social::where('social_id', '=', $user->id)->where('provider', '=', $provider )->first();
-
-            if(empty($sameSocialId))
-            {
-                //There is no combination of this social id and provider, so create new one
-                $newSocialUser = new User;
-                $newSocialUser->email              = $user->email;
-                $name = explode(' ', $user->name);
-                $newSocialUser->first_name         = $name[0];
-                $newSocialUser->last_name          = $name[1];
-                $newSocialUser->save();
-
-                $socialData = new Social;
-                $socialData->social_id = $user->id;
-                $socialData->provider= $provider;
-                $newSocialUser->social()->save($socialData);
-
-                // Add role
-                $role = Role::whereName('user')->first();
-                $newSocialUser->assignRole($role);
-
-                $socialUser = $newSocialUser;
+            $nameSplit              = explode(" ", $user->name, 2);
+            $socialUser->username   = $user->name;
+            $socialUser->first_name = $nameSplit[0];
+            $socialUser->last_name  = $nameSplit[1];
+            if ($provider == 'twitter') {
+                $socialUser->email = $user->id . '@' . 'twitter.com';
+            } else {
+                $socialUser->email = $user->email;
             }
-            else
-            {
-                //Load this existing social user
-                $socialUser = $sameSocialId->user;
-            }
+            $socialUser->avatar      = $user->avatar;
+            $socialUser->provider    = $provider;
+            $socialUser->provider_id = $user->id;
+
+            //Check is this email present
+
+            $socialUser = $this->authHandler->CreateOrUpdateSocialUser($socialUser);
+
+            Auth::guard('websocial')->loginUsingId($socialUser->id);
+
+            //  $this->auth->guard('websocial')->login($socialUser, true);
+
+            return redirect()->route('public.home');
 
         }
-        */
-
-        Auth::guard('websocial')->loginUsingId($socialUser->id);
-      //  $this->auth->guard('websocial')->login($socialUser, true);
-
-        return redirect()->route('public.home');
-
-        if( $this->auth->user()->hasRole('user'))
+        catch(BllAuth\AuthValidateException  $ex)
         {
-            return redirect()->route('user.home');
+            return redirect()->route('public.home')->withErrors([$ex->getMessage()]);
         }
-
-        if( $this->auth->user()->hasRole('administrator'))
+        catch(\Exception $ex)
         {
-            return redirect()->route('admin.home');
+            return \App::abort(500);
         }
 
-        return \App::abort(500);
+
     }
 
 

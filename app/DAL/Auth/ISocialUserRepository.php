@@ -14,7 +14,7 @@ use CivicApp\DAL\Repository;
 
 interface ISocialUserRepository extends Repository\IRepository, Repository\ICriteria
 {
-    function CreateOrUpdateUser(AuthEntities\SocialUser $user);
+    function CreateOrUpdateSocialUser(AuthEntities\SocialUser $user);
 
     /**
      * Validate if a userId exists
@@ -27,5 +27,13 @@ interface ISocialUserRepository extends Repository\IRepository, Repository\ICrit
 
 
     function GetUserLogued();
+
+    function CreateOwnUser(AuthEntities\SocialUser $user);
+
+    function FindUserSpamer(AuthEntities\SocialUser $user);
+
+    function MarkAsSpamer($userId);
+
+    function FindSocialUserSpamer(AuthEntities\SocialUser $user);
 
 }

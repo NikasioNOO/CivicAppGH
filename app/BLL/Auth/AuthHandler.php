@@ -88,9 +88,15 @@ class AuthHandler {
 
     function CreateOrUpdateSocialUser(Entities\Auth\SocialUser $user)
     {
-        Logger::startMethod('CreateOrUpdateSocialUser');
+        $method='CreateOrUpdateSocialUser';
+        Logger::startMethod($method);
 
-        $user->id = $this->socialUserRepository->CreateOrUpdateUser($user);
+        if(!$this->socialUserRepository->FindSocialUserSpamer($user))
+            $user->id = $this->socialUserRepository->CreateOrUpdateSocialUser($user);
+        else
+            throw new AuthValidateException(trans('autherrorcodes.0009'));
+
+        Logger::endMethod($method);
         return $user;
     }
 
@@ -110,6 +116,15 @@ class AuthHandler {
     {
         Logger::startMethod('UserExists');
         return $this->socialUserRepository->GetUserLogued();
+    }
+
+    function MarkAsSpamer($userId)
+    {
+        Logger::startMethod('MarkAsSpamer');
+
+        $this->socialUserRepository->MarkAsSpamer($userId);
+
+
     }
 
 

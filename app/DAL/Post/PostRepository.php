@@ -44,7 +44,7 @@ class PostRepository extends Repository implements IPostRepository {
     {
         $method = "GetPostsByObraId";
         try {
-            $this->$mapItemId = $obraId;
+            $this->mapItemId = $obraId;
             Logger::startMethod($method);
 
 
@@ -53,7 +53,7 @@ class PostRepository extends Repository implements IPostRepository {
                 //'postMarkers','postComplaints',
                 'positiveCount')
                 ->whereHas('mapItem',function($query){
-                    $query->where('id',$this->$mapItemId);
+                    $query->where('id',$this->mapItemId);
                 })->withCount('postMarkers')
                 ->withCount('postComplaints')
                 ->orderBy($ordeBy,$orderType)

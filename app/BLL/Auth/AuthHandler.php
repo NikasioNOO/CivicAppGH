@@ -15,6 +15,7 @@ use CivicApp\Models;
 use CivicApp\Entities;
 
 use Illuminate\Database\QueryException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
 use CivicApp\Utilities\Logger;
@@ -95,6 +96,23 @@ class AuthHandler {
             $user->id = $this->socialUserRepository->CreateOrUpdateSocialUser($user);
         else
             throw new AuthValidateException(trans('autherrorcodes.0009'));
+
+        Logger::endMethod($method);
+        return $user;
+    }
+
+    function CreateOwnUser(Entities\Auth\SocialUser $user, $fileAvatar)
+    {
+        $method='CreateOwnUser';
+        Logger::startMethod($method);
+
+
+        if( !is_null($fileAvatar))
+        {
+            $user->avatar=  Utilities\ImageHelper::StoreImage($fileAvatar, env('AVATARS_PATH'));
+        }
+
+        $user->id = $this->socialUserRepository->CreateOwnUser($user);
 
         Logger::endMethod($method);
         return $user;

@@ -291,7 +291,7 @@
                 var img = $('#img'+id);
                 if(!(imageFile==match))
                 {
-                    $('#previewing').attr('src','noimage.png');
+                    //$('#previewing').attr('src','noimage.png');
                     Utilities.ShowMessage('Debe elegir archivos de imagen png, gracias');
                     if(!img.hasClass('hidden'))
                         img.addClass('hidden');

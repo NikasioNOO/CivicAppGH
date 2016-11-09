@@ -17,11 +17,14 @@ class SocialUser extends User {
     protected $_provider;
     protected $_provider_id;
     protected $_is_spamer;
+    protected $_password;
+    protected $_gender;
 
     public function  __construct()
     {
         $this->setters = ['id'
                         , 'username'
+                        , 'gender'
                         , 'first_name'
                         , 'last_name'
                         , 'email'
@@ -29,9 +32,12 @@ class SocialUser extends User {
                         , 'provider'
                         , 'provider_id'
                         ,'remember_token'
-                        ,'is_spamer'];
+                        ,'is_spamer'
+                        ,'password'
+                        ,'gender'];
         $this->getters = ['id'
                         , 'username'
+                        , 'gender'
                         , 'first_name'
                         , 'last_name'
                         , 'email'
@@ -39,7 +45,9 @@ class SocialUser extends User {
                         ,'provider'
                         ,'provider_id'
                         ,'remember_token'
-                        ,'is_spamer'];
+                        ,'is_spamer'
+                        ,'password'
+                        ,'gender'];
 
     }
 

@@ -23,6 +23,7 @@ use CivicApp\Utilities\Logger;
 use CivicApp\Utilities\JsonMapper;
 use CivicApp\BLL\Auth as BllAuth;
 use Laravel\Socialite\Facades\Socialite;
+use CivicApp\Entities\Auth\SocialUser;
 
 class AuthController extends Controller
 {
@@ -38,6 +39,7 @@ class AuthController extends Controller
     */
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+
 
     /**
      * Where to redirect users after login / registration.
@@ -109,18 +111,31 @@ class AuthController extends Controller
         'password_confirmation' => 'required|same:password'
     ];
 
-    private static $messagesAppUser = [
+    private static $rulesSocialUser = [
+        'username'              => 'required|unique:social_users',
+        'first_name'            => 'required',
+        'last_name'             => 'required',
+        'gender'                => 'required',
+        'email'                 => 'required|email|unique:social_users',
+        'password'              => 'required|min:6|max:20',
+        'password_confirmation' => 'required|same:password'
+    ];
+
+
+    private static $messagesValidationUser = [
         'username.required'     => 'El nombre de usuario es requerido',
+        'username.unique'       => 'Ya existe una cueanta creada con este nombre de usuario, el nombre de usuario es requerido',
         'first_name.required'   => 'El nombre es requerido',
         'last_name.required'    => 'El apellido es requerido',
         'email.required'        => 'El email es requerido',
         'email.email'           => 'El email es inválido',
-        'email.unique'          => 'El email debe ser único',
+        'email.unique'          => 'Ya existe una cuenta creada con este mail, el email debe ser único',
         'password.required'     => 'La contraseña es requerida',
         'password.min'          => 'La contraseña necesita tener al menos 6 caracteres',
         'password.max'          => 'La contraseña sólo permite hasta 20 caracteres',
         'password_confirmation.same' => 'La contraseña y la confirmación de la contraseña deben coincidir',
-        'password_confirmation.required' =>'La confirmación de contraseña es requerida'
+        'password_confirmation.required' =>'La confirmación de contraseña es requerida',
+        'gender' => 'El género es requerido.'
     ];
 
     /**
@@ -135,7 +150,7 @@ class AuthController extends Controller
         $methodName = 'postCreateAppUser';
         Logger::startMethod($methodName);
         try {
-            $validator = Validator::make($request->all(), $this::$rulesAppUser, $this::$messagesAppUser);
+            $validator = Validator::make($request->all(), $this::$rulesAppUser, $this::$messagesValidationUser);
 
             if ($validator->fails()) {
                 return redirect()->back()
@@ -243,6 +258,77 @@ class AuthController extends Controller
 
     }
 
+    public function postSocialLogin(Request $request)
+    {
+        $method = 'postSocialLogin';
+        try {
+            Logger::startMethod($method);
+
+            if (Auth::guard('websocial')->check()) {
+                Logger::endMethod($method);
+
+                return redirect()->route('public.home');
+            }
+
+            if(!$request->has('email') || empty($request->email) ||
+                !$request->has('password') || empty($request->password))
+            {
+                $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+                    'El email y el password son requeridos.')->render();
+
+                Logger::endMethod($method);
+
+                return response()->json([
+                    'status'      => 'Error',
+                    'htmlMessage' => $returnHTML
+                ]);
+            }
+            $email    = $request->input('email');
+            $password = $request->input('password');
+            $remember = $request->input('remember');
+
+
+            if (Auth::guard('websocial')->attempt([
+                'email'    => $email,
+                'password' => $password
+            ],  $remember )
+            ) {
+                Logger::endMethod($method);
+
+                return response()->json([
+                    'status' => 'OK'
+                ]);
+            } else {
+
+                $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+                    'Email o Password Incorrecto.')->render();
+
+                Logger::endMethod($method);
+
+                return response()->json([
+                    'status'      => 'Error',
+                    'htmlMessage' => $returnHTML
+                ]);
+
+
+            }
+        }
+        catch(\Exception $ex)
+        {
+            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+                'Se ha producido un error inesperado, disculpe las molestias.')->render();
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status'      => 'Error',
+                'htmlMessage' => $returnHTML,
+                'errorDetail' => $ex->getMessage().'.'.$ex->getTraceAsString()
+            ]);
+        }
+
+    }
+
     public function getLogout()
     {
         Auth::guard('webadmin')->logout();
@@ -326,5 +412,78 @@ class AuthController extends Controller
     }
 
 
+    public function postCreateSocialUser(Request $request )
+    {
+        $methodName = 'postCreateAppUser';
+        Logger::startMethod($methodName);
+        try {
+            if($request->has('user')) {
+
+                $user = json_decode($request->user);
+
+                $validator = Validator::make(['username'=>$user->username,
+                    'last_name'=>$user->last_name,
+                    'first_name'=>$user->first_name,
+                    'email'=>$user->email,
+                    'gender'=>$user->gender,
+                    'password'=>$user->password,
+                    'password_confirmation'=>$user->password_confirmation], $this::$rulesSocialUser, $this::$messagesValidationUser);
+
+                if ($validator->fails()) {
+
+                    $returnHTML = view('includes.errors')->withErrors($validator)->render();
+
+                    return response()->json([
+                        'status' => 'Error',
+                        'htmlMessage'   => $returnHTML
+                    ]);
+
+                }
+
+                $newUser = App::make(SocialUser::class);
+                $newUser->username   = $user->username;
+                $newUser->first_name = $user->first_name;
+                $newUser->last_name  = $user->last_name;
+                $newUser->email      = $user->email;
+                $newUser->password   = bcrypt($user->password);
+                $newUser->gender = $user->gender;
+
+                if($user->gender == 'M')
+                    $newUser->avatar = env('AVATAR_M');
+                else
+                    $newUser->avatar = env('AVATAR_F');
+
+
+                $this->authHandler->CreateOwnUser($newUser, isset($request->avatarUpload) ? $request->avatarUpload :null);
+
+
+                $returnHTML = view('includes.status')->with('status', 'success')->with('message',
+                    'Se ha registrado satisfactoriamente.')->render();
+                Logger::endMethod($methodName);
+                return response()->json([
+                    'status' => 'OK',
+                    'htmlMessage'   => $returnHTML
+                ]);
+
+            }
+        } catch (BllAuth\AuthValidateException $ex) {
+            Logger::logError($methodName, $ex->getMessage());
+            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+                $ex->getMessage())->render();
+            return response()->json([
+                'status' => 'Error',
+                'htmlMessage'   => $returnHTML
+            ]);
+        } catch (\Exception $ex) {
+            Logger::logError($methodName, $ex->getMessage());
+            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+                $ex->getMessage())->render();
+            return response()->json([
+                'status' => 'Error',
+                'htmlMessage'   => $returnHTML
+            ]);
+        }
+
+    }
 
 }

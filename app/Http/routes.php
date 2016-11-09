@@ -35,6 +35,11 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'HomeController@getHomeWithObra'
     ]);
 
+    Route::post('/saveOwnUser', [
+        'as' => 'user.register',
+        'uses' => 'Auth\AuthController@postCreateSocialUser'
+    ]);
+
    /* Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
         Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
     });*/
@@ -43,6 +48,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('AdminLogin',['as'=>'authApp.post-login', 'uses' =>'Auth\AuthController@postLogin']);
 
+    Route::post('/SocialLogin',['as'=>'authApp.post-social-login', 'uses' =>'Auth\AuthController@postSocialLogin']);
 
     Route::get('/Logout',['as'=>'logout', 'uses' =>'Auth\AuthController@getLogout']);
     Route::get('/LogoutSocial',['as'=>'logoutSocial', 'uses' =>'Auth\AuthController@getLogoutSocial']);

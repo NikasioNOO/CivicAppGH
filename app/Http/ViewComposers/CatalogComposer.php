@@ -52,8 +52,12 @@ class CatalogComposer {
         }
 
         $statuses = $this->catalogRepository->GetAllStatuses();
+
+        $genders = [['value'=>'M','name'=>'Masculino']
+                    ,['value'=>'F','name'=>'Femenino']];
         $view->with(['categories'=>$categories,'barrios'=>$barrios,'statuses'=>$statuses,
-            'cpcs'=>$cpcs, 'years'=>$years, 'barriosArray'=>$barriosArray, 'categoriesArray'=>$categoriesArray]);
+            'cpcs'=>$cpcs, 'years'=>$years, 'barriosArray'=>$barriosArray, 'categoriesArray'=>$categoriesArray,
+            'genders'=>$genders] );
 
 
 

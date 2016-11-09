@@ -86,7 +86,7 @@
                         @elseif(Auth::guard("websocial")->check())
                             <li style=""><a href="/LogoutSocial" >CERRAR SESION</a></li>
                         @else
-                            <li><a href="#">REGISTRARSE</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#modalRegister" >REGISTRARSE</a></li>
                             <li><a href="#"  data-toggle="modal" data-target="#modalLogin">INGRESAR</a></li>
                         @endif
                         @if(Auth::guard('webadmin')->check())
@@ -114,7 +114,8 @@
 
 
     @yield('content')
-    @include('login')
+    @include('auth.login')
+    @include('auth.register')
 </div>
 {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
 {!! Html::script('assets/jquery-ui/jquery-ui.js') !!}

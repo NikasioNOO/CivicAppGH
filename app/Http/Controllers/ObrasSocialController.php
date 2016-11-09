@@ -171,17 +171,17 @@ class ObrasSocialController extends Controller
         Logger::startMethod($method);
 
         try{
-            if($request->has('postId') && $request->has('comment'))
+            if($request->has('postId') )
             {
 
-                $postComplaint->comment = $request->comment;
+                $postComplaint->comment = $request->has('comment') ? $request->comment : '';
 
                 $user = $this->authHandler->GetUserLogued();
 
                 $this->postHandler->SavePostComplaint($postComplaint,$user->id,$request->postId);
             }
             else
-                throw new \Exception('no se ha denuncia válida');
+                throw new \Exception('Ha ocurrido un error al denuciar el post, disculpe las Molestias');
 
             Logger::endMethod($method);
 

@@ -114,8 +114,8 @@
 
 
     @yield('content')
-    @include('auth.login')
-    @include('auth.register')
+    @include('auth.loginSocial')
+    @include('auth.registerSocial')
 </div>
 {!! Html::script('assets/js/jquery-1.11.3.min.js') !!}
 {!! Html::script('assets/jquery-ui/jquery-ui.js') !!}

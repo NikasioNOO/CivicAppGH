@@ -16,6 +16,7 @@ interface ISocialUserRepository extends Repository\IRepository, Repository\ICrit
 {
     function CreateOrUpdateSocialUser(AuthEntities\SocialUser $user);
 
+    public function SaveUser(AuthEntities\SocialUser $user);
     /**
      * Validate if a userId exists
      * @param $userId
@@ -30,10 +31,16 @@ interface ISocialUserRepository extends Repository\IRepository, Repository\ICrit
 
     function CreateOwnUser(AuthEntities\SocialUser $user);
 
-    function FindUserSpamer(AuthEntities\SocialUser $user);
+    function FindUserSpamer($email);
 
     function MarkAsSpamer($userId);
 
     function FindSocialUserSpamer(AuthEntities\SocialUser $user);
+
+    function FindByActivationCode($code);
+
+    function ActivateUser($userId);
+
+
 
 }

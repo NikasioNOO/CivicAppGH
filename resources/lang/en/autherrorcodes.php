@@ -27,6 +27,8 @@ return [
     '0006' => 'Se ha producido un error al intenar crear o actualizar el ususario',
     '0007' => 'Se ha producido un error al intenar crear un nuevo usuario',
     '0008' => 'Se ha producido un error al intenar actualizar el usuario como spamer',
-    '0009' => 'El usuario está declarado como spamer'
+    '0009' => 'El usuario está declarado como spamer',
+    '0010' => 'Error al intentar buscar ususario por activation code',
+    '0011' => 'Error al intentar actualizar el usuario como activado'
 
 ];

@@ -20,13 +20,8 @@
 
         function User()
         {
-            this.username ='';
-            this.email = '';
-            this.first_name = '';
-            this.last_name = '';
-            this.password = '';
-            this.password_confirmation = '';
-            this.gender = -1;
+
+
 
             Object.defineProperty(this, 'username', {
                 get: function() {
@@ -56,7 +51,7 @@
                 },
                 set: function(value) {
 
-                    idObra.val(value ? value : '');
+                    firstNameInput.val(value ? value : '');
                 },
                 enumerable:true
             });
@@ -103,10 +98,23 @@
                 set: function(value) {
 
                     genderSelect.val(value);
+                    genderSelect.trigger('change');
                 },
                 enumerable:true
             });
         }
+
+        var CleanUserRegister = function()
+        {
+            newUser.username ='';
+            newUser.email = '';
+            newUser.first_name = '';
+            newUser.last_name = '';
+            newUser.password = '';
+            newUser.password_confirmation = '';
+            newUser.gender = -1;
+            grecaptcha.reset();
+        };
 
         var InitEvents = function() {
 
@@ -171,6 +179,11 @@
 
         };
 
+        var ResendConfirmationEmail = function($link)
+        {
+
+        };
+
         var  SaveUser = function()
         {
             Utilities.block();
@@ -178,6 +191,7 @@
             var formData = new FormData();
 
             formData.append('user',JSON.stringify(newUser));
+            formData.append('g-recaptcha-response',$('#g-recaptcha-response').val());
             if(avatarFile.files.length==1)
                 formData.append('avatarUpload',avatarFile.files[0]);
 
@@ -194,7 +208,7 @@
                     if(data.status == 'OK')
                     {
                         // Utilities.ShowSuccesMessage('Se ha guardado correctamente la Obra del Presupuesto Participativo');
-                        newUser = new User();
+                        CleanUserRegister();
                         messageDiv.html(data.htmlMessage);
                     }
                     else
@@ -219,8 +233,8 @@
 
 
         return {
-            InitEvents: InitEvents
-
+            InitEvents: InitEvents,
+            ResendConfirmationEmail: ResendConfirmationEmail
 
         }
 

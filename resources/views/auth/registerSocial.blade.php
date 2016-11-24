@@ -28,7 +28,7 @@
                     <div class="form-group form-group-sm">
                         <label for="inputEmail" class="col-sm-4 control-label">Direcci&oacute;n de mail</label>
                         <div class="col-sm-8">
-                            {!! Form::email('email', null, ['class' => 'form-control input-sm', 'placeholder' => 'Dirección Email', 'required', 'autofocus', 'id' => 'emailReg' ]) !!}
+                            {!! Form::email('email', null, ['class' => 'form-control input-sm', 'placeholder' => 'Dirección Email', 'required', 'id' => 'emailReg' ]) !!}
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
@@ -84,7 +84,9 @@
                             {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => 'Password confirmation', 'required', 'confirmed',  'id' => 'passwordConfirmReg' ]) !!}
                         </div>
                     </div>
-
+                    <div class="form-group form-group-sm">
+                        <div class="g-recaptcha col-lg-offset-4 col-sm-8" data-sitekey="{{ env('RE_CAP_SITE') }}"></div>
+                    </div>
                     <div class="form-group">
                         <button id="btnRegister" class="btn custom-bottom btn-block" type="submit">Crear Cuenta</button>
                     </div>
@@ -118,4 +120,5 @@
 </script>
 {!! Html::script('assets/js/Custom/auth/register-user.js') !!}
 
+<script src="https://www.google.com/recaptcha/api.js"></script>
 @endpush

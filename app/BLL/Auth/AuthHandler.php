@@ -19,6 +19,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Mockery\CountValidator\Exception;
 use CivicApp\Utilities\Logger;
+use Mail;
 
 class AuthHandler {
 
@@ -112,10 +113,46 @@ class AuthHandler {
             $user->avatar=  Utilities\ImageHelper::StoreImage($fileAvatar, env('AVATARS_PATH'));
         }
 
+        $user->activation_code = $this->getToken();
+        $user->activated = 0;
+        $user->provider = 'App';
+        $user->provider_id= 0;
         $user->id = $this->socialUserRepository->CreateOwnUser($user);
+
+        Mail::send('emails.verify', ['confirmation_code'=>$user->activation_code], function($message) use ($user) {
+            //$message->from('activar@civicapp.com.ar','Monitor de Obras del presupuesto participativo');
+            $message->to($user->email, $user->username)
+                ->subject('Obras del Presupuesto participativo - Activación de cuenta');
+        });
 
         Logger::endMethod($method);
         return $user;
+    }
+
+    private function getToken()
+    {
+        return hash_hmac('sha256', str_random(40), config('app.key'));
+    }
+
+    function ConfirmUser($code)
+    {
+        $method = '';
+        Logger::startMethod($method);
+
+        $user = $this->socialUserRepository->FindByActivationCode($code);
+
+        if(!is_null($user))
+        {
+            $this->socialUserRepository->ActivateUser($user->id);
+            Logger::endMethod($method);
+            return $user->id;
+        }
+        else
+        {
+            throw new AuthValidateException('El código enviado no corresponde a ningun usuario con la posibilidad de ser activado.');
+        }
+
+
     }
 
 
@@ -146,7 +183,57 @@ class AuthHandler {
     }
 
 
+    public function IsPendingActivation($email)
+    {
+        Logger::startMethod('IsPendingActivation');
+        $user = $this->socialUserRepository->findByRetEntity("email",$email);
+        if(is_null($user))
+            return false;
+        else
+        {
+            if($user->actived == 1)
+                return true;
+            else
+                return false;
 
+        }
+
+    }
+
+    public function  IsUserSpamer($email)
+    {
+        Logger::startMethod('IsUserSpamer');
+
+        if(is_null($this->socialUserRepository->FindUserSpamer($email)))
+            return false;
+        else
+            return true;
+
+
+    }
+
+
+    public function ResendEmailConfirmation($email)
+    {
+        $user = $this->socialUserRepository->findByRetEntity('email',$email);
+        if(is_null($user))
+            throw new AuthValidateException('No existe usuario creado con ese email.');
+        if($user->activated == 1)
+            throw new AuthValidateException('El usuario con el email '.$email.' ya se encuentra activado');
+
+        if(!is_null($this->socialUserRepository->FindUserSpamer($email)))
+            throw new AuthValidateException('El usuario está marcado como spamer');
+
+
+        $user->activation_code = $this->getToken();
+        $this->socialUserRepository->SaveUser($user);
+
+        Mail::send('emails.verify', ['confirmation_code'=>$user->activation_code], function($message) use ($user) {
+            //$message->from('activar@civicapp.com.ar','Monitor de Obras del presupuesto participativo');
+            $message->to($user->email, $user->username)
+                ->subject('Obras del Presupuesto participativo - Activación de cuenta');
+        });
+    }
 
 
 }

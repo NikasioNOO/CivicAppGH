@@ -11,6 +11,7 @@ namespace CivicApp\Utilities;
 
 use Illuminate\Http\UploadedFile;
 use Image;
+use File;
 
  class ImageHelper {
 

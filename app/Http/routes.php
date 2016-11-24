@@ -40,6 +40,17 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'Auth\AuthController@postCreateSocialUser'
     ]);
 
+    Route::get('register/verify/{confirmationCode}', [
+        'as' => 'confirmation_path',
+        'uses' => 'Auth\AuthController@postConfirm'
+    ]);
+
+    Route::get('register/resendConfirmation/{confirmationCode}', [
+        'as' => 'resend_mail_confirmation',
+        'uses' => 'Auth\AuthController@postResendConfirmation'
+    ]);
+
+
    /* Route::group(['prefix'=>'user','middleware'=> 'auth:webadmin'],function(){
         Route::get('/',['as'=> 'user.home','uses'=> 'UserController@getHome']);
     });*/

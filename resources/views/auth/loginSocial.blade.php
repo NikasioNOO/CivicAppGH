@@ -14,20 +14,24 @@
             </div>
             <div class="modal-body">
 
-                <div class="divMessageLogin"></div>
+                <div id="divMessageLogin"></div>
                 <div class="row">
                     {!! Form::open(['url' => '#', 'class' => 'form-social-singin form-horizontal' ] ) !!}
 
                     <div class="form-group">
                         <h class="form-signin-heading">Por favor inicie sesi&oacute;n</h>
                     </div>
-                    <div class="form-group">
-                        <label for="inputEmail" class="sr-only">Email</label>
-                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
+                    <div class="form-group form-group-sm">
+                        <label for="email" class="col-sm-4 control-label ">Direcci&oacute;n de email</label>
+                        <div class="col-sm-8">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="inputPassword" class="sr-only">Contraseña</label>
-                        {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Contraseña', 'required',  'id' => 'password' ]) !!}
+                    <div class="form-group form-group-sm">
+                        <label for="inputPassword" class="col-sm-4 control-label ">Contraseña</label>
+                        <div class="col-sm-8">
+                            {!! Form::password('password', ['class' => 'form-control', 'placeholder' => 'Contraseña', 'required',  'id' => 'password' ]) !!}
+                        </div>
                     </div>
                     <div class="">
                         <label class="">

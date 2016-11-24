@@ -43,18 +43,20 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
     }
 
 
-    function FindUserSpamer(AuthEntities\SocialUser $user)
+    function FindUserSpamer($email)
     {
 
         $method='FindUserSpamer';
         try{
             Logger::startMethod($method);
 
-            $userDB = AuthModels\Social_User::where('email','=',$user->email)
+            $userDB = AuthModels\Social_User::where('email','=',$email)
                 ->where('is_spamer','=',1)->get();
 
-
-            return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$userDB);
+            if(!is_null($userDB))
+                return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$userDB);
+            else
+                return null;
 
         }
         catch(QueryException $ex)
@@ -188,6 +190,33 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
 
     }
 
+    public function SaveUser(AuthEntities\SocialUser $user)
+    {
+        $methodName = 'CreateOwnUser';
+        try {
+            Logger::startMethod($methodName);
+
+            $dbUser = $this->mapper->map( AuthEntities\SocialUser::class,AuthModels\Social_User::class,$user);
+
+            $dbUser->save();
+
+            Logger::endMethod($methodName);
+
+            return $dbUser->id;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($methodName, $ex->getMessage().$ex->getSql());
+            throw new RepositoryException(trans('autherrorcodes.0007'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($methodName, $ex->getMessage());
+            throw new RepositoryException(trans('autherrorcodes.0007'));
+        }
+
+    }
+
     private function  CheckIfUserNeedUpdate(AuthEntities\SocialUser $userUpdate, AuthModels\Social_User $dbUser)
     {
         $methodName = 'CheckIfUserNeedUpdate';
@@ -215,6 +244,61 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
 
 
 
+    }
+
+    public function FindByActivationCode($code)
+    {
+        $method = 'FindByActivationCode';
+
+        try
+        {
+            Logger::startMethod($method);
+            $user = AuthModels\Social_User::where('activation_code',$code)->where('activated',false)->first();
+
+            Logger::endMethod($method);
+            if(!is_null($user))
+                return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$user);
+            else
+                return null;
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0010'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0010'));
+        }
+    }
+
+    public function ActivateUser($userId)
+    {
+        $method = 'UpdateUser';
+
+        try
+        {
+            Logger::startMethod($method);
+            $user =  AuthModels\Social_User::find($userId);
+
+            $user->activated = 1;
+            $user->activation_code = null;
+            $user->save();
+            Logger::endMethod($method);
+            return true;
+
+        }
+        catch(QueryException $ex)
+        {
+            Logger::logError($method, $ex->getMessage().$ex->getSql().'.STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0011'));
+        }
+        catch(\Exception $ex)
+        {
+            Logger::logError($method, $ex->getMessage().'STACKTRACE:'.$ex->getTraceAsString());
+            throw new RepositoryException(trans('autherrorcodes.0011'));
+        }
     }
 
 

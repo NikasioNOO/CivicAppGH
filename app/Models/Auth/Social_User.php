@@ -24,7 +24,7 @@ class Social_User extends Model implements AuthenticatableContract, Authorizable
      * @var array
      */
     protected $fillable = ['username','gender', 'first_name', 'last_name', 'email', 'avatar', 'provider',
-                            'provider_id','is_spamer','remember_token'];
+                            'provider_id','is_spamer','remember_token', 'activated', 'activation_code'];
 
     /**
      * The attributes excluded from the model's JSON form.

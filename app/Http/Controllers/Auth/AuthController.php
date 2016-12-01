@@ -316,8 +316,8 @@ class AuthController extends Controller
 
                 if($this->authHandler->IsPendingActivation($email))
                 {
-                    throw new BllAuth\AuthValidateException('El usuario aún no está activo, revise su email o si de volver a recibir el link de confirmación precione el siquiente link
-                        <br><a data-route="'.route('routeName').' data-email="'.$email.'" onclick="CivicApp.RegisterUser.ResendConfirmationEmail(this)">Reenviar el código de activación</a>');
+                    throw new BllAuth\AuthValidateException('El usuario aún no está activo, revise su correo o si desea volver a recibir el link de confirmación presioone el siquiente link
+                        <br><a style="cursor: pointer;" data-route="'.route('resend_mail_confirmation').'" data-email="'.$email.'" onclick="CivicApp.RegisterUser.ResendConfirmationEmail(this)">Reenviar el código de activación</a>');
 
                 }
 
@@ -339,7 +339,7 @@ class AuthController extends Controller
             ]);
         }
         catch (\Exception $ex) {
-            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+            $returnHTML = view('includes.status')->with('status', 'danger')->with('message',
                 'Se ha producido un error inesperado, disculpe las molestias.')->render();
 
             Logger::endMethod($method);
@@ -364,7 +364,7 @@ class AuthController extends Controller
             }
             $this->authHandler->ResendEmailConfirmation($request->email);
 
-            $returnHTML = view('includes.status')->with('status', 'succes')->with('message',
+            $returnHTML = view('includes.status')->with('status', 'success')->with('message',
                 'Se ha enviado el correa de activación correctamente, verifique su correo, gracias.')->render();
 
             Logger::endMethod($method);
@@ -376,7 +376,7 @@ class AuthController extends Controller
         }
         catch(BllAuth\AuthValidateException $ex)
         {
-            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+            $returnHTML = view('includes.status')->with('status', 'danger')->with('message',
                 $ex->getMessage())->render();
 
             Logger::endMethod($method);
@@ -388,7 +388,7 @@ class AuthController extends Controller
         }
         catch(\Exception $ex)
         {
-            $returnHTML = view('includes.status')->with('status', 'error')->with('message',
+            $returnHTML = view('includes.status')->with('status', 'danger')->with('message',
                 'Se ha producido un error inesperado, disculpe las molestias.')->render();
 
             Logger::endMethod($method);
@@ -561,10 +561,11 @@ class AuthController extends Controller
     }
 
 
-    public function postConfirm($confirmation_code)
+    public function getConfirm($confirmation_code)
     {
         $methodName='postConfirm';
         try {
+
             Logger::startMethod($methodName);
             if ( ! $confirmation_code) {
                 throw new BllAuth\AuthValidateException('');

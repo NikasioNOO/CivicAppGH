@@ -16,7 +16,7 @@ interface ISocialUserRepository extends Repository\IRepository, Repository\ICrit
 {
     function CreateOrUpdateSocialUser(AuthEntities\SocialUser $user);
 
-    public function SaveUser(AuthEntities\SocialUser $user);
+    function SaveUser(AuthEntities\SocialUser $user);
     /**
      * Validate if a userId exists
      * @param $userId

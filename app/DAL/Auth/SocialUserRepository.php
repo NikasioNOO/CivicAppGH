@@ -51,7 +51,7 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
             Logger::startMethod($method);
 
             $userDB = AuthModels\Social_User::where('email','=',$email)
-                ->where('is_spamer','=',1)->get();
+                ->where('is_spamer','=',1)->first();
 
             if(!is_null($userDB))
                 return $this->mapper->map(AuthModels\Social_User::class, AuthEntities\SocialUser::class,$userDB);
@@ -196,7 +196,10 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
         try {
             Logger::startMethod($methodName);
 
-            $dbUser = $this->mapper->map( AuthEntities\SocialUser::class,AuthModels\Social_User::class,$user);
+            $dbUser = $this->find($user->id);
+            $dbUserUpdate = $this->mapper->map( AuthEntities\SocialUser::class,AuthModels\Social_User::class,$user);
+
+            $this->UpdatModelAttribute($dbUser,$dbUserUpdate);
 
             $dbUser->save();
 

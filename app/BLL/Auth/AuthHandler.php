@@ -191,7 +191,7 @@ class AuthHandler {
             return false;
         else
         {
-            if($user->actived == 1)
+            if($user->activated == 0)
                 return true;
             else
                 return false;

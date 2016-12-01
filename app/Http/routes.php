@@ -42,10 +42,10 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('register/verify/{confirmationCode}', [
         'as' => 'confirmation_path',
-        'uses' => 'Auth\AuthController@postConfirm'
+        'uses' => 'Auth\AuthController@getConfirm'
     ]);
 
-    Route::get('register/resendConfirmation/{confirmationCode}', [
+    Route::post('register/resendConfirmation/', [
         'as' => 'resend_mail_confirmation',
         'uses' => 'Auth\AuthController@postResendConfirmation'
     ]);

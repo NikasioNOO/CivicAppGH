@@ -179,8 +179,28 @@
 
         };
 
-        var ResendConfirmationEmail = function($link)
+        var ResendConfirmationEmail = function(link)
         {
+            var email = $(link).data('email');
+            var url = $(link).data('route');
+
+            $.post(url,{"email" : email},function(data)
+            {
+                if(data.status == 'OK')
+                {
+                    // Utilities.ShowSuccesMessage('Se ha guardado correctamente la Obra del Presupuesto Participativo');
+                    $('#divMessageLogin').html(data.htmlMessage);
+                }
+                else
+                {
+                    if(data.htmlMessage)
+                    {
+                        $('#divMessageLogin').html(data.htmlMessage);
+                    }
+                    else
+                        Utilities.ShowError(data.message);
+                }
+            })
 
         };
 

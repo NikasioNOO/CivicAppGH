@@ -15,7 +15,7 @@
             initmapPopUp.then(function() {
                 map.southWest = '-31.471168, -64.278946';
                 map.northEast = '-31.361003, -64.090805';
-                map.CreateAutocomplete('autocompletepopUpMap');
+                map.CreateSearchBox('autocompletepopUpMap');
                 map.AddEventClickAddMarker();
 
             });

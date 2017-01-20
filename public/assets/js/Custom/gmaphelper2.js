@@ -271,7 +271,160 @@
 
 
             };
+            /***
+             * Para Crear un search box sobre un input y con marcador
+             * @param input
+             * @constructor
+             */
+            this.CreateSearchBox = function(input)
+            {
+                var sWest =  this.southWest.split(',');
+                var nEast =  this.northEast.split(',');
 
+                var defaultBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng( parseFloat(sWest[0]), parseFloat(sWest[1])),
+                    new google.maps.LatLng( parseFloat(nEast[0]), parseFloat(nEast[1])));
+
+                selfi.inputAutocomplete = /** @type {!HTMLInputElement} */(
+                    document.getElementById(input));
+
+                selfi.autoComplete = new google.maps.places.SearchBox( selfi.inputAutocomplete, { bounds : defaultBounds });
+              //  selfi.autoComplete.setComponentRestrictions({'country': 'ar'});
+                // autoComplete.bindTo('bounds', map);
+
+                if(! selfi.infowindowMarker)
+                    selfi.infowindowMarker = new google.maps.InfoWindow();
+
+
+                if(! selfi.individualMarker)
+                    selfi.individualMarker = new google.maps.Marker({
+                        map: selfi.map,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP,
+                        anchorPoint: new google.maps.Point(0, -29)
+                    });
+
+                selfi.individualMarker.addListener('dragend',function(event) {
+                    selfi.infowindowMarker.close()
+                    //   alert(event.latLng.lat()+','+event.latLng.lng());
+                    selfi.individualMarker.setPosition(event.latLng);
+
+                    selfi.SetAutocompleteAddressAndMarker(event.latLng.lat(), event.latLng.lng());
+                    /*selfi.GeocodeInverse(event.latLng.lat(), event.latLng.lng()).then(function(address){
+                     selfi.inputAutocomplete.value = address;
+                     $('#'+ selfi.inputAutocomplete.id).data('latLng', event.latLng.lat()+','+event.latLng.lng())
+                     selfi.infowindowMarker.setContent(address);
+                     selfi.infowindowMarker.open(selfi.map,  selfi.individualMarker);
+                     },
+                     function(msg)
+                     {
+                     alert(msg);
+                     }
+                     );*/
+
+
+                });
+
+
+                selfi.autoComplete.addListener('places_changed',function(){
+                    selfi.infowindowMarker.close()
+                    selfi.individualMarker.setVisible(false);
+
+                    var places =  selfi.autoComplete.getPlaces();
+                    if (places.length == 0) {
+                        Utilities.ShowMessage('Ninguna ubicación fue encontrada','Ubicación incorrecta');
+                        return;
+                    }
+
+                    var place = places[0];
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        selfi.map.fitBounds(place.geometry.viewport);
+                        selfi.map.setZoom(17);
+                    } else {
+                        selfi.map.setCenter(place.geometry.location);
+                        selfi.map.setZoom(17);  // Why 17? Because it looks good.
+                    }
+
+                    /*individualMarker.setIcon(/** @type {google.maps.Icon} /({
+                     url: place.icon,
+                     size: new google.maps.Size(71, 71),
+                     origin: new google.maps.Point(0, 0),
+                     anchor: new google.maps.Point(17, 34),
+                     scaledSize: new google.maps.Size(35, 35)
+                     }));*/
+                    selfi.individualMarker.setPosition(place.geometry.location);
+                    selfi.individualMarker.setVisible(true);
+
+                    $('#'+ selfi.inputAutocomplete.id).data('latLng', place.geometry.location.lat()+','+place.geometry.location.lng())
+
+                    var address = '';
+                    if (place.formatted_address) {
+                        address = place.formatted_address;
+                    }
+
+                    selfi.infowindowMarker.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                    selfi.infowindowMarker.open(selfi.map,  selfi.individualMarker);
+
+                })
+
+
+
+            };
+
+            this.CreateSearchBoxAutocomplete = function(input) {
+                var sWest = this.southWest.split(',');
+                var nEast = this.northEast.split(',');
+
+                var defaultBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(parseFloat(sWest[0]), parseFloat(sWest[1])),
+                    new google.maps.LatLng(parseFloat(nEast[0]), parseFloat(nEast[1])));
+
+                selfi.inputAutocomplete = /** @type {!HTMLInputElement} */(
+                    document.getElementById(input));
+
+                selfi.map.setOptions({
+                    mapTypeControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_BOTTOM
+                    }
+                });
+
+
+                selfi.autoComplete = new google.maps.places.SearchBox(selfi.inputAutocomplete);
+              //  selfi.autoComplete.setComponentRestrictions({'country': 'ar'});
+
+                selfi.map.controls[google.maps.ControlPosition.TOP_LEFT].push(selfi.inputAutocomplete);
+
+
+                selfi.map.addListener('bounds_changed', function() {
+                    selfi.autoComplete.setBounds(selfi.map.getBounds());
+                });
+
+                selfi.autoComplete.addListener('places_changed', function () {
+                    debugger;
+                    var places = selfi.autoComplete.getPlaces();
+                    if (places.length == 0) {
+                        Utilities.ShowMessage('Ninguna ubicación fue encontrada','Ubicación incorrecta');
+                        return;
+                    }
+
+                    var place = places[0];
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        selfi.map.fitBounds(place.geometry.viewport);
+                        selfi.map.setZoom(16);
+                    } else {
+                        selfi.map.setCenter(place.geometry.location);
+                        selfi.map.setZoom(16);  // Why 17? Because it looks good.
+                    }
+
+                    $('#' + selfi.inputAutocomplete.id).data('latLng', place.geometry.location.lat() + ',' + place.geometry.location.lng())
+
+
+                });
+
+            }
 
             this.CreateAutocompleteSearch = function(input)
             {

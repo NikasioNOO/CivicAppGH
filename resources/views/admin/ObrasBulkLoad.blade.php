@@ -58,7 +58,7 @@
                 <select id="beStatus_{{$i}}" {{ $obras[$i]['created'] == 1 ? ' readonly ':''  }} class="form-control input-sm fullWidth {{ $obras[$i]['isValidStatus'] ? '':'invalid'}}" name="beStatus[{{$i}}]" value="{{$obras[$i]['estado']}}"  data-validfield="{{$obras[$i]['isValidStatus']}}">
                     <option {{ $obras[$i]['isValidStatus'] == 0 ?' selected ':'' }} value="-1"></option>
                     @foreach( $statuses as $status )
-                        <option {{ $obras[$i]['isValidStatus'] == 1 && $status->status == $obras[$i]['estado'] ?' selected ':'' }} value="{{$status->status}}">{{ $status->status }}</option>
+                        <option {{ $obras[$i]['isValidStatus'] == 1 ?  $status->status == $obras[$i]['estado'] ?' selected ':'' : $status->status == 'Comprometido' ? ' selected ':''  }} value="{{$status->status}}">{{ $status->status }}</option>
                     @endforeach
                 </select>
             </div>

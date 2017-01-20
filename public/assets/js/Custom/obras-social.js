@@ -31,7 +31,8 @@
                 var deferred = $.Deferred();
                 map.southWest = '-31.471168, -64.278946';
                 map.northEast = '-31.361003, -64.090805';
-                map.CreateAutocompleteSearch('autocompleteMap');
+                //map.CreateAutocompleteSearch('autocompleteMap');
+                map.CreateSearchBoxAutocomplete('autocompleteMap');
                 //map.AddEventClickAddMarker();
                 debugger;
                 LoadAllObras().done(

@@ -15,8 +15,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => '',
-        'secret' => '',
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
     ],
 
     'mandrill' => [
@@ -30,9 +30,28 @@ return [
     ],
 
     'stripe' => [
-        'model'  => App\User::class,
+        'model'  => CivicApp\User::class,
         'key'    => '',
         'secret' => '',
+    ],
+
+    //Socialite
+    /*'facebook' => [
+        'client_id'     => '881604891929928',
+        'client_secret' => '76f656698cc2c9f4a0bc244144531347',
+        'redirect'      => 'http://appcivica.dev:8000/login/Facebook',
+    ],*/
+
+    'facebook' => [
+        'client_id'     => env('FB_ID'),
+        'client_secret' => env('FB_SECRET'),
+        'redirect'      => env('FB_REDIRECT')
+    ],
+
+    'twitter' => [
+        'client_id'     => env('TW_ID'),
+        'client_secret' => env('TW_SECRET'),
+        'redirect'      => env('TW_REDIRECT')
     ],
 
 ];

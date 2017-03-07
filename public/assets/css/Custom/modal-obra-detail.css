@@ -1,0 +1,263 @@
+.modal-obraDetail .modal-title
+{
+    font-size: larger;
+    /* text-align: center; */
+    font-weight: bold;
+    padding: 5px 30px ;
+
+}
+
+.modal-obraDetail .modal-header
+ {
+     background-color: #00aeef;
+ }
+
+.modal-obraDetail .modal-body{
+    padding: 0 ;
+}
+
+.modal-obraDetail .modal-dialog
+{
+    margin: 0 auto;
+    width: 70%;
+
+}
+
+.modal-obraDetail .carousel-inner  .item  img {
+    margin: 0 auto;
+}
+
+.modal-obraDetail .obraInfoPanel {
+    background-color: #00aeef;
+    color: #ffffff;
+    margin: 10px 0 0 0;
+    padding: 10px 30px;
+}
+
+.modal-obraDetail .row.obraPhotosPanel {
+    margin: 10px 0 ;
+}
+
+.modal-obraDetail .obraPhotosPanel .gridthumbnail  {
+    overflow-y: scroll;
+}
+
+.modal-obraDetail .obraPhotosPanel .gridthumbnail .col-sm-6  {
+    padding: 0;
+}
+
+.modal-obraDetail .obraPhotosPanel .gridthumbnail .thumbnail  {
+    margin: 0;
+    cursor: pointer;
+}
+
+.modal-obraDetail .obraInfoPanel .labelValue {
+    font-size: larger;
+    font-weight:normal;
+    text-transform: uppercase;
+}
+
+.modal-obraDetail .obraInfoPanel .labelTitle {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.modal-obraDetail .row.sharePanel
+{
+   background-color: #4b4b4b;
+    color: #ffffff;
+    padding: 10px 30px;
+    margin: 0  ;
+}
+.modal-obraDetail .socialSharePanel {
+    float: right;
+}
+
+.modal-obraDetail .sharePanel label.labelValue {
+    font-size: larger;
+    font-weight:100;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.modal-obraDetail .sharePanel .iconSocialShare {
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+/*.modal-obraDetail*/
+.row.comment
+{
+    margin: 0;
+    padding: 10px 30px 10px 30px;
+}
+
+/*.modal-obraDetail*/
+.textComment
+{
+    border: solid gray;
+    resize: none;
+}
+
+/*.modal-obraDetail*/
+.row.photos-panel {
+   margin: 0;
+    padding: 0 30px;
+}
+
+/*.modal-obraDetail*/
+.row.photos-panel .thumbnail{
+    margin: 0;
+    padding: 0;
+}
+
+/*.modal-obraDetail*/
+.row.photos-panel .thumbnail a{
+    font-size: xx-small;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+
+/*.modal-obraDetail*/
+.row.commentFotter
+{
+    margin: 0;
+    padding: 10px 30px;
+
+}
+/*.modal-obraDetail*/
+.row.commentFotter .custom-select
+{
+    width: auto;
+}
+/*.modal-obraDetail*/
+.row.commentFotter button
+{
+    float: right;
+}
+
+/*.modal-obraDetail*/
+.file-upload-custom-btn
+{
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+
+/*.modal-obraDetail*/
+.file-upload-custom
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+/*.modal-obraDetail*/
+.photos-panel .previewImg
+{
+    padding: 0; margin: 0
+}
+
+/****** COMENTARIOS ********/
+
+.panel-user-comment {
+    margin: 8px;
+}
+
+.panel-user-comment  .panel-body {
+    padding: 0;
+}
+
+.panel-user-comment  .panel-title
+{
+    padding: 5px;
+    background-color: black;
+    background-color: rgba(192, 192, 192, 0.48);
+    border-bottom: 5px solid #00aeef;
+}
+
+.panel-user-comment   .panel-title label
+{
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.1;
+    font-size: small;
+    color: rgba(104, 101, 119, 0.91);
+}
+
+
+
+.panel-user-comment  .panel-title .avatar-wrapper
+{
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+
+}
+
+.panel-user-comment .panel-body .well{
+    margin: 0;
+    font-style: italic;
+    font-size: smaller;
+    padding: 10px;
+
+}
+
+.panel-user-comment .panel-body .vote-action a
+{
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.ekko-lightbox.modal .modal-content
+{
+    background: transparent;
+}
+
+.ekko-lightbox.modal .modal-header
+{
+    padding: 5px;
+}
+
+.ekko-lightbox.modal .modal-body
+{
+    padding: 5px;
+}
+
+.ekko-lightbox.modal .modal-header .close
+{
+    opacity: .8;
+}
+
+.ui-widget-overlay.ui-front
+{
+    background: gray;
+    opacity: 0.3;
+}
+
+#ComplaintModal .modal-dialog
+{
+    width: 40%;
+
+}
+
+#ComplaintModal .modal-header
+{
+    background-color: #00aeef;
+    color: #ffffff;
+    padding: 10px;
+}
+
+#ComplaintModal textarea
+{
+    resize: none;
+}

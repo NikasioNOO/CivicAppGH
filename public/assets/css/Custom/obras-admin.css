@@ -1,0 +1,29 @@
+#obraCommentsPanel .panel-heading .panel-title
+{
+    display: inline;
+}
+
+.no-comments
+{
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+}
+
+label.user-spamer
+{
+    color: red !important;
+}
+label.user-spamer:after
+{
+    content: " ( SPAMER ) ";
+    color: red !important;
+}
+
+a.post-linkdisabled{
+    pointer-events: none;
+    cursor: default;
+    color: darkgray;
+}
+
+

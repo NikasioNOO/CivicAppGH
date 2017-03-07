@@ -1,0 +1,11 @@
+.cus- {
+    background-image: url(spritesheet.png);
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.cus--icon-excel {
+    width: 60px;
+    height: 56px;
+    background-position: -5px -5px;
+}

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="DataTables" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/public/assets/js/DataTables" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/public/assets/js/DataTables" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

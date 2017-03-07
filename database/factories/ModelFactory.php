@@ -11,11 +11,19 @@
 |
 */
 
-$factory->define(App\User::class, function ($faker) {
+$factory->define(CivicApp\Models\Auth\App_User::class, function ($faker) {
     return [
-        'name' => $faker->name,
+        'first_name' => $faker->name,
+        'last_name' => $faker->name,
         'email' => $faker->email,
-        'password' => str_random(10),
+        'password' => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
+    ];
+});
+
+
+$factory->define(CivicApp\Models\Auth\Role::class, function ($faker) {
+    return [
+        'role_name' => str_random(20)
     ];
 });

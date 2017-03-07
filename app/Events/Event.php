@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace CivicApp\Events;
 
 abstract class Event
 {

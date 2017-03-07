@@ -1,0 +1,108 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class AuthModel extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+
+        Schema::create('rols',function(Blueprint $table){
+           $table->increments('id');
+           $table->string('nombre_rol',255);
+        });
+
+        Schema::create('page_configs',function(Blueprint $table){
+            $table->increments('id');
+            $table->string('name',255);
+            $table->text('description')->nulleable();
+            $table->string('menu_display',50);
+            $table->string('path',255);
+        });
+
+        Schema::create('rol_pages_config',function(Blueprint $table){
+            $table->integer('page_config_id');
+            $table->integer('rol_id');
+            $table->primary(['page_config_id','rol_id']);
+            /*$table->foreign('page_config_id')
+                    ->references('page_configs')
+                    ->on('id');
+            $table->foreign('rol_id')
+                    ->references('rols')
+                    ->on('id');
+            */
+
+
+        });
+
+
+        Schema::create('social_users',function(Blueprint $table){
+            $table->bigIncrements('id');
+            $table->string('username',255);
+            $table->string('first_name',150);
+            $table->string('last_name',150);
+            $table->string('email')->unique();
+            $table->string('avatar');
+            $table->string('provider');
+            $table->string('provider_id')->unique();
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('app_users',function(Blueprint $table){
+            $table->bigIncrements('id');
+            $table->string('username',255);
+            $table->string('first_name',150);
+            $table->string('last_name',150);
+            $table->string('email')->unique();
+            $table->string('password', 60);
+            $table->integer('rol_id');
+            $table->foreign('rol_id')->references('id')-on('rols');
+            $table->rememberToken();
+            $table->timestamps();
+
+        });
+
+
+        Schema::create('users', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('username',255);
+            $table->string('first_name',150);
+            $table->string('last_name',150);
+            $table->string('email')->unique();
+            $table->string('password', 60);
+            $table->rememberToken();
+            $table->timestamps();
+            $table->bigInteger('social_user_id')->nullable();
+            $table->foreign('social_user_id')
+                    ->references('id')
+                    ->on('social_users');
+
+            $table->bigInteger('social_user_id')->nullable();
+            $table->foreign('app_user_id')
+                ->references('id')
+                ->on('app_users');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('users');
+        Schema::drop('app_users');
+        Schema::drop('social_users');
+        Schema::drop('rol_pages');
+        Schema::drop('users');
+        Schema::drop('page_configs');
+    }
+}

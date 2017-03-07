@@ -1,5 +1,5 @@
 suites:
     main:
-        namespace: App
-        psr4_prefix: App
+        namespace: CivicApp
+        psr4_prefix: CivicApp
         src_path: app

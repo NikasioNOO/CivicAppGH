@@ -4,6 +4,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "minimum-stability":"dev",
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
@@ -60,6 +61,5 @@
     },
     "config": {
         "preferred-install": "dist"
-    },
-    "minimum-stability":"dev"
+    }
 }

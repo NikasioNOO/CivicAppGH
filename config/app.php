@@ -2,6 +2,7 @@
 
 return [
 
+    'name' => 'Aplicación cívica',
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -171,6 +172,10 @@ return [
 
         Intervention\Image\ImageServiceProvider::class,
 
+        /* upgrade 5.3 */
+        Illuminate\Notifications\NotificationServiceProvider::class,
+        CivicApp\Providers\BroadcastServiceProvider::class,
+
 
 
     ],
@@ -225,6 +230,7 @@ return [
         */
         'Gate'      => Illuminate\Support\Facades\Gate::class,
 
+
         /*
          * Alias LaravelCollective
          */
@@ -248,6 +254,11 @@ return [
         'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
         'Image' => Intervention\Image\Facades\Image::class,
+
+        /* Upgrade 5.3 */
+        'Notification' => Illuminate\Support\Facades\Notification::class,
+
+
     ],
 
 ];

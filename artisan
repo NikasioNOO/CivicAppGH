@@ -12,7 +12,14 @@
 | loading of any our classes "manually". Feels great to relax.
 |
 */
+//STARTS - Code to allow PhpStorm CLI in PhpStorm 10.0.x and Laravel 5.2.x
+if( isset($argv[1]) && $argv[1] == 'list' &&
+    isset($argv[2]) && $argv[2] == '--xml' ) {
+    $argv[2] = '--format=xml';
+    $_SERVER['argv'] = $argv;
+}
 
+//ENDS - Code to allow PhpStorm CLI
 require __DIR__.'/bootstrap/autoload.php';
 
 $app = require_once __DIR__.'/bootstrap/app.php';

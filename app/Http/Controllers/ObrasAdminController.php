@@ -410,7 +410,7 @@ class ObrasAdminController extends Controller
 
     }
 
-    public function postGetPosts(Request $request)
+    public function getGetPosts(Request $request)
     {
         $message = null;
         $method='GetPosts';

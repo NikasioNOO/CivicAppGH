@@ -6,7 +6,7 @@ class NewCatalogSeeder extends Seeder
 {
     public function run()
     {
-        $this->Statuses();
+     //   $this->Statuses();
 
     }
 

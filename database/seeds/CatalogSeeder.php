@@ -18,9 +18,9 @@ class CatalogSeeder extends Seeder
      */
     public function run()
     {
-        $this->Categories();
-        $this->Barrios();
-        $this->Cpcs();
+      //  $this->Categories();
+      //  $this->Barrios();
+      //  $this->Cpcs();
         $this->MapItemType();
         $this->Statuses();
 
@@ -73,13 +73,13 @@ class CatalogSeeder extends Seeder
     private function Barrios()
     {
 
-        Barrio::create([
+   /*     Barrio::create([
             'name' => 'Cofico',
         ]);
 
         Barrio::create([
             'name' => 'Alta Córdoba',
-        ]);
+        ]);*/
     }
 
     private function Categories()

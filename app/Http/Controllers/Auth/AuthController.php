@@ -19,7 +19,9 @@ use Psy\Util\Json;
 use Validator;
 use CivicApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+//use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use CivicApp\Utilities\Logger;
 use CivicApp\Utilities\JsonMapper;
 use CivicApp\BLL\Auth as BllAuth;
@@ -40,7 +42,7 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins, CaptchaTrait;
+    use  ThrottlesLogins, CaptchaTrait;
 
     /**
      * Where to redirect users after login / registration.

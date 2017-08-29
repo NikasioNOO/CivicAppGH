@@ -29,12 +29,11 @@ class ObraHandler {
 
     private $mapItemRepository;
     private $catalogRepo;
-
+    private $postHandler;
     public function __construct(IMapItemRepository $mapItemRepo, ICatalogRepository $catalogRepo)
     {
         $this->mapItemRepository = $mapItemRepo;
         $this->catalogRepo = $catalogRepo;
-
 
     }
 
@@ -95,11 +94,11 @@ class ObraHandler {
 
     }
 
-    public function DeleteObra($id, PostHandler $postHandler)
+    public function DeleteObra($id)
     {
         $method = 'DeleteObra';
         Logger::startMethod($method);
-
+        $postHandler = App::make(PostHandler::class);
         if( is_null($this->mapItemRepository->GetMapItem($id)))
             throw new ObraValidateException(trans('mapitemserrorcodes.0201'),0201);
 

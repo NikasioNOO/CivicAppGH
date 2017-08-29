@@ -21,6 +21,7 @@ Route::group(['middleware' => ['api']], function () {
 });
 Route::group(['middleware' => ['web']], function () {
     //
+    //Route::auth();
     Route::get('/map', function(){
         return view('map');
     });
@@ -99,7 +100,7 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::post('ImportFromFile',['as'=>'admin.importFromFile','uses' => 'ObrasAdminController@postLoadObrasFromFile']);
         Route::post('SaveObrasFromFile',['as'=>'admin.saveObrasFromFile','uses' => 'ObrasAdminController@postSaveObrasFromFile']);
-        Route::post('GetPosts',['as'=>'admin.getPosts','uses' => 'ObrasAdminController@postGetPosts']);
+        Route::get('GetPosts',['as'=>'admin.getPosts','uses' => 'ObrasAdminController@getGetPosts']);
         Route::post('RemovePhoto',['as'=>'admin.removePhoto','uses' => 'ObrasAdminController@postDeletePhoto']);
         Route::post('DeletePost',['as'=>'admin.deletePost','uses' => 'ObrasAdminController@postDeletePost']);
         Route::post('MarkAsSpamer',['as'=>'admin.markAsSpamer','uses' => 'ObrasAdminController@postMarkAsSpamer']);

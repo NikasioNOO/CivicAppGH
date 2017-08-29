@@ -521,7 +521,7 @@
 
             obraCommentPanelDiv.show();
 
-            $.post('/admin/GetPosts/',{"obraId":obra.id},function(result){
+            $.get('/admin/GetPosts/',{"obraId":obra.id},function(result){
 
                 debugger;
                 if(result.status=='OK')

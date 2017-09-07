@@ -3,6 +3,8 @@
 namespace CivicApp\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use CivicApp\Http\Middleware\TrimStrings as TrimString;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 
 class Kernel extends HttpKernel
 {
@@ -15,6 +17,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        TrimString::class,
       //  \CivicApp\Http\Middleware\EncryptCookies::class,
       //  \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
       //  \Illuminate\Session\Middleware\StartSession::class,

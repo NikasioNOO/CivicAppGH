@@ -138,7 +138,7 @@ class ObrasAdminController extends Controller
 
             $obraEntity->id = $id;
 
-            if($obra->id == 0)
+            if($obra["id"] == 0)
                 $msg = 'Se ha creado la obra correctamente.';
             else
                 $msg = 'La obra se ha guardado correctamente.';

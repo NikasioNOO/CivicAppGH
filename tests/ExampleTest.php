@@ -15,7 +15,7 @@ use CivicApp\Utilities\Enums;
 
 use CivicApp\BLL\Catalog\CatalogHandler;
 
-class ExampleTest extends TestCase
+class ExampleTest extends BrowserKitTest
 {
     /**
      * A basic functional test example.

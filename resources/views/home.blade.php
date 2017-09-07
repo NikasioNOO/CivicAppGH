@@ -68,6 +68,88 @@
         <span class="point">2.</span>COMENTÁ EN QUÉ ESTADO SE ENCUENTRA.
         <span class="point">3.</span>SUBÍ UNA FOTO.
     </div>
+    @push('scripts')
+    <script type="text/javascript">
+
+        var ENV_MAPICONS_PATH = "{{ env('MAPICONS_PATH')  }}";
+        var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
+        var ENV_WITHOUT_PHOTO_IMG = "{{ env('WITHOUT_PHOTO_IMG')  }}";
+        /*  'https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') */
+        //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
+
+    </script>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '{{env('FB_ID')}}',
+                xfbml      : true,
+                version    : 'v2.8'
+            });
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/es_LA/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <script>window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                    t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function(f) {
+                t._e.push(f);
+            };
+
+            return t;
+        }(document, "script", "twitter-wjs"));
+    </script>
+
+
+    @if( isset($obraId) && !is_null($obraId) && $obraId > 0)
+        <script>
+            var OBRA_ID = {{ $obraId }} ;
+            (function(){
+
+                this.CivicApp = this.CivicApp || {};
+
+                this.CivicApp.ModalIni = this.CivicApp.ModalIni || new function() {
+                    var LoadModal = function()
+                    {
+                        CivicApp.ObrasSocial.LoadModalDetail(OBRA_ID);
+
+                    };
+                    return {
+                        LoadModal:LoadModal
+                    }
+                } })();
+        </script>
+    @endif
+
+
+    {!! Html::script('assets/js/markerclusterer.js') !!}
+    {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
+    {!! Html::script('assets/js/Custom/obras-social.js') !!}
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.js"></script>
+
+
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{env("GMAP_APIKEY")}}&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
+    </script>
+
+
+
+    @endpush
 
     @include('obraDetail')
 
@@ -79,86 +161,5 @@
     {!! Html::style('assets/css/Custom/modal-obra-detail.css') !!}
     {!! Html::style('https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.css') !!}
     {!! Html::style('assets/css/Custom/modal-login.css') !!}
-
-@endpush
-@push('scripts')
-<script>
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId      : '{{env('FB_ID')}}',
-            xfbml      : true,
-            version    : 'v2.8'
-        });
-    };
-
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/es_LA/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
-<script>window.twttr = (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-                t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
-
-        t._e = [];
-        t.ready = function(f) {
-            t._e.push(f);
-        };
-
-        return t;
-    }(document, "script", "twitter-wjs"));
-</script>
-<script type="text/javascript">
-
-    var ENV_MAPICONS_PATH = "{{ env('MAPICONS_PATH')  }}";
-    var ENV_DEFAULT_ICON = "{{ env('ICON_DEFAULT')  }}";
-    var ENV_WITHOUT_PHOTO_IMG = "{{ env('WITHOUT_PHOTO_IMG')  }}";
- /*  'https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.min.js') */
-    //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKekXfhDy5EcVFpKfifb4eKgc3wRy3GgE&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
-
-</script>
-
-@if( isset($obraId) && !is_null($obraId) && $obraId > 0)
-    <script>
-        var OBRA_ID = {{ $obraId }} ;
-        (function(){
-
-            this.CivicApp = this.CivicApp || {};
-
-            this.CivicApp.ModalIni = this.CivicApp.ModalIni || new function() {
-                var LoadModal = function()
-                {
-                    CivicApp.ObrasSocial.LoadModalDetail(OBRA_ID);
-
-                };
-                return {
-                    LoadModal:LoadModal
-                }
-            } })();
-    </script>
-@endif
-
-
-    {!! Html::script('assets/js/markerclusterer.js') !!}
-    {!! Html::script('assets/js/Custom/gmaphelper2.js') !!}
-    {!! Html::script('assets/js/Custom/obras-social.js') !!}
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/4.0.1/ekko-lightbox.js"></script>
-
-
-
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{env("GMAP_APIKEY")}}&libraries=places&callback=CivicApp.ObrasSocial.InitMap">
-</script>
-
-
 
 @endpush

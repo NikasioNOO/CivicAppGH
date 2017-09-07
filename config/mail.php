@@ -11,7 +11,15 @@ return array(
     "username" => "335219f3254216",
     "password" => "2c27d22418f5dc",
     "sendmail" => "/usr/sbin/sendmail -bs",
-    "pretend" => false
+    "pretend" => false,
+    /* upgrade laravel 5.4  */
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
 );
 
 return array(

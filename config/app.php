@@ -166,7 +166,7 @@ return [
 
         Laravel\Socialite\SocialiteServiceProvider::class,
 
-        GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
+//        GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
 
         'Maatwebsite\Excel\ExcelServiceProvider',
 
@@ -176,6 +176,8 @@ return [
         Illuminate\Notifications\NotificationServiceProvider::class,
         CivicApp\Providers\BroadcastServiceProvider::class,
 
+        /* upgrade 5.4 */
+        Laravel\Tinker\TinkerServiceProvider::class,
 
 
     ],
@@ -249,7 +251,7 @@ return [
 
         'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
 
-        'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
+      //  'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
 
         'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 

@@ -7,24 +7,25 @@
     "minimum-stability":"dev",
     "require": {
         "php": ">=5.6.4",
-        "laravel/framework":"5.3.*",
-        "laravelcollective/html": "v5.3.*",
-        "laravel/socialite": "^2.0",
+        "laravel/framework":"5.4.*",
+        "laravelcollective/html": "v5.4.*",
+        "laravel/socialite": "^3.0",
         "barryvdh/laravel-ide-helper": "^2.1",
-        "genealabs/phpgmaps": "~0.3.0",
         "maatwebsite/excel": "~2.1.0",
         "intervention/image": "^2.3",
-        "guzzlehttp/guzzle": "~5.3|~6.0",
-        "google/recaptcha": "~1.1"
+        "guzzlehttp/guzzle": "6.0",
+        "google/recaptcha": "~1.1",
+        "laravel/tinker": "^1.0@dev"
 
 
     },
      "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
+        "phpunit/phpunit": "~5.7",
         "symfony/css-selector": "3.1.*",
-        "symfony/dom-crawler": "3.1.*"
+        "symfony/dom-crawler": "3.1.*",
+        "laravel/browser-kit-testing":"1.*"
     },
     "autoload": {
         "classmap": [
@@ -36,8 +37,12 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/TestCase.php"
-        ]
+            "tests/TestCase.php",
+            "tests/BrowserKitTest.php"
+        ],
+        "psr-4": {
+          "Tests\\": "tests/"
+        }
     },    
     "scripts": {
         "post-root-package-install": [

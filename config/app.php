@@ -160,24 +160,24 @@ return [
          * Laravel Plugin Service Providers
          */
 
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class, // Laravel IDE helper
-        Collective\Html\HtmlServiceProvider::class,
+     //   Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class, // Laravel IDE helper
+       // Collective\Html\HtmlServiceProvider::class,
        // Illuminate\Html\HtmlServiceProvider::class,
 
-        Laravel\Socialite\SocialiteServiceProvider::class,
+       // Laravel\Socialite\SocialiteServiceProvider::class,
 
 //        GeneaLabs\Phpgmaps\PhpgmapsServiceProvider::class,
 
-        'Maatwebsite\Excel\ExcelServiceProvider',
+ //       'Maatwebsite\Excel\ExcelServiceProvider',
 
-        Intervention\Image\ImageServiceProvider::class,
+   //     Intervention\Image\ImageServiceProvider::class,
 
         /* upgrade 5.3 */
         Illuminate\Notifications\NotificationServiceProvider::class,
         CivicApp\Providers\BroadcastServiceProvider::class,
 
         /* upgrade 5.4 */
-        Laravel\Tinker\TinkerServiceProvider::class,
+        //Laravel\Tinker\TinkerServiceProvider::class,
 
 
     ],
@@ -236,8 +236,8 @@ return [
         /*
          * Alias LaravelCollective
          */
-        'Form' => 'Collective\Html\FormFacade',
-        'Html' => 'Collective\Html\HtmlFacade',
+       // 'Form' => 'Collective\Html\FormFacade',
+       // 'Html' => 'Collective\Html\HtmlFacade',
 
         /*
          * Alias Illuminate Html
@@ -249,13 +249,13 @@ return [
          * Socialite
          */
 
-        'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
+      //  'Socialite'=> Laravel\Socialite\Facades\Socialite::class,
 
       //  'Gmaps' => GeneaLabs\Phpgmaps\Facades\PhpgmapsFacade::class,
 
-        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
+      //  'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
-        'Image' => Intervention\Image\Facades\Image::class,
+     //   'Image' => Intervention\Image\Facades\Image::class,
 
         /* Upgrade 5.3 */
         'Notification' => Illuminate\Support\Facades\Notification::class,

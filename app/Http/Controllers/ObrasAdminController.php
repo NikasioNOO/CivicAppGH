@@ -280,9 +280,11 @@ class ObrasAdminController extends Controller
         Logger::startMethod($method);
         try {
 
-            if($request->has('chkUpdateEntities'))
+            if($request->has('chkUpdateEntities') &&
+                $request->filled('chkUpdateEntities'))
             {
-                if($request->has('newcpcs'))
+                if($request->has('newcpcs') &&
+                    $request->filled('newcpcs'))
                 {
                     if(is_array($request->newcpcs)) {
                         foreach ($request->newcpcs as $cpc) {
@@ -294,7 +296,8 @@ class ObrasAdminController extends Controller
 
                 }
 
-                if($request->has('newbarrios'))
+                if($request->has('newbarrios') &&
+                    $request->filled('newbarrios'))
                 {
                     if(is_array($request->newbarrios)) {
                         foreach ($request->newbarrios as $barrio) {
@@ -305,7 +308,8 @@ class ObrasAdminController extends Controller
                         $this->catalogHandler->AddBarrio($request->newbarrios);
                 }
 
-                if($request->has('newcategories'))
+                if($request->has('newcategories') &&
+                    $request->filled('newcategories'))
                 {
                     if(is_array($request->newcategories)) {
                         foreach ($request->newcategories as $category) {
@@ -320,7 +324,8 @@ class ObrasAdminController extends Controller
 
             $obras = new Collection();
             $withError = false;
-            if($request->has('addObraChk')) {
+            if($request->has('addObraChk') &&
+                $request->filled('addObraChk')) {
                 for($index = 0 ; $index < count($request->beYear) ; $index++)
                 {
 
@@ -418,7 +423,8 @@ class ObrasAdminController extends Controller
 
             Logger::startMethod($method);
 
-            if($request->has('obraId')) {
+            if($request->has('obraId') &&
+                $request->filled('obraId')) {
                 $obras = $this->postHandler->GetAllPostCompleteByObra($request->obraId);
             }
             else
@@ -451,7 +457,8 @@ class ObrasAdminController extends Controller
 
             Logger::startMethod($method);
 
-            if($request->has('photo') && isset($request->photo['id']) && !is_null($request->photo['id']) &&
+            if($request->has('photo') && $request->filled('photo') &&
+                isset($request->photo['id']) && !is_null($request->photo['id']) &&
                 isset($request->photo['path']) && !is_null($request->photo['path'])) {
                 $obras = $this->postHandler->DeletePhoto($request->photo);
             }
@@ -485,7 +492,7 @@ class ObrasAdminController extends Controller
 
             Logger::startMethod($method);
 
-            if($request->has('postId') && $request->postId > 0 ) {
+            if($request->has('postId') && $request->filled('postId') && $request->postId > 0 ) {
                 $obras = $this->postHandler->DeletePost($request->postId);
             }
             else
@@ -518,7 +525,8 @@ class ObrasAdminController extends Controller
 
             Logger::startMethod($method);
 
-            if($request->has('userId') && $request->userId > 0 ) {
+            if($request->has('userId') && $request->filled('userId') &&
+                $request->userId > 0 ) {
                 $authHandler->MarkAsSpamer($request->userId);
             }
             else

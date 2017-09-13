@@ -66,7 +66,7 @@ class CatalogRepository implements  ICatalogRepository {
         try{
             Logger::startMethod($method);
 
-            $barrios = Models\Barrio::all();
+            $barrios = Models\Barrio::with('location')->get();
 
             return $this->mapper->map(Models\Barrio::class, Entities\MapItem\Barrio::class,$barrios->all());
 

@@ -20,7 +20,7 @@ class CatalogController extends Controller
     public function AddCategory(Request $request )
     {
 
-        if(!$request->has('newValue'))
+        if(!$request->has('newValue') || !$request->filled('newValue'))
         {
             response()->json(['status'=>'Error',
                 'message'=>'Error al recibir la categoria para agregar']);
@@ -39,7 +39,7 @@ class CatalogController extends Controller
     public function AddBarrio(Request $request )
     {
 
-        if(!$request->has('newValue'))
+        if(!$request->has('newValue') || !$request->filled('newValue'))
         {
             response()->json(['status'=>'Error',
                               'message'=>'Error al recibir el barrio para agregar']);
@@ -57,7 +57,7 @@ class CatalogController extends Controller
     public function AddCpc(Request $request )
     {
 
-        if(!$request->has('newValue'))
+        if(!$request->has('newValue') || !$request->filled('newValue'))
         {
             response()->json(['status'=>'Error',
                               'message'=>'Error al recibir el cpc para agregar']);
@@ -78,7 +78,7 @@ class CatalogController extends Controller
         Logger::startMethod($method);
         try {
 
-            if($request->has('filesNames'))
+            if($request->has('filesNames') && $request->filled('filesNames'))
             {
 
                 $filesNames = explode(',',$request->filesNames);
@@ -124,7 +124,8 @@ class CatalogController extends Controller
         Logger::startMethod($method);
         try {
 
-            if($request->has('barrioId') && $request->has('location'))
+            if($request->has('barrioId') && $request->filled('barrioId') &&
+                $request->has('location') && $request->filled('location'))
             {
                 $this->catalogHandler->SaveBarrioLocation($request->barrioId, $request->location);
             }

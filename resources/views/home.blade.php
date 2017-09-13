@@ -83,8 +83,9 @@
             FB.init({
                 appId      : '{{env('FB_ID')}}',
                 xfbml      : true,
-                version    : 'v2.8'
+                version    : 'v2.10'
             });
+            FB.AppEvents.logPageView();
         };
 
         (function(d, s, id){

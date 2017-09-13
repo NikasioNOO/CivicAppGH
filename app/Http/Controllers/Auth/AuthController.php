@@ -25,7 +25,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use CivicApp\Utilities\Logger;
 use CivicApp\Utilities\JsonMapper;
 use CivicApp\BLL\Auth as BllAuth;
-use Laravel\Socialite\Facades\Socialite;
+//use Laravel\Socialite\Facades\Socialite;
+use Socialite;
 use CivicApp\Entities\Auth\SocialUser;
 
 class AuthController extends Controller

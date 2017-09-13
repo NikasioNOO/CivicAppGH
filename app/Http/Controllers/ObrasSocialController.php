@@ -44,7 +44,7 @@ class ObrasSocialController extends Controller
         Logger::startMethod($method);
 
         try{
-            if($request->has('comment'))
+            if($request->has('comment') && $request->filled('comment'))
             {
                 $comment = json_decode( $request->comment);
                 $post->comment = $comment->comment;
@@ -61,7 +61,7 @@ class ObrasSocialController extends Controller
             else
                 throw new \Exception('no se ha recibido un comentario válido');
 
-            if($request->has('obraId'))
+            if($request->has('obraId') && $request->filled('obraId'))
             {
                 $post->mapItem->id = $request->obraId;
             }
@@ -132,7 +132,8 @@ class ObrasSocialController extends Controller
         Logger::startMethod($method);
 
         try{
-            if($request->has('postId') && $request->has('marker'))
+            if($request->has('postId') && $request->has('marker') &&
+                $request->filled('postId') && $request->filled('marker'))
             {
 
                 $postMarker->is_positive = $request->marker == 1 ? true :false;
@@ -171,10 +172,12 @@ class ObrasSocialController extends Controller
         Logger::startMethod($method);
 
         try{
-            if($request->has('postId') )
+            if($request->has('postId') && $request->filled('postId'))
             {
 
-                $postComplaint->comment = $request->has('comment') ? $request->comment : '';
+                $postComplaint->comment = $request->has('comment') && $request->filled('comment')
+                    ? $request->comment
+                    : '';
 
                 $user = $this->authHandler->GetUserLogued();
 

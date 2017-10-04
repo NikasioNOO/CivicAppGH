@@ -104,8 +104,16 @@ Utilities.findAndReplaceList = function (array, property, value, newObj) {
 Utilities.findInList = function (array, property, value) {
     var res = false;
     $.each(array, function (index, result) {
-            if (result[property] == value) {
-                res = true;
+            if(property)
+            {
+                if (result[property] == value) {
+                    res = true;
+                }
+            }
+            else
+            {
+                if(result == value)
+                    res = true;
             }
         }
     );
@@ -638,6 +646,7 @@ Utilities.Autocomplete = function (inputNameParam, methodAddParam, callBackEvent
                     var listValues =  input.data('listvalues');
                     listValues.push(item);
                     input.data('listvalues', listValues);
+                    input.data('idSelected', data.data.id);
                     $(control).hide();
                     if(callBackEventAdded)
                         callBackEventAdded();

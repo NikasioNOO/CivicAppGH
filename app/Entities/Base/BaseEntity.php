@@ -17,7 +17,7 @@ abstract class BaseEntity implements Jsonable, \JsonSerializable  {
 
     public $setters;
     public $getters;
-
+    protected $hidden = [];
     /**
      * Convert the object to its JSON representation.
      *
@@ -31,8 +31,10 @@ abstract class BaseEntity implements Jsonable, \JsonSerializable  {
         $array = [];
         foreach($this->getters as $attribute)
         {
-            $attributeName = '_'.$attribute;
-            $array[$attribute] = $this->$attributeName;
+            if(!in_array($attribute,$this->hidden)) {
+                $attributeName = '_' . $attribute;
+                $array[$attribute] = $this->$attributeName;
+            }
         }
 
         return $array;
@@ -51,8 +53,10 @@ abstract class BaseEntity implements Jsonable, \JsonSerializable  {
         $array = [];
         foreach($this->getters as $attribute)
         {
-            $attributeName = '_'.$attribute;
-            $array[$attribute] = $this->$attributeName;
+            if(!in_array($attribute,$this->hidden)) {
+                $attributeName = '_' . $attribute;
+                $array[$attribute] = $this->$attributeName;
+            }
         }
 
         return $array;

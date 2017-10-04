@@ -13,6 +13,13 @@
 
 Route::group(['middleware' => ['api']], function () {
 
+    Route::group(['prefix'=> 'api-v1.0'],function() {
+        Route::post('/auth/token','Auth\AuthController@postApiToken');
+        Route::resource('Catalogo', 'CatalogoController', ['only' => ['show']])->middleware('auth:api');
+    });
+    Route::group(['prefix'=> 'api','middleware' => 'auth:api'],function() {
+        Route::resource('Catalogo', 'CatalogoController', ['only' => ['show']]);
+    });
     Route::resource('Catalogo', 'CatalogoController', ['only' => ['show']]);
     Route::resource('ObraPP', 'ObraPPController', ['only' => ['index','show']]);
     Route::get('/ObraPP/Año/{year}/Categoria/{categoryId}/Barrio/{barrioId}', 'ObraPPController@Search');

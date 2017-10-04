@@ -3,6 +3,7 @@
 namespace CivicApp\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,10 +34,10 @@ class Authenticate
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $mode)
+    public function handle($request, Closure $next, $mode = null)
     {
 
-        if(!Auth::guard($mode)->check())
+        /*if(!Auth::guard($mode)->check())
         {
             if($request->ajax())
             {
@@ -47,16 +48,13 @@ class Authenticate
                     ->with('status', 'succes')
                     ->with('message', 'Please login');
             }
-        }
+        }*/
 
         if (Auth::guard($mode)->guest() || !Auth::guard($mode)->user()) {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                if($mode=='webadmin')
-                    return redirect()->guest('/AdminLogin');
-                else
-                    return redirect()->guest('/');
+                throw new AuthenticationException('Unauthenticated',[$mode]);
             }
         }
 

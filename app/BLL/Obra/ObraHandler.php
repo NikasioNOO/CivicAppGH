@@ -218,9 +218,10 @@ class ObraHandler {
             $isValid = false;
         }
 
-        $barrio = $this->catalogRepo->FindBarrio($obra["barrio"]);
+
+        $barrio = null;
         if($obra->has('barrio')&& isset($obra["barrio"]) && !is_null($obra["barrio"]) &&  trim($obra["barrio"]) != ''
-            && !is_null($barrio))
+            && !is_null($barrio = $this->catalogRepo->FindBarrio($obra["barrio"])) )
             $obra->put('isValidBarrio', 1);
         else {
             $isValid = false;

@@ -27,7 +27,7 @@
                 var file = this.files[0];
                 var imageFile = file.type;
                 var match= "application/vnd.ms-excel";
-                if(!(imageFile==match))
+                if(!(imageFile==match || imageFile == "text/csv"))
                 {
                     Utilities.ShowMessage('Debe elegir archivos de tipo csv, separados por ";", gracias');
                     this.value = "";
@@ -113,29 +113,39 @@
 
                 var newcpcs = [];
                 $('[name^="beCpc"][data-validfield="0"]').each(function (index, control) {
-                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked') &&
+                        !Utilities.findInList(newcpcs,null,control.value)) {
                         newcpcs.push(control.value);
+                        formData.append('newcpcs[]', control.value);
+                    }
                 });
 
                 var newbarrios = [];
                 $('[name^="beBarrio"][data-validfield="0"]').each(function (index, control) {
-                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked') &&
+                        !Utilities.findInList(newcpcs,null,control.value)) {
                         newbarrios.push(control.value);
+                        formData.append('newbarrios[]', control.value);
+                    }
                 });
 
                 var newcategories = [];
                 $('[name^="beCategory"][data-validfield="0"]').each(function (index, control) {
-                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked'))
+                    if($(control).parent().parent().parent().find('[name^="addObraChk"]').prop('checked') &&
+                        !Utilities.findInList(newcpcs,null,control.value)) {
                         newcategories.push(control.value);
+                        formData.append('newcategories[]', newcategories);
+                    }
                 });
 
+                /*
                 if(newcpcs.length >0)
                     formData.append('newcpcs', newcpcs);
                 if(newbarrios.length > 0)
                     formData.append('newbarrios', newbarrios);
                 if(newcategories.length>0)
                     formData.append('newcategories', newcategories);
-
+                */
                 formData.append('chkUpdateEntities', 1);
             }
 
@@ -208,6 +218,7 @@
                     if(field.data('idSelected')) {
                         field.removeClass('invalid');
                         field.data('validfield',1);
+                        field.attr('data-validfield',"1");
                     }
                 });
 

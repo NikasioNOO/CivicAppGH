@@ -2,9 +2,11 @@
 
 namespace CivicApp\Http;
 
+use CivicApp\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use CivicApp\Http\Middleware\TrimStrings as TrimString;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 
 class Kernel extends HttpKernel
 {
@@ -18,6 +20,9 @@ class Kernel extends HttpKernel
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         TrimString::class,
+        ConvertEmptyStringsToNull::class,
+        TrustProxies::class,
+        ValidatePostSize::class
       //  \CivicApp\Http\Middleware\EncryptCookies::class,
       //  \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
       //  \Illuminate\Session\Middleware\StartSession::class,

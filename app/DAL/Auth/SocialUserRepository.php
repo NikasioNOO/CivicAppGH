@@ -148,6 +148,7 @@ class SocialUserRepository extends Repository implements ISocialUserRepository
 
             }
 
+
             Logger::endMethod($methodName);
 
             return $dbUser->id;

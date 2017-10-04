@@ -12,11 +12,12 @@
 
         </div>
         <div class="form-horizontal col-sm-12">
-            <div class="form-inline col-sm-offset-10 col-sm-2 custom-form-inline" >
+            <div class="form-inline col-sm-offset-8 col-sm-4 custom-form-inline fa-align-right" >
 
-                                <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#LoadFromExcel">Cargar desde archivo
-                                    <span class="glyphicon glyphicon-folder-open"></span>
-                                </button>
+                <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#LoadFromExcel">Cargar desde archivo
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </button>
+                <a class="btn btn-primary btn-sm" download="ObrasTemplateImport.csv" href="{{asset('files/ObrasTemplate.csv') }}">Descargar Template <span class="fa fa-download"></span></a>
 
             </div>
         </div>

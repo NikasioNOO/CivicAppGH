@@ -43,7 +43,7 @@ class AuthController extends Controller
     |
     */
 
-    use  ThrottlesLogins, CaptchaTrait;
+    use  ThrottlesLogins, CaptchaTrait; //, AuthenticatesUsers;
 
     /**
      * Where to redirect users after login / registration.
@@ -247,7 +247,7 @@ class AuthController extends Controller
         ], $remember == 1 ? true : false)
         ) {
 
-            return redirect()->route('admin.home');
+            return redirect()->route('public.home');
 
         } else {
             return redirect()->back()->with('message', 'Email o Password Incorrecto')->with('status',
@@ -445,7 +445,9 @@ class AuthController extends Controller
     {
         try {
 
-            $user = Socialite::driver($provider)->user();
+         //   $user = Socialite::driver($provider)->user();
+
+            $user = Socialite::driver($provider)->userFromToken('EAAMh0KJqbUgBAOMdofSAb6I39CCKcZAwxJSyFvh6iOBQfrHan9uMNjLxGaqyXkwJKn7JkfuFX3O0FGZA1DDzHpnk2gF8eHNyIr63j4xOdaQFfDaVPqQwcEO42eetZAZAZBKDVsvhPHqeGmwo37DozYgWgTTXaTmgZD');
 
             $socialUser = App::make(AuthEntities\SocialUser::class);
 
@@ -590,5 +592,79 @@ class AuthController extends Controller
             Logger::logError($methodName, $ex->getMessage());
             return redirect()->route('public.home')->withErrors([ $ex->getMessage() ]);
         }
+    }
+
+    public function postApiToken(Request $request)
+    {
+
+        $method = 'postApiToken';
+        Logger::startMethod($method);
+
+        if ( ! $request->has('email') || !$request->filled('email') ||
+             ! $request->has('password') || !$request->filled('password')) {
+
+            Logger::endMethod($method);
+
+            return response()->json([
+                'status'      => 'Error',
+                'message' => 'Solicitud mal generada.'
+            ],400);
+        }
+
+
+
+        $email    = $request->input('email');
+        $password = $request->input('password');
+    //    $remember = $request->input('remember');
+
+        if($this->authHandler->IsUserSpamer($email))
+        {
+            Logger::endMethod($method);
+            return response()->json([
+                'status'      => 'Error',
+                'message' => trans('autherrorcodes.0009')
+            ],400);
+
+        }
+
+        if (Auth::guard('websocial')->once([
+            'email'    => $email,
+            'password' => $password
+        ]))
+        {
+            $user = Auth::guard('websocial')->user();
+            $user->generateToken();
+            return response()->json([
+                'status' => 'Ok',
+                'message' => 'Usuario Autenticado',
+                'data' =>
+                    [
+                        'user' => $user->username,
+                        'email' => $user->email,
+                        'token' => $user->api_token
+                    ]
+            ]);
+
+        }
+        else
+        {
+            if ($this->authHandler->IsPendingActivation($email))
+            {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'El usuario aún no está activo, revise su correo'
+                ],401);
+
+            }
+
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Usuario o Contraseña incorrecta'
+            ],401);
+        }
+
+
+
+        Logger::endMethod($method);
     }
 }

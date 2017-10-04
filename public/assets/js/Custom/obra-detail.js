@@ -514,7 +514,7 @@
                 '<div id="commentPosted_'+post.id+'" class="panel panel-default panel-user-comment "> \
                     <div class="panel-title  ">  \
                         <div class="avatar-wrapper img-circle "> \
-                            <img src="'+  post.user.avatar + '"  class="img-responsive avatar-width" alt="Avatar"> \
+                            <img src="'+ document.location.origin +'/'+ post.user.avatar + '"  class="img-responsive avatar-width" alt="Avatar"> \
                         </div> \
                         <label >'+ post.user.username+'</label> \
                         <label >'+ post.created_at+'</label> \
